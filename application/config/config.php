@@ -140,6 +140,42 @@ $config['composer_autoload'] = FALSE;
 
 /*
 |--------------------------------------------------------------------------
+| Common Autoloader function
+|--------------------------------------------------------------------------
+|
+| Add to the bottom of your ./application/config/config.php file.
+|
+| @author Brendan Rehman
+| @param $sClassName
+| @return void
+*/
+spl_autoload_register(function($sClassName)
+{
+    // class directories
+    $aDirectories = array(
+        APPPATH . 'core/',
+        APPPATH . 'modules/admin/controllers/',
+        APPPATH . 'modules/frontend/controllers/'
+        // add more autoloading folders here… and you’re done.
+    );
+
+    // for each directory
+    foreach ($aDirectories as $sDirectory)
+    {
+        // see if the file exsists
+        if (file_exists($sDirectory . $sClassName . '.php'))
+        {
+            require_once($sDirectory . $sClassName . '.php');
+            // only require the class once, so quit after to save effort (if you got more, then name them something else
+
+            return;
+        }
+    }
+});
+
+
+/*
+|--------------------------------------------------------------------------
 | Allowed URL Characters
 |--------------------------------------------------------------------------
 |
@@ -367,10 +403,10 @@ $config['encryption_key'] = '';
 | except for 'cookie_prefix' and 'cookie_httponly', which are ignored here.
 |
 */
-$config['sess_driver'] = 'files';
+$config['sess_driver'] = 'database';
 $config['sess_cookie_name'] = 'ci_session';
 $config['sess_expiration'] = 7200;
-$config['sess_save_path'] = NULL;
+$config['sess_save_path'] = 'ci_sessions';
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
 $config['sess_regenerate_destroy'] = FALSE;
