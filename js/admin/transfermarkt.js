@@ -1,5 +1,6 @@
 ;(function($) {
 	$(".fahrercredit").editable();
+	$(".fahrerstartnummer").editable();
 	
 	$("#openTransfermarkt").click(function() {
 		$.ajax({

@@ -34,4 +34,11 @@ class MY_Model extends CI_Model {
 		return $iId;
 	}
 	
+	public function getLatestSort($sTable, $sSortField) {
+		
+		$this->db->order_by($sSortField, 'DESC');
+		$aData = $this->db->get($sTable)->row_array();
+		
+		return $aData[$sSortField];
+	}
 }

@@ -6,7 +6,7 @@
 		<table class="table">
 			<tr>
 				<td colspan="3" align="right">
-					<a href="#"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Team hinzufügen</button></a> 
+					<a href="<?= base_url();?>admin/administration/addTeam/"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Team hinzufügen</button></a> 
 					<a href="#"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Transfermarkt checken</button></a>
 					<a href="#"><button type="button" class="btn btn-default" id='openTransfermarkt'><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Transfermarkt <?= ($iFreigabeTransfermarkt == 1) ? 'schliessen' : 'öffnen';?></button></a>
 				</td>
@@ -24,7 +24,7 @@
 					$sColor = ($aFahrer['ausgeschieden'] == 1) ? 'danger' : '';
 				?>
 					<tr class="<?= $sColor;?>">
-						<td width="10%"><?= $aFahrer['fahrer_startnummer'];?></td>
+						<td width="10%"><a href="#" id="fahrerstartnummer" class="fahrerstartnummer" data-type="text" data-pk="<?= $aFahrer['fahrer_id'];?>" data-url="<?= base_url();?>admin/administration/setFahrerStartnummer/" data-title="Set Startnummer"><?= $aFahrer['fahrer_startnummer'];?></a></td>
 						<td><?= $aFahrer['fahrer_vorname'] . ' ' . $aFahrer['fahrer_name'];?></td>
 						<td><?= $aFahrer['fahrer_nation'];?></td>
 						<td><a href="#" id="fahrercredit" class="fahrercredit" data-type="text" data-pk="<?= $aFahrer['fahrer_id'];?>" data-url="<?= base_url();?>admin/administration/setFahrerCredits/" data-title="Set Credit"><?= $aFahrer['fahrer_rundfahrt_credits'];?></a></td>

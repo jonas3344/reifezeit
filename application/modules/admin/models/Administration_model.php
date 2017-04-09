@@ -49,4 +49,25 @@ class Administration_model extends MY_Model
 		$this->db->where('fahrer_id', $aData['fahrer_id']);
 		$this->db->update('fahrer_rundfahrt', array('fahrer_rundfahrt_credits'=>$aData['fahrer_rundfahrt_credits']));
 	}
+	
+	public function saveStartnummer($aData) {
+		$this->db->where('rundfahrt_id', $aData['rundfahrt_id']);
+		$this->db->where('fahrer_id', $aData['fahrer_id']);
+		$this->db->update('fahrer_rundfahrt', array('fahrer_startnummer'=>$aData['fahrer_startnummer']));
+	}
+	
+	public function getTeamsForAdding($iRundfahrt) {
+		$aTeams = $this->getRows('team', 'team_active=1');
+		
+		$aTeamsRundfahrt = $this->getRows('team_rundfahrt', 'rundfahrt_id=' . $iRundfahrt);
+		
+		foreach($aTeams as $kT=>$aTeam) {
+			foreach($aTeamsRundfahrt as $kR=>$aTeamIn) {
+				if ($aTeam['team_id'] == $aTeamIn['team_id']) {
+					unset($aTeams[$kT]);
+				}
+			}
+		}
+		return $aTeams;
+	}
 }
