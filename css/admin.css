@@ -1,3 +1,49 @@
 .admin {
 	margin-top: 60px;
 }
+
+.table > thead > tr > td.zeitfahrer,
+.table > tbody > tr > td.zeitfahrer,
+.table > tfoot > tr > td.zeitfahrer,
+.table > thead > tr > th.zeitfahrer,
+.table > tbody > tr > th.zeitfahrer,
+.table > tfoot > tr > th.zeitfahrer,
+.table > thead > tr.zeitfahrer > td,
+.table > tbody > tr.zeitfahrer > td,
+.table > tfoot > tr.zeitfahrer > td,
+.table > thead > tr.zeitfahrer > th,
+.table > tbody > tr.zeitfahrer > th,
+.table > tfoot > tr.zeitfahrer > th {
+  background-color: #f2ff5a;
+}
+
+.table > thead > tr > td.sprinter,
+.table > tbody > tr > td.sprinter,
+.table > tfoot > tr > td.sprinter,
+.table > thead > tr > th.sprinter,
+.table > tbody > tr > th.sprinter,
+.table > tfoot > tr > th.sprinter,
+.table > thead > tr.sprinter > td,
+.table > tbody > tr.sprinter > td,
+.table > tfoot > tr.sprinter > td,
+.table > thead > tr.sprinter > th,
+.table > tbody > tr.sprinter > th,
+.table > tfoot > tr.sprinter > th {
+  background-color: #99faec;
+}
+
+
+.table > thead > tr > td.bergfex,
+.table > tbody > tr > td.bergfex,
+.table > tfoot > tr > td.bergfex,
+.table > thead > tr > th.bergfex,
+.table > tbody > tr > th.bergfex,
+.table > tfoot > tr > th.bergfex,
+.table > thead > tr.bergfex > td,
+.table > tbody > tr.bergfex > td,
+.table > tfoot > tr.bergfex > td,
+.table > thead > tr.bergfex > th,
+.table > tbody > tr.bergfex > th,
+.table > tfoot > tr.bergfex > th {
+  background-color: #f81616;
+}

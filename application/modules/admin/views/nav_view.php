@@ -8,7 +8,7 @@
 	            <span class="icon-bar"></span>
 	            <span class="icon-bar"></span>
 	          </button>
-	          <a class="navbar-brand" href="#">Reifezeit Admin</a>
+	          <a class="navbar-brand" href="<?= base_url()?>admin/start">Reifezeit Admin</a>
 	        </div>
 	        <div id="navbar" class="collapse navbar-collapse">
 	          <ul class="nav navbar-nav">
@@ -16,19 +16,19 @@
 		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Stammdaten <span class="caret"></span></a>
 		          <ul class="dropdown-menu">
 		            <li><a href="<?= base_url()?>admin/stammdaten/rundfahrt">Rundfahrt</a></li>
-		            <li><a href="#">Etappen</a></li>
-		            <li><a href="#">Teams</a></li>
-		            <li><a href="#">Fahrer</a></li>
-		            <li><a href="#">Rollen</a></li>
-		            <li><a href="#">RZ User</a></li>
+		            <li><a href="<?= base_url()?>admin/stammdaten/etappen">Etappen</a></li>
+		            <li><a href="<?= base_url()?>admin/stammdaten/teams">Teams</a></li>
+		            <li><a href="<?= base_url()?>admin/stammdaten/fahrer">Fahrer</a></li>
+		            <li><a href="<?= base_url()?>admin/stammdaten/rollen">Rollen</a></li>
+		            <li><a href="<?= base_url()?>admin/stammdaten/rzUser">RZ User</a></li>
 		            <li><a href="#">RZ Teams</a></li>
 		          </ul>
 		        </li>
 		        <li class="dropdown">
 		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administration Rundfahrt <span class="caret"></span></a>
 		          <ul class="dropdown-menu">
-		            <li><a href="#">Teilnehmer</a></li>
-		            <li><a href="#">Transfermarkt</a></li>
+		            <li><a href="<?= base_url()?>admin/administration/teilnehmer">Teilnehmer</a></li>
+		            <li><a href="<?= base_url()?>admin/administration/transfermarkt">Transfermarkt</a></li>
 		            <li><a href="#">Ausgeschiedene Fahrer</a></li>
 		          </ul>
 		        </li>

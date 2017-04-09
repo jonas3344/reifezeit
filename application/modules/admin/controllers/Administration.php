@@ -1,0 +1,63 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
+
+/**
+ * ----------------------------------------------------------
+ * Copyright (c) 2016 Jonas Bay
+ * ----------------------------------------------------------
+ * @author		  Jonas Bay
+ */
+
+  
+class Administration extends Admin_my_controller 
+{
+	public function __construct() {
+		parent::__construct();
+		$this->load->model('Administration_model', 'model');
+	}
+	
+	public function teilnehmer() {
+		$aData = array();
+		
+		$aData['aTeilnehmer'] = $this->model->getTeilnehmer($this->iAktuelleRundfahrt);
+		
+		$this->renderPage('teilnehmer', $aData, array('bootstrap-table.js', 'bootstrap-table-de-DE.js'), array('bootstrap-table.css'));
+	}
+	
+	public function transfermarkt() {
+		$aData = array();
+		
+		$aData['iFreigabeTransfermarkt'] = $this->iFreigabeTransfermarkt;
+		
+		$aData['aTeams'] = $this->model->getTransfermarkt($this->iAktuelleRundfahrt);
+		
+		$this->renderPage('transfermarkt', $aData, array('bootstrap-editable.js'), array('bootstrap-editable.css'));
+	}
+	
+	public function addTeam() {
+		$aData = array();
+		
+		$this->model->getTeamsForAdding();
+		
+		$this->renderPage('add_team', $aData, array(), array());
+	}
+	
+	public function openTransfermarkt() {
+		
+		if ($this->iFreigabeTransfermarkt == 1) {
+			$aData['freigabe_transfermarkt'] = 0;
+		} else {
+			$aData['freigabe_transfermarkt'] = 1;
+		}
+		
+		$this->model->saveRecord('config', $aData, 1, 'id');
+		echo 'ok';
+	}
+	
+	public function setFahrerCredits() {
+		$aData['fahrer_id'] = $this->input->post('pk');
+		$aData['rundfahrt_id'] = $this->iAktuelleRundfahrt;
+		$aData['fahrer_rundfahrt_credits'] = $this->input->post('value');
+		
+		$this->model->saveCredits($aData);
+	}
+}

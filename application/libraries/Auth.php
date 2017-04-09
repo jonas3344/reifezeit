@@ -22,11 +22,11 @@ class Auth {
 		$iStatus = $this->CI->session->userdata('login_' . $sSection);
 		if ($sSection == 'frontend') {
 			if ($iStatus != '1') {
-				redirect($sLoginFrontend);
+				redirect($this->sLoginFrontend);
 			}
 		} else if ($sSection == 'backend') {
 			if ($iStatus != '1') {
-				redirect($sLoginBackend);
+				redirect($this->sLoginBackend);
 			}	
 		}
 	}

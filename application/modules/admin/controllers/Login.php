@@ -28,7 +28,7 @@ class Login extends CI_Controller
 		
 		if ($this->form_validation->run() === true) {
 			if ($this->auth->try_login($this->input->post('username'), $this->input->post('password'), 'backend')) {
-				redirect('admin/index');
+				redirect('admin/start');
 			} else {
 				$aData['sError'] = 'Passwort/Benutzernamen stimmen nicht überein!';
 			}

@@ -13,8 +13,11 @@
 	    <!-- CSS -->
 	    <?php
 		foreach($aCss as $k=>$v) { ?>
-<link href="<?= base_url(),'css/',$v ?>" rel="stylesheet">
+			<link href="<?= base_url(),'css/',$v ?>" rel="stylesheet">
 	<?php }
 	?>
+	<script>
+	  var base_url = "<?= base_url();?>admin/";
+	 </script>
 </head>
  

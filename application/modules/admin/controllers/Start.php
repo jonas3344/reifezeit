@@ -15,7 +15,7 @@ class Start extends Admin_my_controller
 		
 		$aData = array();
 		
-		$this->renderPage('start', $aData);
+		$this->renderPage('start', $aData, array(), array());
 	}
 	
 }
