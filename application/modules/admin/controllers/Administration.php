@@ -41,6 +41,15 @@ class Administration extends Admin_my_controller
 		$this->renderPage('add_team', $aData, array(), array());
 	}
 	
+	public function addFahrerTransfermarkt($iTeamid) {
+		$aData = array();
+		
+		$aData['aTeam'] = $this->model->getOneRow('team', 'team_id=' . $iTeamid);
+		$aData['aFahrer'] = $this->model->getFahrerTeam($iTeamid, $this->iAktuelleRundfahrt);
+		
+		$this->renderPage('add_fahrer_transfermarkt', $aData, array(), array());
+	}
+	
 	public function openTransfermarkt() {		
 		if ($this->iFreigabeTransfermarkt == 1) {
 			$aData['freigabe_transfermarkt'] = 0;
@@ -69,7 +78,7 @@ class Administration extends Admin_my_controller
 	}
 	
 	public function addTeamToTransfermarkt() {
-		$iSort = $this->model->getLatestSort('team_rundfahrt', 'start_order');
+		$iSort = $this->model->getLatestSort('team_rundfahrt', 'rundfahrt_id=' . $this->iAktuelleRundfahrt, 'start_order');
 		
 		$aData['rundfahrt_id'] = $this->iAktuelleRundfahrt;
 		$aData['team_id'] = $this->input->post('teamid');
@@ -77,6 +86,23 @@ class Administration extends Admin_my_controller
 		
 		$this->model->saveRecord('team_rundfahrt', $aData, -1, 'team_rundfahrt_id');
 		
+		echo 'ok';
+	}
+	
+	public function addFahrerToTransfermarkt() {
+		$aData = array(	'ausgeschieden' => 0,
+						'fahrer_id' => $this->input->post('fahrerid'),
+						'rundfahrt_id' => $this->iAktuelleRundfahrt,
+						'fahrer_startnummer' => 0,
+						'fahrer_rundfahrt_credits' => 0);
+		
+		$this->model->saveRecord('fahrer_rundfahrt', $aData, -1, 'fahrer_rundfahrt_id');
+		echo 'ok';
+		
+	}
+	
+	public function removeFahrerFromTransfermarkt() {
+		$this->model->removeFahrerFromTransfermarkt($this->input->post('fahrerid'), $this->iAktuelleRundfahrt);
 		echo 'ok';
 	}
 }

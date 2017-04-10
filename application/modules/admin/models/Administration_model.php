@@ -70,4 +70,33 @@ class Administration_model extends MY_Model
 		}
 		return $aTeams;
 	}
+	
+	public function getFahrerTeam($iTeamid, $iRundfahrt) {
+		$this->db->where('fahrer_active', 1);
+		$this->db->where('fahrer_team_id', $iTeamid);
+		
+		$aAlleFahrer = $this->db->get('fahrer')->result_array();
+		
+		$this->db->where('f.fahrer_team_id', $iTeamid);
+		$this->db->where('fr.rundfahrt_id', $iRundfahrt);
+		$this->db->join('fahrer f', 'f.fahrer_id=fr.fahrer_id');
+		$aFahrerBereitsDrin = $this->db->get('fahrer_rundfahrt fr')->result_array();
+		
+		foreach($aAlleFahrer as $k=>$aFahrer) {
+			foreach($aFahrerBereitsDrin as $aSelectedFahrer) {
+				if ($aFahrer['fahrer_id'] == $aSelectedFahrer['fahrer_id']) {
+					unset($aAlleFahrer[$k]);
+				}
+			}
+		}
+		
+		return $aAlleFahrer;
+	}
+	
+	public function removeFahrerFromTransfermarkt($iFahrerid, $iRundfahrt) {
+		$this->db->where('fahrer_id', $iFahrerid);
+		$this->db->where('rundfahrt_id', $iRundfahrt);
+		$this->db->delete('fahrer_rundfahrt');
+		
+	}
 }
