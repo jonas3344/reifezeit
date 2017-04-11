@@ -99,4 +99,32 @@ class Administration_model extends MY_Model
 		$this->db->delete('fahrer_rundfahrt');
 		
 	}
+	
+	public function removeTeamFromTransfermarkt($iTeamid, $iRundfahrt) {
+		$this->db->select('f.fahrer_id');
+		$this->db->join('fahrer_rundfahrt fr', 'fr.fahrer_id=f.fahrer_id');
+		$this->db->where('f.fahrer_team_id', $iTeamid);
+		$this->db->where('fr.rundfahrt_id', $iRundfahrt);
+		$aFahrer = $this->db->get('fahrer f')->result_array();
+		
+		echo $this->db->last_query();
+		
+		foreach($aFahrer as $k=>$v) {
+			$this->removeFahrerFromTransfermarkt($v['fahrer_id'], $iRundfahrt);
+		}
+		
+		$this->db->where('team_id', $iTeamid);
+		$this->db->where('rundfahrt_id', $iRundfahrt);
+		$this->db->delete('team_rundfahrt');
+	}
+	
+	public function saveTeamOrder($aIds, $iRundfahrt) {
+		if (count($aIds) > 0) {
+			foreach($aIds as $k=>$v) {
+				$this->db->where('team_id', $v);
+				$this->db->where('rundfahrt_id', $iRundfahrt);
+				$this->db->update('team_rundfahrt', array('start_order' => ($k+1)));
+			}
+		}
+	}
 }

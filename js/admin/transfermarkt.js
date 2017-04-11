@@ -33,4 +33,21 @@
 
 		})
 	});
+	
+	$(".remove_team").click(function() {
+		var teamid = $(this).attr("id");
+		$.ajax({
+			type: "post",
+			url: base_url + 'administration/removeTeamFromTransfermarkt/',
+			data: {teamid: teamid},
+			success: function(s) {
+					if (s == "ok") {
+						location.reload();
+					} else {
+						alert("Es ist ein Fehler aufgetreten!");
+					}
+				}
+
+		})
+	});
 })(jQuery);

@@ -12,7 +12,7 @@ class MY_Model extends CI_Model {
 	
 	public function getOneRow($sTable, $sWhere) {
 		$this->db->where($sWhere);
-		return $this->db->get($sTable)->result_array()[0];
+		return $this->db->get($sTable)->row_array();
 	}
 	
 	public function getRows($sTable, $sWhere, $aSort = array()) {

@@ -35,7 +35,7 @@
 	            <li class="dropdown">
 		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Auswertung <span class="caret"></span></a>
 		          <ul class="dropdown-menu">
-		            <li><a href="#">Dopingtest</a></li>
+		            <li><a href="<?= base_url()?>admin/dopingtest">Dopingtest</a></li>
 		            <li><a href="#">Resultate parsen</a></li>
 		            <li><a href="#">Etappe abschliessen</a></li>
 		            <li><a href="#">Resultate löschen</a></li>

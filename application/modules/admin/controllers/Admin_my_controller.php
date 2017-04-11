@@ -11,8 +11,8 @@
 class Admin_my_controller extends CI_Controller 
 {
 	
-	protected $aHeaderFiles = array('aCssFiles' => array('bootstrap.css', 'bootstrap-theme.css', 'admin.css'),
-									'aJsFiles' => array('jquery.min.js', 'bootstrap.js'));
+	protected $aHeaderFiles = array('aCssFiles' => array('bootstrap.css', 'bootstrap-theme.css', 'admin.css', 'jquery-ui.css'),
+									'aJsFiles' => array('jquery.min.js', 'bootstrap.js', 'jquery-ui.js'));
 	protected $sView;
 	protected $iAktuelleRundfahrt;
 	protected $sAktuelleRundfahrt;
@@ -29,11 +29,13 @@ class Admin_my_controller extends CI_Controller
 		// Load Config
 		$this->load->model('MY_model');
 		$aConfig = $this->MY_model->getOneRow('config', 'id=1');
-		$this->iAktuelleRundfahrt = $aConfig['aktuelle_rundfahrt'];
+		$this->config->set_item('iAktuelleRundfahrt', $aConfig['aktuelle_rundfahrt']);
+		$this->config->set_item('iAktuelleEtappe', $aConfig['aktuelle_etappe']);
 		$this->iAktuelleEtappe = $aConfig['aktuelle_etappe'];
+		$this->iAktuelleRundfahrt = $aConfig['aktuelle_rundfahrt'];
 		$this->iFreigabeTransfermarkt = $aConfig['freigabe_transfermarkt'];
 		$aRundfahrt = $this->MY_model->getOneRow('rundfahrt', 'rundfahrt_id=' . $this->iAktuelleRundfahrt);
-		$this->sAktuelleRundfahrt = $aRundfahrt['rundfahrt_bezeichnung'];
+		$this->config->set_item('sAktuelleRundfahrt', $aRundfahrt['rundfahrt_bezeichnung']);
 	}
 	
 	public function renderPage($sView, $aData, $aJsFiles, $aCssFiles) {

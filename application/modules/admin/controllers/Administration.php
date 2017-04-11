@@ -50,6 +50,14 @@ class Administration extends Admin_my_controller
 		$this->renderPage('add_fahrer_transfermarkt', $aData, array(), array());
 	}
 	
+	public function orderTeams() {
+		$aData = array();
+		
+		$aData['aTeams'] = $this->model->getTransfermarkt($this->iAktuelleRundfahrt);
+		
+		$this->renderPage('order_teams', $aData, array(), array());
+	}
+	
 	public function openTransfermarkt() {		
 		if ($this->iFreigabeTransfermarkt == 1) {
 			$aData['freigabe_transfermarkt'] = 0;
@@ -104,5 +112,16 @@ class Administration extends Admin_my_controller
 	public function removeFahrerFromTransfermarkt() {
 		$this->model->removeFahrerFromTransfermarkt($this->input->post('fahrerid'), $this->iAktuelleRundfahrt);
 		echo 'ok';
+	}
+	
+	public function removeTeamFromTransfermarkt() {
+		$this->model->removeTeamFromTransfermarkt($this->input->post('teamid'), $this->iAktuelleRundfahrt);
+		echo 'ok';
+	}
+	
+	public function saveOrder() {
+		$aIds = $this->input->post(NULL, true);
+		
+		$this->model->saveTeamOrder($aIds['item'], $this->iAktuelleRundfahrt);
 	}
 }

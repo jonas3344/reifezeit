@@ -7,7 +7,7 @@
 			<tr>
 				<td colspan="3" align="right">
 					<a href="<?= base_url();?>admin/administration/addTeam/"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Team hinzufügen</button></a> 
-					<a href="#"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-resize-vertical" aria-hidden="true"></span> Teams sortieren</button></a>
+					<a href="<?= base_url();?>admin/administration/orderTeams/"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-resize-vertical" aria-hidden="true"></span> Teams sortieren</button></a>
 					<a href="#"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Transfermarkt checken</button></a>
 					<a href="#"><button type="button" class="btn btn-default" id='openTransfermarkt'><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Transfermarkt <?= ($iFreigabeTransfermarkt == 1) ? 'schliessen' : 'öffnen';?></button></a>
 				</td>
@@ -18,7 +18,7 @@
 			foreach($aTeams as $k=>$v) {
 			?>	
 				<thead>
-					<th colspan="5"><?= $v['team_name'];?> | <a href="<?= base_url();?>admin/administration/addFahrerTransfermarkt/<?= $v['team_id'];?>"><button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Fahrer hinzufügen</button></a> <a href="#"><button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span> Team entfernen</button></a></th>
+					<th colspan="5"><?= $v['team_name'];?> | <a href="<?= base_url();?>admin/administration/addFahrerTransfermarkt/<?= $v['team_id'];?>"><button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Fahrer hinzufügen</button></a> <a href="#"><button type="button" class="btn btn-default btn-sm remove_team" id="<?= $v['team_id'];?>"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span> Team entfernen</button></a></th>
 				</thead>
 			<?php	
 				foreach($v['fahrer'] as $kf => $aFahrer) {
