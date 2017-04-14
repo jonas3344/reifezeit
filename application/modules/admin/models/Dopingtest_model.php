@@ -21,6 +21,12 @@ class Dopingtest_model extends MY_Model
 		$aData['teilnehmer'] = $this->db->get('rz_user u')->result_array();
 		
 		foreach($aData['teilnehmer'] as $k=>$v) {
+			// Team
+			$this->db->join('rz_team t', 't.rzteam_id=ut.rz_team_id');
+			$this->db->where('ut.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+			$this->db->where('ut.user_id', $v['id']);
+			$aData['teilnehmer'][$k]['team'] = $this->db->get('rz_user_team ut')->row_array();
+			
 			// Kader
 			$this->db->select('fahrer1, fahrer2, fahrer3, fahrer4, fahrer5, einsatz_creditpool, gewonnene_bonuscredits');
 			$this->db->where('etappen_id', $iEtappe);
@@ -63,27 +69,68 @@ class Dopingtest_model extends MY_Model
 		return $aData;
 	}
 	
-	private function _getKaderChange($iEtappenNr, $iFahrerid, $iUser) {
-		$this->db->select('etappen_id');
-		$this->db->where('etappen_nr', $iEtappenNr-1);
-		$this->db->where('etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
-		$aEtappe = $this->db->get('etappen')->row_array();
+	public function getCaPerStage($iEtappe) {
+		$this->db->where('etappen_id', $iEtappe);
+		$aAbgabe = $this->db->get('creditabgabe')->result_array();
 		
-		$this->db->select('fahrer1, fahrer2, fahrer3, fahrer4, fahrer5');
+		if (count($aAbgabe) > 0) {
+			foreach($aAbgabe as $k=>$v) {
+				$this->db->where('id', $v['abgeber']);
+				$aAbgabe[$k]['user_abgabe'] = $this->db->get('rz_user')->row_array();
+				
+				$this->db->where('id', $v['empfaenger']);
+				$aAbgabe[$k]['user_empfang'] = $this->db->get('rz_user')->row_array();
+				
+			}
+		}
+		
+		return $aAbgabe;
+	}
+	
+	public function updateWechselWithData($aData) {
+		foreach($aData as $k=>$v) {
+			$this->db->select('f.fahrer_name, f.fahrer_vorname, t.team_short');
+			$this->db->where('f.fahrer_id', $v['fahrer_id']);
+			$this->db->join('team t', 't.team_id=f.fahrer_team_id');
+			$aData[$k]['fahrer_infos'] = $this->db->get('fahrer f')->row_array();
+		}
+		return $aData;
+	}
+	
+	public function getDoper() {
+		$this->db->where('d.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->join('rz_user u', 'u.id=d.user_id');
+		$this->db->join('etappen e', 'e.etappen_id=d.etappen_id');
+		$this->db->order_by('d.etappen_id', 'ASC');
+		return $this->db->get('dopingfall d')->result_array();
+	}
+	
+	public function dsqUser($iUser, $iEtappe) {
+		$this->model->saveRecord('dopingfall', array('user_id'=>$iUser, 'etappen_id'=>$iEtappe, 'rundfahrt_id'=>$this->config->item('iAktuelleRundfahrt')), -1);
+		
 		$this->db->where('user_id', $iUser);
-		$this->db->where('etappen_id', $aEtappe['etappen_id']);
-		$aKaderOld = $this->db->get('kader')->row_array();
-		
-/*
-		echo $iFahrerid;
-		echo "<pre>";
-		print_r($aKaderOld);
-		echo "</pre>";
-		echo in_array($iFahrerid, $aKaderOld) . "-<br>";
-*/
-		if (in_array($iFahrerid, $aKaderOld)) {
-			return false;
-		} else {
+		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->update('teilnahme', array('out'=>1, 'out_etappen_id'=>$iEtappe));
+	}
+	
+	private function _getKaderChange($iEtappenNr, $iFahrerid, $iUser) {
+		if ($iEtappenNr > 1) {
+			$this->db->select('etappen_id');
+			$this->db->where('etappen_nr', $iEtappenNr-1);
+			$this->db->where('etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+			$aEtappe = $this->db->get('etappen')->row_array();
+			
+			$this->db->select('fahrer1, fahrer2, fahrer3, fahrer4, fahrer5');
+			$this->db->where('user_id', $iUser);
+			$this->db->where('etappen_id', $aEtappe['etappen_id']);
+			$aKaderOld = $this->db->get('kader')->row_array();
+			
+			if (in_array($iFahrerid, $aKaderOld)) {
+				return false;
+			} else {
+				return true;
+			}
+		} else if ($iEtappenNr == 1) {
 			return true;
 		}
 	}
@@ -115,7 +162,7 @@ class Dopingtest_model extends MY_Model
 				$iCredit = $aRolle['credit_bzf'];
 				break;
 			case 6:
-				$iCredit = $aRolle['credit_mzrf'];
+				$iCredit = $aRolle['credit_mzf'];
 				break;
 			
 		}

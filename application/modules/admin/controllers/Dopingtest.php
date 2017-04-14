@@ -29,5 +29,65 @@ class Dopingtest extends Admin_my_controller
 		$this->renderPage('dopingtest', $aData, array(), array());
 	}
 	
-
+	public function forumtabelle($iEtappe) {
+		$aData = array();
+		$this->load->helper(array('forum_helper', 'time_helper'));
+		$this->load->library('Wechsel', $iEtappe);
+		$this->load->library('Resultaterz', $iEtappe);
+		
+		$aKader = $this->model->getDopingtest($iEtappe);
+		
+		$aGesamt = $this->resultaterz->getGesamtForKader();
+		
+		if($aKader['etappe']['etappen_nr'] >1){
+			foreach($aKader['teilnehmer'] as $k=>$v) {
+				$aKader['teilnehmer'][$k]['gw'] = $aGesamt[$v['user_id']]['zeit'];
+			}
+		}
+		
+		usort($aKader['teilnehmer'], '_cmpGw');
+		
+		$aCa = $this->model->getCaPerStage($iEtappe);
+		
+		$aWechsel['ein'] = $this->wechsel->returnSummarizedChanges('ein');
+		$aWechsel['aus'] = $this->wechsel->returnSummarizedChanges('aus');
+		
+		usort($aWechsel['ein'], '_cmpWechsel');
+		usort($aWechsel['aus'], '_cmpWechsel');
+		
+		$aWechsel['ein'] = $this->model->updateWechselWithData($aWechsel['ein']);
+		$aWechsel['aus'] = $this->model->updateWechselWithData($aWechsel['aus']);
+		
+		$aData['sOutput'] = createForumKaderpost($aKader, $aCa, $aWechsel);
+		
+		
+		$this->renderPage('forumtabelle', $aData, array(), array());
+	}
+	
+	public function doper($iEtappe) {
+		$aData = array();
+		
+		$aData['aDoper'] = $this->model->getDoper();
+		
+		$aData['aTeilnehmer'] = $this->model->getTeilnehmer(true);
+		$aData['iEtappe'] = $iEtappe;
+				
+		$this->renderPage('doper', $aData, array(), array());
+	}
+	
+	public function InsertDoper() {
+		
+		// Check ob das erste Mal
+		$iDoper = $this->input->post('doperid');
+		
+		$aCheck = $this->model->getOneRow('dopingfall', 'user_id=' . $iDoper);
+		
+		if (count($aCheck) > 0) {
+			$this->model->dsqUser($this->input->post('doperid'), $this->input->post('etappenid'));
+			echo 'out';
+		} else {
+			$this->model->saveRecord('dopingfall', array('user_id'=>$this->input->post('doperid'), 'etappen_id'=>$this->input->post('etappenid'), 'rundfahrt_id'=>$this->config->item('iAktuelleRundfahrt')), -1);
+			echo 'ok';
+		}
+	}
 }

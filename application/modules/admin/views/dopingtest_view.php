@@ -15,8 +15,8 @@
 		</select>
 	</div>
 	<div class="row well">
-		<a href="#"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Forumtabelle</button></a>
-		<a href="#"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> Doper eintragen</button></a>
+		<a href="<?= base_url();?>admin/dopingtest/forumtabelle/<?= $iAktuelleEtappe;?>"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Forumtabelle</button></a>
+		<a href="<?= base_url();?>admin/dopingtest/doper/<?= $iAktuelleEtappe;?>"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> Doper eintragen</button></a>
 	</div>
 	<div class="row well">
 		<table class="table small">

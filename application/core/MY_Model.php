@@ -23,7 +23,7 @@ class MY_Model extends CI_Model {
 		return $this->db->get($sTable)->result_array();
 	}
 	
-	public function saveRecord($sTable, $aData, $iId, $sIdField) {
+	public function saveRecord($sTable, $aData, $iId, $sIdField = 'id') {
 		if ($iId == -1) {
 			$this->db->insert($sTable, $aData);
 			$iId = $this->db->insert_id();
@@ -40,5 +40,16 @@ class MY_Model extends CI_Model {
 		$aData = $this->db->get($sTable)->row_array();
 		
 		return $aData[$sSortField];
+	}
+	
+	public function getTeilnehmer($out = true, $sSortField = 'rzname') {
+		$this->db->join('rz_user u', 'u.id=t.user_id');
+		$this->db->where('t.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		if ($out == true) {
+			$this->db->where('t.out', 0);
+		}
+		$this->db->order_by($sSortField, 'ASC');
+		return $this->db->get('teilnahme t')->result_array();
+		
 	}
 }
