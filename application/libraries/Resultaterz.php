@@ -118,11 +118,21 @@ class Resultaterz {
 	 */
 	
 	public function getTagesWertung() {
-		return $this->aRzTageswertungen[$this->iAktuelleEtappe];
+		foreach($this->aEtappen as $k=>$v) {
+			if ($this->iEtappeId == $v['etappen_id']) {
+				$iNr = $v['etappen_nr'];
+			}
+		}
+		return $this->aRzTageswertungen[$iNr];
 	}
 	
 	public function getTeam() {
-		return $this->aRzTeamwertungen[$this->iAktuelleEtappe];
+		foreach($this->aEtappen as $k=>$v) {
+			if ($this->iEtappeId == $v['etappen_id']) {
+				$iNr = $v['etappen_nr'];
+			}
+		}
+		return $this->aRzTeamwertungen[$iNr];
 	}
 	
 	public function getGesamtWertung() {

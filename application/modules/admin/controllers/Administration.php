@@ -18,7 +18,7 @@ class Administration extends Admin_my_controller
 	public function teilnehmer() {
 		$aData = array();
 		
-		$aData['aTeilnehmer'] = $this->model->getTeilnehmer($this->iAktuelleRundfahrt);
+		$aData['aTeilnehmer'] = $this->model->getTeilnehmerForAdmin($this->iAktuelleRundfahrt);
 		
 		$this->renderPage('teilnehmer', $aData, array('bootstrap-table.js', 'bootstrap-table-de-DE.js'), array('bootstrap-table.css'));
 	}

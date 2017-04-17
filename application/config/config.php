@@ -155,7 +155,7 @@ spl_autoload_register(function($sClassName)
     $aDirectories = array(
         APPPATH . 'core/',
         APPPATH . 'modules/admin/controllers/',
-        APPPATH . 'modules/frontend/controllers/'
+        APPPATH . 'controllers/'
         // add more autoloading folders here… and you’re done.
     );
 
@@ -550,4 +550,5 @@ $config['proxy_ips'] = '';
 $config['iAktuelleRundfahrt'] = '';
 $config['sAktuelleRundfahrt'] = '';
 $config['iAktuelleEtappe'] = '';
-$config['iFreigabeTransfermarkt'] = '';		
+$config['iFreigabeTransfermarkt'] = '';
+$config['iRundfahrtGestartet'] = '';		

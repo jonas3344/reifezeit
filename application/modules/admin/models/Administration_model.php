@@ -9,7 +9,7 @@
  
 class Administration_model extends MY_Model 
 {
-	public function getTeilnehmer($iRundfahrt) {
+	public function getTeilnehmerForAdmin($iRundfahrt) {
 		
 		$this->db->where('t.rundfahrt_id', $iRundfahrt);
 		$this->db->join('rz_user u', 'u.id=t.user_id');

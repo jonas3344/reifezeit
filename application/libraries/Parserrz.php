@@ -12,26 +12,188 @@ class Parserrz {
 	
 	protected $CI;
 	// 1 = Giro, 2 = Tour/Vuelta
-	protected $iRangParser;
+	protected $iParser;
+	protected $aEtappe;
+	protected $aAusreisser;
 	
-	function __construct($iRangParser) {
+	protected $aResult;
+	protected $aResultPoints;
+	protected $aResultMoutain;
+	
+	
+	
+	function __construct($aParams) {
 		$this->CI =& get_instance();
-		$this->iParser = $iRangParser;
+
+		$this->iParser = $aParams['iParser'];
+		$this->CI->load->model('Parser_model', 'model');
+		
+		$this->aEtappe = $this->CI->model->getOneRow('etappen', 'etappen_id=' . $aParams['iEtappe']);
 	}
 	
-	public function parseResult($sResult, $iType) {
+	public function parseResult($sResult, $iType, $aAusreisser) {
+		$this->aAusreisser = $aAusreisser;
 		if ($this->iParser == 1) {
-			$this->_parseGiro($sResult, $iType);
+			if ($iType == 1) {
+				$this->_parseGiroTime($sResult);
+				$this->_calculateTime();
+			} else if ($iType == 2) {
+				$this->_parseGiroPoints($sResult);
+			} else if ($iType == 3) {
+				$this->_parseGiroMountains($sResult);
+			}
 		} else if ($this->iParser == 2) {
 			$this->_parseASO($sResult, $iType);
 		}
+		$this->_saveToDb($iType);
 	}
+	
+	private function _calculateTime() {
+		$sOutput = "<table>";
+		if (($this->aEtappe['etappen_klassifizierung'] == 3) || ($this->aEtappe['etappen_klassifizierung'] == 5) || ($this->aEtappe['etappen_klassifizierung'] == 6)) {
+			$bZeitfahren = true;
+		} else {
+			$bZeitfahren = false;
+		}
+		$bBergetappe = ($this->aEtappe['etappen_klassifizierung'] == 4) ? true : false;
+		
+		if ($this->aAusreisser['iAusreisser'] == 2) {
+			// Keine Ausreisser
+			foreach($this->aResult as $key => $r) {
+				if ($r['rang'] == 1) {
+					$this->aResult[$key]['rueckstandS'] = 0;
+					$this->aResult[$key]['rueckstandOhneBS'] = 0;
+				} else {			
+					$i_minutes_temp = substr($r['rueckstand'], 0, strpos($r['rueckstand'], ':'));
+					$i_seconds_temp = substr($r['rueckstand'], strpos($r['rueckstand'], ':')+1);
+					
+					if ($bZeitfahren == false) {
+						if ($r['rang'] == 1) {
+							$zeitS = ($i_minutes_temp*60) + $i_seconds_temp;
+						} else if ($r['rang'] == 2) {
+							$zeitS = ($i_minutes_temp*60) + $i_seconds_temp + 3;
+						} else if ($r['rang'] == 3) {
+							$zeitS = ($i_minutes_temp*60) + $i_seconds_temp + 6;
+						} else if ($r['rang'] == 4) {
+							$zeitS = ($i_minutes_temp*60) + $i_seconds_temp + 8;	
+						} else if ($r['rang'] == 5) {
+							$zeitS = ($i_minutes_temp*60) + $i_seconds_temp + 10;
+						} else {
+							$zeitS = ($i_minutes_temp*60) + $i_seconds_temp + 15;
+						}
+					} else if ($zeitfahren == true) {
+						$zeitS = ($i_minutes_temp*60) + $i_seconds_temp;
+					}
+					$this->aResult[$key]['rueckstandOhneBS'] = ($i_minutes_temp*60) + $i_seconds_temp;
+					$this->aResult[$key]['rueckstandS'] = $zeitS;		
+					
+				}
+				$sOutput .= "<tr><td>" . $r['fahrer_startnummer'] . "</td><td>" . $r['nachname'] . "</td><td>" . $this->aResult[$key]['rueckstandS'] . "</td></tr>";
+			}
+			
+		} else if ($this->aAusreisser['iAusreisser'] == 1) {
+			// Ausreisser
+			// Rückstand Hauptfeld herausfinden
+			$iRueckstandHauptfeld = 0;
+			
+			foreach($resultat as $key => $r){
+				if ($r['rang'] == $this->aAusreisser['iFirstHauptfeld']) {
+					$i_minutes_temp = substr($r['rueckstand'], 0, strpos($r['rueckstand'], ':'));
+					$i_seconds_temp = substr($r['rueckstand'], strpos($r['rueckstand'], ':')+1);
+					
+					$iRueckstandHauptfeld = ($i_minutes_temp*60) + $i_seconds_temp;
+					break;
+				}
+				
+			}
+			
+			$zahl1 = ($bBergetappe==true) ? 180 : 60;
+			$zahl2 = ($bBergetappe==true) ? 90 : 30;
+			
+			foreach($this->aResult as $key => $r){
+				$i_minutes_temp = substr($r['rueckstand'], 0, strpos($r['rueckstand'], ':'));
+				$i_seconds_temp = substr($r['rueckstand'], strpos($r['rueckstand'], ':')+1);
+				$i_ruckstand_temp = ($i_minutes_temp*60) + $i_seconds_temp;
+				
+				if ($r['rang'] == 1) {
+					$zeitS = 0;
+					$this->aResult[$key]['rueckstandOhneBS'] = 0;
+				} else if ($r['rang'] < $i_rang_hauptfeld) {
+					// Vor Hauptfeld
+					if ($i_ruckstand_temp < $zahl2) {
+						$zeitS = $i_ruckstand_temp;
+					} else if (($iRueckstandHauptfeld - $i_ruckstand_temp) < $zahl2) {
+						$zeitS = $zahl1 - ($iRueckstandHauptfeld - $i_ruckstand_temp);
+					} else {
+						$zeitS = $zahl2;
+					}
+					
+				} else if ($r['rang'] >= $i_rang_hauptfeld) {
+					if ($iRueckstandHauptfeld > $zahl1) {
+						$zeitS = $zahl1 + ($iRueckstandHauptfeld - $i_ruckstand_hauptfeld);
+					} else {
+						$zeitS = $i_ruckstand_temp;
+					}
+					
+				}
+				
+				if ($r['rang'] == 1) {
+					$zeitS = $zeitS;
+				} else if ($r['rang'] == 2) {
+					$zeitS += 3;
+				} else if ($r['rang'] == 3) {
+					$zeitS += 6;
+				} else if ($r['rang'] == 4) {
+					$zeitS += 8;	
+				} else if ($r['rang'] == 5) {
+					$zeitS += 10;
+				} else {
+					$zeitS += 15;
+				}
+				
+				$this->aResult[$key]['rueckstandS'] = $zeitS;
+				$this->aResult[$key]['rueckstandOhneBS'] = ($i_minutes_temp*60) + $i_seconds_temp;
+				
+				$sOutput .= "<tr><td>" . $r['startnummer'] . "</td><td>" . $resultat[$key]['rueckstandS'] . "</td></tr>";
+			}
+		}
+		$sOutput .= '</table>';
+		echo $sOutput;
+	}
+	
+	private function _saveToDb($iType) {
+		if ($iType == 1) {
+			foreach($this->aResult as $k=$v) {
+				$data['rang'] = $r['rang'];
+				$data['fahrer_id'] = $a['fahrer_id'];
+				$data['etappen_id'] = $this->aEtappe['etappen_id'];
+				$data['rueckstand'] = $r['rueckstandS'];
+				$data['rueckstandOhneBS'] = $r['rueckstandOhneBS'];
+				$this->CI->model->saveRecord('resultate', $aData, -1);
+			}
+		} else if ($iType == 2) {
+			foreach($this->aResultPoints as $k=$v) {
+				$data['fahrer_id'] = $v['fahrer_id'];
+				$data['etappen_id'] = $this->aEtappe['etappen_id'];
+				$data['punkte'] = $v['punkte'];
+				$this->CI->model->saveRecord('resultate_punkte', $aData, -1);
+			}
+		} else if ($iType == 3) {
+			foreach($this->aResultountain as $k=$v) {
+				$data['fahrer_id'] = $v['fahrer_id'];
+				$data['etappen_id'] = $this->aEtappe['etappen_id'];
+				$data['bergpunkte'] = $v['bergpunkte'];
+				$this->CI->model->saveRecord('resultate_punkte', $aData, -1);
+			}
+
+		}
+	}	
 	
 	private function _parseASO($sResult, $iRangType) {
 		
 	}
 	
-	private function _parseGiro($sResult, $iType) {
+	private function _parseGiroTime($sResult) {
 		$aFinal = array();
 		
 		$aResult = explode("\n", $sResult);
@@ -61,8 +223,6 @@ class Parserrz {
 				$sZeile = substr($sZeile, 3);
 			}
 			
-			
-			
 			/*Nation Start*/
 			$sZeile = trim($sZeile);
 			$aFinal[$iRang]['nation'] = substr($sZeile, 0, 3);
@@ -80,6 +240,7 @@ class Parserrz {
 					$temp = $temp . " " . substr($sZeile, 0, strpos($sZeile, ' '));
 					$sZeile = substr($sZeile, strpos($sZeile, ' '));
 					$aFinal[$iRang]['nachname'] = $temp;
+					$aFinal[$iRang]['nachname'] = substr($aFinal[$iRang]['nachname'], 0, 1) . strtolower(substr($aFinal[$iRang]['nachname'], 1));
 					$search = false;
 				}
 			}
@@ -96,6 +257,7 @@ class Parserrz {
 					$temp = $temp . " " . substr($sZeile, 0, strpos($sZeile, ' '));
 					$sZeile = substr($sZeile, strpos($a, ' '));
 					$aFinal[$iRang]['nachname'] = $temp;
+					$aFinal[$iRang]['nachname'] = substr($aFinal[$iRang]['nachname'], 0, 1) . strtolower(substr($aFinal[$iRang]['nachname'], 1));
 					$search = false;
 				}
 			}
@@ -117,6 +279,7 @@ class Parserrz {
 					$temp = $temp . " " . substr($sZeile, 0, strpos($sZeile, ' '));
 					$sZeile = substr($sZeile, strpos($sZeile, ' '));
 					$aFinal[$iRang]['nachname'] = $temp;
+					$aFinal[$iRang]['nachname'] = substr($aFinal[$iRang]['nachname'], 0, 1) . strtolower(substr($aFinal[$iRang]['nachname'], 1));
 					$search = false;
 					}
 				}
@@ -128,6 +291,7 @@ class Parserrz {
 				$temp = substr($sZeile, 0, strpos($sZeile, ' '));
 				$sZeile = substr($sZeile, strpos($sZeile, ' '));
 				$aFinal[$iRang]['nachname'] = $temp;
+				$aFinal[$iRang]['nachname'] = substr($aFinal[$iRang]['nachname'], 0, 1) . strtolower(substr($aFinal[$iRang]['nachname'], 1));
 			}
 			
 			/* Nachnamen End*/
@@ -144,6 +308,7 @@ class Parserrz {
 					$temp = $temp . " " . substr($sZeile, 0, strpos($sZeile, chr(9)));
 					$sZeile = substr($sZeile, strpos($sZeile, chr(9)));
 					$aFinal[$iRang]['vornamen'] = $temp;
+					
 					$search = false;
 					
 				}
@@ -178,8 +343,6 @@ class Parserrz {
 			
 			/* Vornamen End*/
 
-			//echo $sZeile . '<br>';
-			
 			/* Team Start */
 			$sZeile = trim($sZeile);
 
@@ -188,7 +351,6 @@ class Parserrz {
 				if (stripos($sZeile, $v)!== FALSE) {
 					$aFinal[$iRang]['team'] = substr($sZeile, 0, (strpos($sZeile, $v) + strlen($v)));
 					$sZeile = substr($sZeile, (strpos($sZeile, $v) + strlen($v)));
-					/* echo "gugus" . $v; */
 					break;
 				}
 			}
@@ -221,18 +383,30 @@ class Parserrz {
 				$sZeile = substr($sZeile, 1);
 				$sZeile = substr($sZeile, 1);
 				$temp .= ':' . substr($sZeile, 1, 2);
-				$aFinal[$iRang]['ruckstand'] = $temp;
+				$aFinal[$iRang]['rueckstand'] = $temp;
 			} else {
-				$aFinal[$iRang]['ruckstand'] = $sZeile;
+				$aFinal[$iRang]['rueckstand'] = $sZeile;
 			}
 
 			
 			$iRang++;
 		}
 		
-		echo "<pre>";
-		print_r($aFinal);
-		echo "</pre>";
+		foreach($aFinal as $k=>$v) {
+			$aFahrer = $this->CI->model->checkFahrer($v['nachname'], $v['vornamen']);
+			$aFinal[$k]['fahrer_id'] = $aFahrer['fahrer_id'];
+			$aFinal[$k]['fahrer_startnummer'] = $aFahrer['fahrer_startnummer'];
+			
+		}
+		
+		$this->aResult = $aFinal;
+	}
+	
+	private function _parseGiroPoints($sResult) {
+		
+	}
+	
+	private function _parseGiroMoutain($sResult) {
 		
 	}
 }

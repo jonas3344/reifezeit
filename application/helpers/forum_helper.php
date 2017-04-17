@@ -1,4 +1,181 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+	
+if ( ! function_exists('createResultKaderpost')) 
+{
+	function createResultKaderpost($aResultData, $aExFuehrung) {
+		$sOutputDay = '';
+		$sOutputGesamt = '';
+		
+		$sOutputDay .= "[b][size=18]" . $aResultData['etappe']['etappen_nr'] . ". Etappe[/size][/b]<br><br>";
+		$sOutputDay .= "[b]T A G E S E I N Z E L W E R T U N G[/b]";
+		$sOutputDay .= "[table fontsize=9][mrow color=silver]	Platz	[mcol]	Tageseinzelwertung	[mcol]	Sattlerei-Name	[mcol]	Team	[mcol]	Status	[mcol]	Zeit	[mcol]	BCs";
+		$i=0;
+		
+		foreach($aResultData['stage_result'] as $k=>$v) {
+			$user = $aResultData['teilnehmer'][$k];
+			$rang = $v['rang'];
+			if ($i>1) {
+				if (array_values($aResultData['stage_result'])[$i]['zeit'] == array_values($aResultData['stage_result'])[$i-1]['zeit']) {
+					$rang = "-";
+				}
+				
+			}
+			if ($k == $aExFuehrung['id_fuhrender_gesamt']) {
+				$color_row = "gold";
+			} else if ($k == $aExFuehrung['id_fuhrender_punkte']) {
+				$color_row = "limegreen";
+			} else if ($k == $aExFuehrung['id_fuhrender_berg']) {
+				$color_row = "red";
+			} else {
+				$color_row = (($i%2) == 0) ? "#eeeeee" : "#ffffff";
+			}
+			$sOutputDay .= "[mrow color=" . $color_row . "] " . $rang . " ";
+			$sOutputDay .= "[mcol] " . $user['rzname'] . " [mcol] " . $user['name'];
+			$sOutputDay .= "[mcol color=" . $user['color_code_zelle'] . "][color=" . $user['color_code_schrift'] . "]" . $user['rzteam_short'] . "[/color]";
+			$sOutputDay .= "[mcol color=" . $user['color_code_rolle'] . "]" . $user['rolle_bezeichnung'];
+			$sOutputDay .= "[mcol]" . _convertSeconds($v['zeit']) . "[mcol]" . $v['bc'];
+			
+			$i++;
+		}
+		
+		$sOutputDay .= "[/table]<br><br><br>";
+		$sOutputDay .= "[b]T A G E S T E A M W E R T U N G[/b]";
+		$sOutputDay .= "[table fontsize=9][mrow color=silver]	Platz	[mcol]	Tagesteamwertung	[mcol]	Zeit";
+		
+		$i = 0;
+		
+		$id_fuhrendes_team = array_keys($aResultData['overall_team'])[0];
+		
+		foreach($aResultData['stage_team'] as $k=>$v) {
+			$team = $aResultData['teams'][$k];
+			if ($k == $id_fuhrendes_team) {
+				$color_row = "gold";
+			} else {
+				$color_row = (($i%2) == 0) ? "#eeeeee" : "#ffffff";
+			}
+			
+			$rang = $i + 1;
+			if ($i>1) {
+				if (array_values($aResultData['stage_team'])[$i]['zeit'] == array_values($aResultData['stage_team'])[$i-1]['zeit']) {
+					$rang = "-";
+				}		
+			}
+			$sOutputDay .= "[mrow color=" . $color_row . "] " . $rang . " ";
+			$sOutputDay .= "[mcol color=" . $team['color_code_zelle'] . "][color=" . $team['color_code_schrift'] . "]" . $team['rzteam_name'] . "[/color]";
+			$sOutputDay .= "[mcol]" . _convertSeconds($v['zeit']);
+			$i++;
+		}
+		
+		$sOutputDay .= "[/table]";
+		
+		$sOutputGesamt .= "[b]G E S A M T E I N Z E L W E R T U N G[/b]";
+		$sOutputGesamt .= "[table fontsize=9][mrow color=#eeee33]	Platz	[mcol]	Gesamteinzelwertung	[mcol]	Sattlerei-Name	[mcol]	Team	[mcol]	Status	[mcol]	Zeit";
+		
+		$i = 0;
+		foreach($aResultData['overall'] as $k=> $v) {
+			$user = $aResultData['teilnehmer'][$k];
+			$rang = $v['rang'];
+			if ($i>1) {
+				if (array_values($aResultData['overall'])[$i]['zeit'] == array_values($aResultData['overall'])[$i-1]['zeit']) {
+					$rang = "-";
+				}
+				
+			}
+		
+			$color_row = (($i%2) == 0) ? "#eeeeee" : "#ffffff";
+			$sOutputGesamt .= "[mrow color=" . $color_row . "] " . $rang . " ";
+			$sOutputGesamt .= "[mcol] " . $user['rzname'] . " [mcol] " . $user['name'];
+			$sOutputGesamt .= "[mcol color=" . $user['color_code_zelle'] . "][color=" . $user['color_code_schrift'] . "]" . $user['rzteam_short'] . "[/color]";
+			$sOutputGesamt .= "[mcol color=" . $user['color_code_rolle'] . "]" . $user['rolle_bezeichnung'];
+			$sOutputGesamt .= "[mcol]" . _convertSeconds($v['zeit']);
+			$i++;
+		}
+		
+		$sOutputGesamt .= "[/table]<br><br>";
+		
+		$sOutputGesamt .= "[b]G E S A M T T E A M W E R T U N G[/b]";
+		$sOutputGesamt .= "[table fontsize=9][mrow color=#8888ff]	Platz	[mcol]	Gesamtteamwertung	[mcol]	Zeit";
+
+		$i = 0;
+		foreach($aResultData['overall_team'] as $k=>$v) {
+			$team = $aResultData['teams'][$k];
+			$color_row = (($i%2) == 0) ? "#eeeeee" : "#ffffff";
+			
+			$rang = $i + 1;
+			if ($i>1) {
+				if (array_values($aResultData['overall_team'])[$i]['zeit'] == array_values($aResultData['overall_team'])[$i-1]['zeit']) {
+					$rang = "-";
+				}		
+			}
+			$sOutputGesamt .= "[mrow color=" . $color_row . "] " . $rang . " ";
+			$sOutputGesamt .= "[mcol color=" . $team['color_code_zelle'] . "][color=" . $team['color_code_schrift'] . "]" . $team['rzteam_name'] . "[/color]";
+			$sOutputGesamt .= "[mcol]" . _convertSeconds($v['zeit']);
+			$i++;
+		
+		}
+		
+		$sOutputGesamt .= "[/table]<br><br>";
+		
+		$sOutputGesamt .= "[b]G E S A M T P U N K T E W E R T U N G[/b]";
+		$sOutputGesamt .= "[table fontsize=9][mrow color=#00cc00]	Platz	[mcol]	Gesamtpunktewertung	[mcol]	Sattlerei-Name	[mcol]	Team	[mcol]	Status	[mcol]	Punkte";
+		$i = 0;
+		foreach($aResultData['overall_points'] as $k=>$v) {
+			if ($v['punkte'] > 0) {
+				$user = $aResultData['teilnehmer'][$k];
+				
+				$color_row = (($i%2) == 0) ? "#eeeeee" : "#ffffff";
+				$rang = $v['rang'];
+				if ($i>1) {
+					if (array_values($aResultData['overall_points'])[$i]['punkte'] == array_values($aResultData['overall_points'])[$i-1]['punkte']) {
+						$rang = "-";
+					}
+					
+				}
+				$sOutputGesamt .= "[mrow color=" . $color_row . "] " . $rang . " ";
+				$sOutputGesamt .= "[mcol] " . $user['rzname'] . " [mcol] " . $user['name'];
+				$sOutputGesamt .= "[mcol color=" . $user['color_code_zelle'] . "][color=" . $user['color_code_schrift'] . "]" . $user['rzteam_short'] . "[/color]";
+				$sOutputGesamt .= "[mcol color=" . $user['color_code_rolle'] . "]" . $user['rolle_bezeichnung'];
+				$sOutputGesamt .= "[mcol]" . $v['punkte'];
+				$i++;
+			}
+		}
+		
+		$sOutputGesamt .= "[/table]<br><br>";
+		
+		if (array_values($aResultData['overall_berg'])[0]['berg'] > 0) {
+			$sOutputGesamt .= "[b]G E S A M T B E R G W E R T U N G[/b]";
+			$sOutputGesamt .= "[table fontsize=9][mrow color=#ff3333]	Platz	[mcol]	Gesamtbergwertung	[mcol]	Sattlerei-Name	[mcol]	Team	[mcol]	Status	[mcol]	Punkte";
+			$i = 0;
+			foreach($aResultData['overall_berg'] as $k=>$v) {
+				if ($v['berg'] > 0) {
+					$user = $aResultData['teilnehmer'][$k];
+					
+					$color_row = (($i%2) == 0) ? "#eeeeee" : "#ffffff";
+					$rang = $v['rang'];
+					if ($i>1) {
+						if (array_values($aResultData['overall_berg'])[$i]['berg'] == array_values($aResultData['overall_berg'])[$i-1]['berg']) {
+							$rang = "-";
+						}
+						
+					}
+					$sOutputGesamt .= "[mrow color=" . $color_row . "] " . $rang . " ";
+					$sOutputGesamt .= "[mcol] " . $user['rzname'] . " [mcol] " . $user['name'];
+					$sOutputGesamt .= "[mcol color=" . $user['color_code_zelle'] . "][color=" . $user['color_code_schrift'] . "]" . $user['rzteam_short'] . "[/color]";
+					$sOutputGesamt .= "[mcol color=" . $user['color_code_rolle'] . "]" . $user['rolle_bezeichnung'];
+					$sOutputGesamt .= "[mcol]" . $v['berg'];
+					$i++;
+				}
+			}
+		}
+		
+		$sOutputGesamt .= "[/table]";
+
+		
+		$aOutput['sOutputDay'] = $sOutputDay;
+		$aOutput['sOutputGesamt'] = $sOutputGesamt; 
+		return $aOutput;
+	}
+}
 
 if ( ! function_exists('createForumKaderpost'))
 {
@@ -9,12 +186,6 @@ if ( ! function_exists('createForumKaderpost'))
 		$sOutput .= "[b][size=18]KADERÜBERSICHT " . $aKader['etappe']['etappen_nr'] . ".Etappe[/size][/b]<br><br>";
 		$sOutput .= "[table fontsize=9][mcol]Name[mcol]Team[mcol]Zeit[mcol]Fahrer 1[mcol][mcol]Fahrer 2[mcol][mcol]Fahrer 3[mcol][mcol]Fahrer 4[mcol][mcol]Fahrer 5[mcol][mcol]<br>";
 		
-/*
-		echo "<pre>";
-		print_r($aKader);
-		echo "</pre>";
-		
-*/
 		foreach($aKader['teilnehmer'] as $aTeilnehmer) {
 			if ($aTeilnehmer['rolle_id'] == 1) {
 				$s_color_player = "pink";

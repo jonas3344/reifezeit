@@ -6,7 +6,11 @@ if ( ! function_exists('_convertSeconds')) {
 		$sTime = "";
 		(int)$iHours = (int)($iTime / 3600);
 		if ($iHours>0) {
-			$sTime .= $iHours . ":";
+			if ($iHours < 10) {
+				$sTime .= '0' . $iHours . ":";
+			} else {
+				$sTime .= $iHours . ":";
+			}
 		} else {
 			$sTime .= "00:";
 		}
