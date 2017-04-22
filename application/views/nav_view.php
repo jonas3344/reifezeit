@@ -32,16 +32,17 @@
 		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Kader <span class="caret"></span></a>
 		          <ul class="dropdown-menu">
 		            <li><a href="<?= base_url()?>kader/tag">Heutiges Kader</a></li>
-		            <li><a href="<?= base_url()?>kader/uebersicht">Kaderübersicht</a></li>
+		            <li><a href="<?= base_url()?>kader/kaderuebersicht">Kaderübersicht</a></li>
 		          </ul>
 		        </li>
 		        <li>
-		        	<a href="<?= base_url()?>profil" role="button">Dein Profil</a>
+		        	<a href="<?= base_url()?>profil" role="button"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Dein Profil</a>
 		        </li>
 	          </ul>
 	          <ul class="nav navbar-nav navbar-right">
-		        <li><a href="#contact">Logout</a></li>  
+		        <li><a href="<?= base_url();?>login/logout">Logout</a></li>  
 	          </ul>
 	        </div><!--/.nav-collapse -->
 	      </div>
 	    </nav>
+

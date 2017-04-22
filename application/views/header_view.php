@@ -17,7 +17,7 @@
 	<?php }
 	?>
 	<script>
-	  var base_url = "<?= base_url();?>/";
+	  var base_url = "<?= base_url();?>";
 	 </script>
 </head>
  

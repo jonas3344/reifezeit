@@ -35,4 +35,10 @@ class Stammdaten_model extends MY_Model
 		return $aEtappe['etappen_nr'];
 		
 	}
+	
+	public function getFahrer() {
+		$this->db->join('team t', 'f.fahrer_team_id=t.team_id');
+		$this->db->where('f.fahrer_active', 1);
+		return $this->db->get('fahrer f')->result_array();
+	}
 }

@@ -13,10 +13,12 @@
 						class="table">
 				<thead>
 					<tr>
-						<th data-sortable="true">Team-ID</th>
+						<th data-sortable="true"
+							data-width="10%">Team-ID</th>
 						<th>Team</th>
 						<th data-formatter="operateFormatter"
-							data-events="operateEvents">Aktion</th>
+							data-events="operateEvents"
+							data-width="20%">Aktion</th>
 					</tr>
 				</thead>
 				<tbody>

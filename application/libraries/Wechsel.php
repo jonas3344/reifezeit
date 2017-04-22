@@ -22,7 +22,7 @@ class Wechsel {
 		
 		$this->CI->db->where('etappen_id', $iEtappe);
 		$this->aEtappe = $this->CI->db->get('etappen')->row_array();
-		
+	
 		if ($this->aEtappe['etappen_nr'] > 1) {
 			$this->CI->db->where('etappen_rundfahrt_id', $this->CI->config->item('iAktuelleRundfahrt'));
 			$this->CI->db->where('etappen_nr', $this->aEtappe['etappen_nr']-1);
@@ -61,6 +61,8 @@ class Wechsel {
 	}
 	
 	public function getAllChanges() {
+		$returnA = array();
+		$return = array();
 		if ($this->aPastStage == null) {
 			foreach($this->aAlleKaderAktuell as $k=>$a) {
 				$return[$k]['fahrer1'] = $a['fahrer1'];
@@ -77,6 +79,7 @@ class Wechsel {
 				
 				$returnA[$k] = array_diff($aKaderAlt, $aKaderNeu);
 			}
+			
 		}
 	
 		$this->aAlleWechsel = $return;
@@ -97,10 +100,15 @@ class Wechsel {
 		if ($art == 'ein') {
 			$wechsel = $this->aAlleWechsel;
 		} else if ($art == 'aus') {
-			$wechsel = $this->aAlleAuswechsel;
+			if ($this->aEtappe['etappen_nr'] > 1) {
+				$wechsel = $this->aAlleAuswechsel;
+			} else {
+				$wechsel = array();
+			}
 		}
 		
 		$p=0;
+
 		foreach($wechsel as $k=>$a) {
 			foreach ($a as $z=>$l) {
 				$found = false;

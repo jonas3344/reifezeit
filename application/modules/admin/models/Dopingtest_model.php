@@ -39,7 +39,12 @@ class Dopingtest_model extends MY_Model
 			$iUsedCredits = 0;
 			$iCountChanges = 0;
 			foreach($aKader as $iFahrerid) {
-				$aTemp = $this->_getFahrerDetails($iFahrerid);
+				if ($iFahrerid == 0) {
+					$aTemp = array('fahrer_startnummer' => 0, 'fahrer_rundfahrt_credits'=> 0, 'fahrer_vorname'=>'','fahrer_name'=>'');
+				} else {
+					$aTemp = $this->_getFahrerDetails($iFahrerid);
+				}
+				
 				$iUsedCredits += $aTemp['fahrer_rundfahrt_credits'];
 				$aTemp['change'] = $this->_getKaderChange($aData['etappe']['etappen_nr'], $iFahrerid, $v['id']);
 				if ($aTemp['change'] == true) {

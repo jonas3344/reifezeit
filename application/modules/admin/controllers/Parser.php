@@ -63,6 +63,20 @@ class Parser extends Admin_my_controller
 		}
 	}
 	
+	public function finishRundfahrt() {
+		$aData = array();
+		
+		$this->renderPage('finish_rundfahrt', $aData, array(), array());
+	}
+	
+	public function finishRundfahrtToDb() {
+		$aEtappen = $this->model->getRows('etappen', 'etappen_rundfahrt_id=' . $this->config->item('iAktuelleRundfahrt'), array('sort_field' => 'etappen_nr', 'sort_order' => 'DESC'));
+		$this->load->library('Resultaterz', $aEtappen[0]['etappen_id']);
+		
+		
+		$this->model->finishRundfahrt($this->resultaterz->getGesamtWertung(), $this->resultaterz->getGesamtPunkte(), $this->resultaterz->getGesamtBerg());
+	}
+	
 	/*
 		AJAX
 	*/

@@ -33,15 +33,22 @@ class Dopingtest extends Admin_my_controller
 		$aData = array();
 		$this->load->helper(array('forum_helper', 'time_helper'));
 		$this->load->library('Wechsel', $iEtappe);
-		$this->load->library('Resultaterz', $iEtappe);
+		
 		
 		$aKader = $this->model->getDopingtest($iEtappe);
 		
-		$aGesamt = $this->resultaterz->getGesamtForKader();
+		
 		
 		if($aKader['etappe']['etappen_nr'] >1){
+			$this->load->library('Resultaterz', $iEtappe);
+			$aGesamt = $this->resultaterz->getGesamtForKader();
+			
 			foreach($aKader['teilnehmer'] as $k=>$v) {
 				$aKader['teilnehmer'][$k]['gw'] = $aGesamt[$v['user_id']]['zeit'];
+			}
+		} else {
+			foreach($aKader['teilnehmer'] as $k=>$v) {
+				$aKader['teilnehmer'][$k]['gw'] = 0;
 			}
 		}
 		

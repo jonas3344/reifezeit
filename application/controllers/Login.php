@@ -33,10 +33,8 @@ class Login extends CI_Controller
 		
 		if ($this->form_validation->run() === true) {
 			if ($this->auth->try_login($this->input->post('username'), $this->input->post('password'))) {
-				echo "gugus";
 				redirect('index');
 			} else {
-				echo "gugus2";
 				$aData['sError'] = 'Passwort/Benutzernamen stimmen nicht überein!';
 			}
 		} else {
@@ -45,5 +43,10 @@ class Login extends CI_Controller
 
 		
 		$this->load->view('login_view', $aData);
+	}
+	
+	public function logout() {
+		$this->session->sess_destroy();
+		redirect(base_url());
 	}
 }

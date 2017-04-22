@@ -33,6 +33,10 @@
 					    echo form_input($data);
 						?>
 					</div>
+					<div class="form-group">
+				    	<label for="regeln">Regeln</label>
+				    	<textarea name="regeln" id="regeln" class="form-control" rows="22"><?= $aRegeln['regeln'];?></textarea>
+					</div>
 					<button type="submit" class="btn btn-default">Absenden</button>
 				<?= form_close(); ?>
 			</div>

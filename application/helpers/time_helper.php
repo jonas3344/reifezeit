@@ -37,3 +37,17 @@ if ( ! function_exists('_convertSeconds')) {
 	}
 	
 }
+
+if ( ! function_exists('_create_timestamp')) {
+
+	function _create_timestamp($s_datum, $s_zeit) {
+		$i_tag = substr($s_datum, 0, 2);
+		$i_monat = substr($s_datum, 3, 2);
+		$i_jahr = substr($s_datum, 6, 4);
+		
+		$i_stunde = substr($s_zeit, 0, 2);
+		$i_minute = substr($s_zeit, 3, 2);
+		
+		return mktime($i_stunde, $i_minute, 0, $i_monat, $i_tag, $i_jahr);
+	}
+}

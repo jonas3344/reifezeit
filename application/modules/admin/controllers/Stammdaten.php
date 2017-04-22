@@ -43,18 +43,19 @@ class Stammdaten extends Admin_my_controller
 		
 		if ($iId != -1) {
 			$aData['aRundfahrt'] = $this->Stammdaten_model->getOneRow('rundfahrt', 'rundfahrt_id = ' . $iId);
+			$aData['aRegeln'] = $this->Stammdaten_model->getOneRow('regeln', 'rundfahrt_id=' . $iId);
 		} else {
 			$aData['aRundfahrt']['rundfahrt_bezeichnung'] = "";
 			$aData['aRundfahrt']['rundfahrt_jahr'] = "";
 		}
 		
 		if ($this->form_validation->run() === true) {
-			$aData = $this->input->post(NULL, TRUE);
-			$this->Stammdaten_model->saveRecord('rundfahrt', $aData, $iId, 'rundfahrt_id');
+			$this->Stammdaten_model->saveRecord('rundfahrt', array('rundfahrt_bezeichnung' => $this->input->post('rundfahrt_bezeichnung'), 'rundfahrt_jahr' => $this->input->post('rundfahrt_jahr')), $iId, 'rundfahrt_id');
+			$this->Stammdaten_model->saveRecord('regeln', array('regeln' => $this->input->post('regeln')), $iId, 'rundfahrt_id');
 			redirect('admin/stammdaten/rundfahrt');
 		}
 		
-		$this->renderPage('rundfahrt_edit', $aData, array(), array());
+		$this->renderPage('rundfahrt_edit', $aData, array('bootstrap3-wysihtml5.all.min.js', 'bootstrap3-wysihtml5.min.js', 'commands.js', 'templates.js'), array('bootstrap3-wysihtml5.min.css'));
 	}
 	
 	public function etappen() {	
@@ -122,7 +123,7 @@ class Stammdaten extends Admin_my_controller
 	
 	public function fahrer() {
 		$aData = array();
-		$aData['aRiders'] = $this->Stammdaten_model->getRows('fahrer', 'fahrer_active=1');
+		$aData['aRiders'] = $this->Stammdaten_model->getFahrer();
 		
 		$this->renderPage('fahrer', $aData, array('bootstrap-table.js', 'bootstrap-table-de-DE.js'), array('bootstrap-table.css'));
 	}

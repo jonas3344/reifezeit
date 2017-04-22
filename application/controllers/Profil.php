@@ -24,8 +24,12 @@ class Profil extends Frontend_my_controller
 		$this->renderPage('profil', $aData, array('bootstrap-editable.js'), array('bootstrap-editable.css'));
 	}
 	
-	public function setRzName() {
-		$this->model->saveRecord('rz_user', array('rzname'=>$this->input->post('value')), $this->session->userdata('user_id'), 'id');
+	public function setUserData($sType) {
+		if ($sType == 'rzname') {
+			$this->model->saveRecord('rz_user', array('rzname'=>$this->input->post('value')), $this->session->userdata('user_id'), 'id');
+		} else if ($sType == 'email') {
+			$this->model->saveRecord('rz_user', array('email'=>$this->input->post('value')), $this->session->userdata('user_id'), 'id');
+		}
 	}
 	
 	public function changePw() {

@@ -47,3 +47,8 @@
 .table > tfoot > tr.bergfex > th {
   background-color: #f81616;
 }
+
+.regeln {
+	overflow:scroll; 
+	max-height:300px
+}

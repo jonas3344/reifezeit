@@ -11,7 +11,7 @@
 class Frontend_my_controller extends CI_Controller 
 {
 	
-	protected $aHeaderFiles = array('aCssFiles' => array('bootstrap.css', 'bootstrap-theme.css', 'admin.css', 'jquery-ui.css'),
+	protected $aHeaderFiles = array('aCssFiles' => array('bootstrap.css', 'bootstrap-theme.css', 'admin.css', 'jquery-ui.css', 'frontend.css'),
 									'aJsFiles' => array('jquery.min.js', 'bootstrap.js', 'jquery-ui.js'));
 	protected $sView;
 	protected $iAktuelleRundfahrt;

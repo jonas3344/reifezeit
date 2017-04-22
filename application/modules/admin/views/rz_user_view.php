@@ -1,10 +1,10 @@
 <div class="container admin">
 			<div class="row well">
-				<h1>Teams</h1>
+				<h1>RZ User</h1>
 			</div>
 			<div class="row well">
 				<table class="table">
-					<tr><td colspan="3" align="right"><a href="<?= base_url();?>admin/stammdaten/edit_fahrer/-1"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Neuer User</button></a></td>
+					<tr><td colspan="3" align="right"><a href="#"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Neuer User</button></a></td>
 					</tr>	
 				</table>
 				<table 	data-toggle="table"
@@ -13,10 +13,11 @@
 						class="table">
 				<thead>
 					<tr>
-						<th data-sortable="true">User-ID</th>
+						<th data-sortable="true"
+							data-width="10%">User-ID</th>
 						<th data-sortable="true">Benutzername</th>
 						<th data-sortable="true">RZ-Name</th>
-						<th>Aktion</th>
+						<th data-width="10%">Aktion</th>
 					</tr>
 				</thead>
 				<tbody>

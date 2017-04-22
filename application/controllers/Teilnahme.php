@@ -25,6 +25,7 @@ class Teilnahme extends Frontend_my_controller
 			$aData['mTeilnahme'] = $this->model->checkTeilnahme();
 			if ($aData['mTeilnahme'] == false) {
 				$aData['aRollen'] = $this->model->getRollen();
+				$aData['aTeams'] = $this->model->getTable('rz_team');
 			}
 		}
 		
@@ -37,5 +38,23 @@ class Teilnahme extends Frontend_my_controller
 		$aData['aTeilnehmer'] = $this->model->getTeilnehmerForList();
 		
 		$this->renderPage('teilnehmer', $aData, array('bootstrap-table.js', 'bootstrap-table-de-DE.js'), array('bootstrap-table.css'));
+	}
+	
+	public function historie() {
+		$aData = array();
+		
+		
+		$aData['aHistory'] = $this->model->getHistorie();
+		
+/*
+		echo "<pre>";
+		print_r($aData);
+		echo "</pre>";
+*/
+		$this->renderPage('historie', $aData, array(), array());
+	}
+	
+	public function insertAnmeldung() {
+		$this->model->insertAnmeldung($this->input->post('rolle'), $this->input->post('team'));
 	}
 }

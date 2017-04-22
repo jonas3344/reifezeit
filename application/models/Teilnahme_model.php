@@ -46,7 +46,7 @@ class Teilnahme_model extends MY_Model
 	}
 	
 	public function getRollen() {
-		$aRollen = $this->getRows('rollen');
+		$aRollen = $this->getTable('rollen');
 		
 		$this->db->where('user_id', $this->session->userdata('user_id'));
 		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
@@ -67,6 +67,49 @@ class Teilnahme_model extends MY_Model
 			}
 		}
 		
+		if ($bIsNeo == true) {
+			foreach($aRollen as $i_key => $a_r) {
+				if ($a_r['rolle_bezeichnung'] != 'Neoprofi') {
+					unset($aRollen[$i_key]);
+				}
+			}
+		} else {
+			foreach($aRollen as $i_key => $a_r) {
+				if ($a_r['rolle_bezeichnung'] == 'Neoprofi') {
+					unset($aRollen[$i_key]);
+				}
+			}
+		}
+		
 		return $aRollen;	
+	}
+	
+	public function insertAnmeldung($iRolle, $iTeam) {
+		$this->saveRecord('teilnahme', array('rolle_id'=>$iRolle, 'user_id'=>$this->session->userdata('user_id'), 'rundfahrt_id'=>$this->config->item('iAktuelleRundfahrt')), -1);
+		
+		$this->saveRecord('rz_user_team', array('rz_team_id'=>$iTeam, 'user_id'=>$this->session->userdata('user_id'), 'rundfahrt_id'=>$this->config->item('iAktuelleRundfahrt')), -1);
+		
+		$aEtappen = $this->getRows('etappen', 'etappen_rundfahrt_id=' . $this->config->item('iAktuelleRundfahrt'));
+		
+		foreach($aEtappen as $e) {
+			$this->saveRecord('kader', array('etappen_id'=>$e['etappen_id'], 'user_id'=>$this->session->userdata('user_id')), -1);
+		}
+		echo 'ok';
+	}
+	
+	public function getHistorie() {
+		$aHistory = $this->getRows('rundfahrt', 'rundfahrt_id<' . $this->config->item('iAktuelleRundfahrt'));
+		
+		foreach($aHistory as $k=>$v) {
+			$this->db->join('rz_user u', 'u.id=t.user_id');
+			$this->db->join('rz_user_team ut', 'ut.user_id=t.user_id');
+			$this->db->join('rz_team rt', 'rt.rzteam_id=ut.rz_team_id');
+			$this->db->join('rollen r', 'r.rolle_id=t.rolle_id');
+			$this->db->where('t.rundfahrt_id', $v['rundfahrt_id']);
+			$this->db->where('ut.rundfahrt_id', $v['rundfahrt_id']);
+			$this->db->where('t.user_id', $this->session->userdata('user_id'));
+			$aHistory[$k]['aTeilnahme'] = $this->db->get('teilnahme t')->row_array();
+		}
+		return $aHistory;
 	}
 }

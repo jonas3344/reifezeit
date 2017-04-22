@@ -76,7 +76,6 @@ class Admin_my_controller extends CI_Controller
 		$sUrl = FCPATH . 'js/admin/' . $this->sView . '.js';
 		if (is_file($sUrl)) {
 			$this->aHeaderFiles['aJsFiles'][] = 'admin/' . $this->sView . '.js';
-			echo "gugus";
 		}
 	}
 }

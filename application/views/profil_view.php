@@ -21,7 +21,16 @@
 		</div>
 	</div>
 	<div class="row well">
-		Dein RZ-Namen: <a href="#" id="rz_name" class="rz_name" data-type="text" data-pk="<?= $this->session->userdata('user_id');?>" data-url="<?= base_url();?>profil/setRzName/" data-title="Set RZ-Name"><?= $aUser['rzname'];?></a>
+		<table class="table">
+			<tr>
+				<td width="20%"><strong>Dein RZ-Namen:</strong></td>
+				<td><a href="#" id="rz_name" class="rz_name" data-type="text" data-pk="<?= $this->session->userdata('user_id');?>" data-url="<?= base_url();?>profil/setUserData/rzname" data-title="Set RZ-Name"><?= $aUser['rzname'];?></a></td>
+			</tr>
+			<tr>
+				<td width="20%"><strong>Deine E-Mail-Adresse:</strong></td>
+				<td><a href="#" id="rz_name" class="rz_name" data-type="text" data-pk="<?= $this->session->userdata('user_id');?>" data-url="<?= base_url();?>profil/setUserData/email" data-title="Set RZ-Name"><?= $aUser['email'];?></a></td>
+			</tr>
+		</table>
 		<hr>
 		<div class="form-group">
 		    <label for="pwOld">Altes Passwort</label>

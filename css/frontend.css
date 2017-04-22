@@ -1,0 +1,21 @@
+.credits_img {
+	border-radius: 50%;
+	width: 50px;
+	border: 1px solid black;
+}
+
+table.vertical-align > tbody > tr > td {
+	vertical-align: middle;
+}
+
+.active_etappe {
+	border: 3px solid black;
+}
+
+.border_right {
+	border-right: 1px solid black;
+}
+
+.popover{
+    max-width: 100%; /* Max Width of the popover (depending on the container!) */
+}

@@ -1,6 +1,6 @@
 <div class="container admin">
 			<div class="row well">
-				<h1>Teams</h1>
+				<h1>Fahrer</h1>
 			</div>
 			<div class="row well">
 				<table class="table">
@@ -13,10 +13,13 @@
 						class="table">
 				<thead>
 					<tr>
-						<th data-sortable="true">Team-ID</th>
-						<th>Team</th>
+						<th data-sortable="true"
+							data-width="10%">Fahrer-ID</th>
+						<th data-sortable="true">Fahrer</th>
+						<th data-sortable="true">Team</th>
 						<th data-formatter="operateFormatter"
-							data-events="operateEvents">Aktion</th>
+							data-events="operateEvents"
+							data-width="20%">Aktion</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -25,6 +28,7 @@
 					<tr>
 						<td><?= $v['fahrer_id'];?></td>
 						<td><?= $v['fahrer_vorname'] . ' ' . $v['fahrer_name'];?></td>
+						<td><?= $v['team_name'];?></td>
 						<td><a href="<?= base_url();?>admin/stammdaten/edit_fahrer/<?= $v['fahrer_id'];?>" class="btn btn-default"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> </a> </td>
 					</tr>
 					<?php

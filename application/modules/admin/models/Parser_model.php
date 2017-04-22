@@ -74,6 +74,25 @@ class Parser_model extends MY_Model
 		$this->db->update('kader', $aData);
 	}
 	
+	public function finishRundfahrt($aGesamt, $aPunkte, $aBerg) {
+		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->where('out', 0);
+		$aTeilnehmer = $this->db->get('teilnahme')->result_array();
+		
+		foreach($aTeilnehmer as $k=>$v) {
+			
+			$aData['endklassierung_gesamt'] = $aGesamt[$v['user_id']]['rang'];
+			$aData['endklassierung_berg'] = $aBerg[$v['user_id']]['rang'];
+			$aData['endklassierung_punkte'] = $aPunkte[$v['user_id']]['rang'];
+			
+			$this->db->where('user_id', $v['user_id']);
+			$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+			$this->db->update('teilnahme', $aData);
+			
+		}
+		
+	}
+	
 	private function _kaderIntoArray($aKader) {
 		$aReturn[] = $aKader['fahrer1'];
 		$aReturn[] = $aKader['fahrer2'];

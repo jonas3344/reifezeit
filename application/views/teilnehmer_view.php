@@ -9,7 +9,6 @@
 						class="table">
 			<thead>
 				<tr>
-					<th data-sortable="true">User-id</th>
 					<th data-sortable="true">Benutzer</th>
 					<th data-sortable="true">RZ-Name</th>
 					<th data-sortable="true">Rolle</th>
@@ -37,7 +36,6 @@
 		            }
               ?>
 				<tr class="<?= $s_color;?>">
-					<td><?= $v['user_id'];?></td>
 					<td><?= $v['name'];?></td>
 					<td><?= $v['rzname'];?></td>
 					<td><?= $v['rolle_bezeichnung'];?></td>

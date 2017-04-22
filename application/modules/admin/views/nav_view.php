@@ -41,7 +41,7 @@
 		            <li><a href="#">Resultate löschen</a></li>
 		            <li><a href="<?= base_url()?>admin/forencode">Forencode generieren</a></li>
 		            <li><a href="#">Ruhmeshalle</a></li>
-		            <li><a href="#">Rundfahrt abschliessen</a></li>
+		            <li><a href="<?= base_url()?>admin/parser/finishRundfahrt">Rundfahrt abschliessen</a></li>
 		          </ul>
 		        </li>
 	          </ul>
