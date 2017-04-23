@@ -19,6 +19,9 @@
 		</table>
 	</div>
 	<div class="row well">
+		<a href="<?= base_url();?>admin/stammdaten/parse_fahrer/<?= $aTeam['team_id'];?>"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-upload" aria-hidden="true"></span> Fahrer parsen</button></a>
+	</div>
+	<div class="row well">
 		<table class="table table-striped">
 			<thead>
 				<th>Fahrername</th>

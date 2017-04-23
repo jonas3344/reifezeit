@@ -137,6 +137,7 @@ class Stammdaten extends Admin_my_controller
 		}
 		$aData['aFahrer'] = $this->Stammdaten_model->getOneRow('fahrer', 'fahrer_id=' . $iId);
 		$aData['aTeams'] = $this->_rebuildArray($this->Stammdaten_model->getRows('team', 'team_active=1'), 'team_id');
+		array_unshift($aData['aTeams'], array('team_name'=>'Kein Team', 'team_id'=>0));
 		
 		$this->renderPage('fahrer_edit', $aData, array('bootstrap-editable.js'), array('bootstrap-editable.css'));
 	}
@@ -158,7 +159,59 @@ class Stammdaten extends Admin_my_controller
 		$this->renderPage('rz_user', $aData, array('bootstrap-table.js', 'bootstrap-table-de-DE.js'), array('bootstrap-table.css'));
 	}
 	
+	public function parse_fahrer($iTeam) {
+		$aData = array();
+		
+		$aData['aTeam'] = $this->Stammdaten_model->getOneRow('team', 'team_id=' . $this->db->escape($iTeam));
+		
+		$this->renderPage('parse_fahrer', $aData, array(), array());
+	}
+	
+	public function parseFahrerResult($iTeam) {
+		$aData = array();
+		
+		$aData['aTeam'] = $this->Stammdaten_model->getOneRow('team', 'team_id=' . $this->db->escape($iTeam));
+		
+		$sFahrer = $this->input->post('fahrer');
+		$aFahrer = preg_split("/[\r\n]+/", $sFahrer, -1, PREG_SPLIT_NO_EMPTY);
+				
+		$aReturn = array();
+		
+		foreach($aFahrer as $k=>$v) {
+			$aD = explode("\t", $v);
+
+			$mCheck = $this->Stammdaten_model->checkFahrer($aD);
+			
+			if ($mCheck == false) {
+				$aTemp = array('fahrer_vorname' => $aD[2], 'fahrer_name' => $aD[1], 'fahrer_nation' => $aD[3]);
+				$aTemp['inDb'] = 0;
+				$aReturn[] = $aTemp;
+			} else {
+				$mCheck['inDb'] = 1;
+				$aReturn[] = $mCheck;
+			}
+		}
+		
+		$aData['aFahrer'] = $aReturn;
+		
+		$this->Stammdaten_model->resetTeam($iTeam);
+		
+		foreach($aReturn as $k=>$v) {
+			if ($v['inDb'] == 1) {
+				$this->Stammdaten_model->saveRecord('fahrer', array('fahrer_team_id' => $iTeam), $v['fahrer_id'], 'fahrer_id');
+			}
+		}
+		
+		$this->renderPage('parse_fahrer_finish', $aData, array(), array());
+	}
+	
+	
 	/* AJAX */
+	
+	public function addFahrerToDb() {
+		$this->Stammdaten_model->saveRecord('fahrer', array('fahrer_team_id' => $this->input->post('fahrer_team_id'), 'fahrer_vorname' => trim($this->input->post('fahrer_vorname')), 'fahrer_name' => trim($this->input->post('fahrer_name')),'fahrer_nation' => trim($this->input->post('fahrer_nation')), 'fahrer_active' => 1), -1);
+		echo 'ok';
+	}
 	
 	public function deleteTeam() {
 		$this->Stammdaten_model->saveRecord('team', array('team_active'=>0), $this->input->post('teamid'), 'team_id');
@@ -225,7 +278,6 @@ class Stammdaten extends Admin_my_controller
 				break;
 		}
 		$this->Stammdaten_model->saveRecord('etappen', $aData, $this->input->post('pk'), 'etappen_id');
-		
 	}
 	
 	private function _rebuildArray($aArray, $sId) {

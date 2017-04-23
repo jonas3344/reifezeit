@@ -33,7 +33,7 @@
 		<?php
 		if ($aUser['rolle_id'] == 3 || $aUser['rolle_id'] == 6) {
 		?>
-			<a href="<?= base_url();?>kader/eintragFex"><button class="btn btn-default">Fexen</button></a>
+			<a href="<?= base_url();?>kader/eintragFex/<?= $iEtappe;?>"><button class="btn btn-default">Fexen</button></a>
 		<?php 
 		}
 		?>
@@ -44,6 +44,9 @@
 			?>
 			<div class="row">
 				<div class="alert alert-success">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
 					Du hast gestern <?= $aKader['gewonnene_bonuscredits'];?> Bonuscredits gewonnen!
 				</div>
 			</div>
@@ -55,6 +58,9 @@
 			?>
 			<div class="row">
 				<div class="alert alert-danger">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
 					<?php
 						foreach($aAbgabe as $k=>$v) {
 							echo 'Du hast einen Bonuscredit an ' . $v['rzname'] . ' abgegeben!<br>';							
@@ -70,8 +76,11 @@
 			?>
 			<div class="row">
 				<div class="alert alert-success">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
 					<?php
-						foreach($aAbgabe as $k=>$v) {
+						foreach($aAnnahme as $k=>$v) {
 							echo 'Du hast einen Bonuscredit von ' . $v['rzname'] . ' erhalten!<br>';							
 						}
 					?>

@@ -4,7 +4,8 @@
 			</div>
 			<div class="row well">
 				<table class="table">
-					<tr><td colspan="3" align="right"><a href="<?= base_url();?>admin/stammdaten/edit_team/-1"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Neues Team</button></a></td>
+					<tr><td colspan="3" align="right">
+						<a href="<?= base_url();?>admin/stammdaten/edit_team/-1"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Neues Team</button></a></td>
 					</tr>	
 				</table>
 				<table 	data-toggle="table"

@@ -200,11 +200,25 @@ class Kader_model extends MY_Model
 		}
 	}
 	
+	public function addFex($iPunkte, $iEtappe) {
+		$this->db->where('etappen_id', $iEtappe);
+		$this->db->where('user_id', $this->session->userdata('user_id'));
+		$this->db->update('kader', array('einsatz_creditpool' => $iPunkte));
+	}
+	
+	public function getEingesetzteFexPuntke() {
+		$this->db->join('etappen e', 'e.etappen_id=k.etappen_id');
+		$this->db->where('e.etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->where('k.user_id', $this->session->userdata('user_id'));
+		$this->db->where('k.einsatz_creditpool>', 0);
+		return $this->db->get('kader k')->result_array();
+	}
+	
 	private function _getFahrerId($aArray) {
 		return array($aArray['fahrer1'], $aArray['fahrer2'], $aArray['fahrer3'], $aArray['fahrer4'], $aArray['fahrer5']);
 	}
 	
-	private function _getEtappenNr($iEtappe) {
+	public function _getEtappenNr($iEtappe) {
 		$aEtappe = $this->getOneRow('etappen', 'etappen_id=' . $iEtappe);
 		return $aEtappe['etappen_nr'];
 	}

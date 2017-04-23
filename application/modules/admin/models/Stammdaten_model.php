@@ -41,4 +41,22 @@ class Stammdaten_model extends MY_Model
 		$this->db->where('f.fahrer_active', 1);
 		return $this->db->get('fahrer f')->result_array();
 	}
+	
+	public function checkFahrer($aData) {
+		$this->db->like('fahrer_vorname', trim($aData[2]));
+		$this->db->like('fahrer_name', trim($aData[1]));
+		$this->db->like('fahrer_nation', trim($aData[3]));
+		$aFahrer = $this->db->get('fahrer')->result_array();
+		
+		if (count($aFahrer) == 1) {
+			return $aFahrer[0];
+		} else {
+			return false;
+		}
+	}
+	
+	public function resetTeam($iTeam) {
+		$this->db->where('fahrer_team_id', $iTeam);
+		$this->db->update('fahrer', array('fahrer_team_id'=> 0));
+	}
 }

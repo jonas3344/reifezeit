@@ -101,10 +101,38 @@ class Kader extends Frontend_my_controller
 		$this->renderPage('creditabgabe', $aData, array(), array());
 	}
 	
-	public function eintragFex() {
+	public function eintragFex($iEtappe = 0) {
 		$aData = array();
 		
+		$aData['iEtappe'] = ($iEtappe == 0) ? $this->config->item('iAktuelleEtappe') : $iEtappe;
+		
+		$aUser = $this->model->getUser();
+		
+		if ($aUser['rolle_id'] == 3) {
+			$aData['aOptions'] = array(2,4);
+		} else if ($aUser['rolle_id'] == 6) {
+			$aData['aOptions'] = array(1,2,3,4,5);
+		}
+		
+		$aData['aFex'] = $this->model->getEingesetzteFexPuntke();
+		
+		$aEtappen = $this->model->getEtappen();
+		
+		$iEtappenNr = $this->model->_getEtappenNr($this->config->item('iAktuelleEtappe'));
+		
+		foreach($aEtappen as $k=>$v) {
+			if ($v['etappen_nr'] < $iEtappenNr) {
+				unset($aEtappen[$k]);
+			}
+		}
+		
+		$aData['aEtappen'] = $aEtappen;
 		$this->renderPage('eintragfex', $aData, array(), array());
+	}
+	
+	public function addFex() {
+		$this->model->addFex($this->input->post('punkte'), $this->input->post('etappe'));
+		echo 'ok';
 	}
 	
 	public function insertCreditabgabe() {

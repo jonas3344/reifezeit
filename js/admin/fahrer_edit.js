@@ -1,5 +1,4 @@
 ;(function($) {
-
     $('.fahrername, .fahrervorname, .fahrernation').editable();
     
     $('.form-control').change(function() {
@@ -18,9 +17,6 @@
 						alert("Beim Wechsel ist ein Fehler aufgetreten!");
 					}
 				}
-
 		})
 	});
-
-    
 })(jQuery);
