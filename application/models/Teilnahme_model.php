@@ -85,7 +85,16 @@ class Teilnahme_model extends MY_Model
 	}
 	
 	public function insertAnmeldung($iRolle, $iTeam) {
-		$this->saveRecord('teilnahme', array('rolle_id'=>$iRolle, 'user_id'=>$this->session->userdata('user_id'), 'rundfahrt_id'=>$this->config->item('iAktuelleRundfahrt')), -1);
+		$aRolle = $this->getOneRow('rollen', 'rolle_id=' . $iRolle);
+		$aData = array(
+				'rolle_id'=>$iRolle, 
+				'user_id'=>$this->session->userdata('user_id'), 
+				'rundfahrt_id'=>$this->config->item('iAktuelleRundfahrt'),
+				'creditabgabe' => $aRolle['creditabgabe'],
+				'creditempfang' => $aRolle['creditannahme']			
+		);
+		
+		$this->saveRecord('teilnahme', $aData, -1);
 		
 		$this->saveRecord('rz_user_team', array('rz_team_id'=>$iTeam, 'user_id'=>$this->session->userdata('user_id'), 'rundfahrt_id'=>$this->config->item('iAktuelleRundfahrt')), -1);
 		

@@ -63,6 +63,16 @@ class Parser extends Admin_my_controller
 		}
 	}
 	
+	public function deleteStage($iEtappe = 0) {
+		$aData = array();
+		
+		$aData['iEtappe'] = ($iEtappe == 0) ? $this->config->item('iAktuelleEtappe') : $iEtappe;
+		
+		$aData['aEtappen'] = $this->model->getRows('etappen', 'etappen_rundfahrt_id=' . $this->config->item('iAktuelleRundfahrt'));
+		
+		$this->renderPage('delete_stage', $aData, array(), array());
+	}
+	
 	public function finishRundfahrt() {
 		$aData = array();
 		
@@ -87,4 +97,8 @@ class Parser extends Admin_my_controller
 		echo $aFahrer['fahrer_vorname'] . ' '  . $aFahrer['fahrer_name'] . ' ' . $aFahrer['team_short'];
 	}
 	
+	public function deleteStageResults() {
+		var_dump($this->input->post('etappe'));
+		$this->model->deleteStageResults($this->input->post('etappe'));
+	}
 }

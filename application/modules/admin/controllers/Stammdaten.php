@@ -70,7 +70,7 @@ class Stammdaten extends Admin_my_controller
 	public function edit_etappe($iId) {
 		$aData = array();
 		
-		var_dump($this->Stammdaten_model->getLatestEtappenNr($this->iAktuelleRundfahrt));
+		//var_dump($this->Stammdaten_model->getLatestEtappenNr($this->iAktuelleRundfahrt));
 		
 		$aData['aEk'] = $this->Stammdaten_model->getEk();
 		if ($iId == -1) {
@@ -84,6 +84,7 @@ class Stammdaten extends Admin_my_controller
 									'etappen_nr' => ($this->Stammdaten_model->getLatestEtappenNr($this->iAktuelleRundfahrt)+1));
 									
 			$aData['iId'] = $this->Stammdaten_model->saveRecord('etappen', $aSavedData, $iId, 'etappen_id');
+			redirect(base_url() . 'admin/stammdaten/edit_etappe/' . $aData['iId']);
 		} else {
 			$aData['aEtappe'] = $this->Stammdaten_model->getOneRow('etappen', 'etappen_id=' . $iId);
 			$aData['iId'] = $iId;

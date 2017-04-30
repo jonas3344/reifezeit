@@ -127,4 +127,16 @@ class Parser_model extends MY_Model
 		
 		return $fahrer['fahrer_id'];
 	}
+	
+	public function deleteStageResults($iEtappe) {
+		echo $iEtappe;
+		$this->db->where('etappen_id', $iEtappe);
+		$this->db->delete('resultate');
+		
+		$this->db->where('etappen_id', $iEtappe);
+		$this->db->delete('resultate_berg');
+		
+		$this->db->where('etappen_id', $iEtappe);
+		$this->db->delete('resultate_punkte');
+	}
 }

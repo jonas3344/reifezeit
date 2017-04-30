@@ -64,11 +64,14 @@ class Kader extends Frontend_my_controller
 				$iBase += $aData['aUser']['credit_mzf'];
 				break;
 		}
+		
+		$aData['iBase'] = $iBase;
 			
 		$iBase -= count($aData['aAbgabe']);
 		$iBase += count($aData['aAnnahme']);
 		$iBase += $aData['aKader']['gewonnene_bonuscredits'];
 		$iBase += $aData['aKader']['einsatz_creditpool'];
+		$iBase += $aData['aKader']['creditmoves'];
 		$iBase -= $aData['iDoping'];
 		
 		$aData['iCredits'] = $iBase;
@@ -81,6 +84,8 @@ class Kader extends Frontend_my_controller
 		
 		$aData['aKader'] = $this->model->getAlleKader();
 		$aData['aDoping'] = $this->model->getDopingAll();
+		$aData['aCa'] = $this->model->getAllCa();
+		$aData['aUser'] = $this->model->getUser();
 			
 /*
 		echo "<pre>";
@@ -91,12 +96,31 @@ class Kader extends Frontend_my_controller
 		$this->renderPage('kaderuebersicht', $aData, array(), array());
 	}
 	
-	public function creditAbgabe() {
+	public function insertCreditmove() {
+		$bAnswer = $this->model->insertCreditmove($iEtappe);
+		if ($bAnswer == true) {
+			echo 'ok';
+		} else {
+			echo 'nok';
+		}
+	}
+	
+	public function moveCredit($iEtappe) {
 		$aData = array();
 		
-		$aData['aEtappe'] = $this->model->getEtappe($this->config->item('iAktuelleEtappe'));
+		$aData['aEtappe'] = $this->model->getEtappe($iEtappe);
+		
+		$this->renderPage('move_credit', $aData, array(), array());
+	}
+	
+	public function creditAbgabe($iEtappe) {
+		$aData = array();
+		
+		$aData['aEtappe'] = $this->model->getEtappe($iEtappe);
 		
 		$aData['aTeamMembers'] = $this->model->getTeamMembers();
+		
+		$aData['bCaCheck'] = $this->model->checkAvailableCa();
 		
 		$this->renderPage('creditabgabe', $aData, array(), array());
 	}
@@ -136,8 +160,14 @@ class Kader extends Frontend_my_controller
 	}
 	
 	public function insertCreditabgabe() {
-		 $this->model->saveRecord('creditabgabe', array('abgeber'=> $this->session->userdata('user_id'), 'empfaenger'=>$this->input->post('empfaenger'), 'etappen_id'=> $this->config->item('iAktuelleEtappe')), -1);
-		 echo 'ok';
+		$bPossible = $this->model->reduceCa($this->session->userdata('user_id'), $this->input->post('empfaenger'));
+		if ($bPossible == true) {
+			$this->model->saveRecord('creditabgabe', array('abgeber'=> $this->session->userdata('user_id'), 'empfaenger'=>$this->input->post('empfaenger'), 'etappen_id'=> $this->config->item('iAktuelleEtappe')), -1);
+			echo 'ok';
+		} else {
+			echo 'nok';
+		}
+		
 	}
 	
 	public function getFahrerForDropdown($iSort) {

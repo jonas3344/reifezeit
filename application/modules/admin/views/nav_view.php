@@ -38,7 +38,7 @@
 		            <li><a href="<?= base_url()?>admin/dopingtest">Dopingtest</a></li>
 		            <li><a href="<?= base_url()?>admin/parser">Resultate parsen</a></li>
 		            <li><a href="<?= base_url()?>admin/parser/finishStage">Etappe abschliessen</a></li>
-		            <li><a href="#">Resultate löschen</a></li>
+		            <li><a href="<?= base_url()?>admin/parser/deleteStage">Resultate löschen</a></li>
 		            <li><a href="<?= base_url()?>admin/forencode">Forencode generieren</a></li>
 		            <li><a href="#">Ruhmeshalle</a></li>
 		            <li><a href="<?= base_url()?>admin/parser/finishRundfahrt">Rundfahrt abschliessen</a></li>

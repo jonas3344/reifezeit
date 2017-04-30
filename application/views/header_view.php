@@ -8,7 +8,7 @@
 		<meta name="author" content="Jonas Bay">
 		<link rel="icon" href="../../favicon.ico">
 
-		<title>Reifezeit - Admin</title>
+		<title>Reifezeit</title>
 
 	    <!-- CSS -->
 	    <?php

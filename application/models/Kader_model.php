@@ -42,7 +42,10 @@ class Kader_model extends MY_Model
 	}
 	
 	public function getAlleKader() {
-		$aEtappen = $this->getRows('etappen', 'etappen_rundfahrt_id=' . $this->config->item('iAktuelleRundfahrt'));
+		$this->db->where('etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->order_by('etappen_nr', 'ASC');
+		
+		$aEtappen = $this->db->get('etappen')->result_array();
 		$aReturn = array();
 		$this->load->library('wechsel', $aEtappen[0]['etappen_id']);
 		
@@ -99,6 +102,29 @@ class Kader_model extends MY_Model
 		return $this->db->get('dopingfall d')->result_array();
 	}
 	
+	public function getAllCa() {
+		$this->db->join('etappen e', 'e.etappen_id=ca.etappen_id');
+		$this->db->join('rz_user u', 'ca.empfaenger=u.id');
+		$this->db->where('ca.abgeber', $this->session->userdata('user_id'));
+		$this->db->where('e.etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		
+		$aReturn['aAbgabe'] = $this->db->get('creditabgabe ca')->result_array();
+		
+		$this->db->join('etappen e', 'e.etappen_id=ca.etappen_id');
+		$this->db->join('rz_user u', 'ca.abgeber=u.id');
+		$this->db->where('ca.empfaenger', $this->session->userdata('user_id'));
+		$this->db->where('e.etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		
+		$aReturn['aEmpfang'] = $this->db->get('creditabgabe ca')->result_array();
+		
+		$this->db->select('creditabgabe, creditempfang');
+		$this->db->where('user_id', $this->session->userdata('user_id'));
+		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$aReturn['aDetails'] = $this->db->get('teilnahme')->row_array();
+		
+		return $aReturn;
+	}
+	
 	public function getUser() {
 		$this->db->join('rollen r', 't.rolle_id=r.rolle_id');
 		$this->db->where('t.user_id', $this->session->userdata('user_id'));
@@ -114,7 +140,7 @@ class Kader_model extends MY_Model
 		$this->db->where('user_id', $this->session->userdata('user_id'));
 		$aDoping = $this->db->get('dopingfall')->row_array();
 		
-		if ($iEtappenNr > $this->_getEtappenNr($aDoping['etappen_id'])) {
+		if (count($aDoping) > 0 && $iEtappenNr > $this->_getEtappenNr($aDoping['etappen_id'])) {
 			return 1;
 		} else {
 			return 0;
@@ -198,6 +224,48 @@ class Kader_model extends MY_Model
 		}  else {
 			return false;
 		}
+	}
+	
+	
+	public function checkAvailableCa() {
+		$this->db->where('user_id', $this->session->userdata('user_id'));
+		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$aTeilnahme = $this->db->get('teilnahme')->row_array();
+		
+		if ($aTeilnahme['creditabgabe'] > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public function reduceCa($iAbgeber, $iEmpfaenger) {
+		$bPossible = false;
+		$this->db->where('user_id', $iAbgeber);
+		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$aAbgeber = $this->db->get('teilnahme')->row_array();
+		
+		$this->db->where('user_id', $iEmpfaenger);
+		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$aEmpfang = $this->db->get('teilnahme')->row_array();
+		
+		if ($aAbgeber['creditabgabe'] > 0 && $aEmpfang['creditempfang'] > 0) {
+			$bPossible = true;
+		}
+		
+		if ($bPossible == true) {
+			$this->db->set('creditabgabe', 'creditabgabe - 1', FALSE);
+			$this->db->where('user_id', $iAbgeber);
+			$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+			$this->db->update('teilnahme');
+					
+			$this->db->set('creditempfang', 'creditempfang - 1', FALSE);
+			$this->db->where('user_id', $iEmpfaenger);
+			$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+			$this->db->update('teilnahme');
+		}
+		return $bPossible;
+		
 	}
 	
 	public function addFex($iPunkte, $iEtappe) {

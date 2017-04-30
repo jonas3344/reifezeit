@@ -26,7 +26,7 @@
 		<?php
 		if 	($aKader['gewonnene_bonuscredits'] > 0 && $bEdit == true) {
 		?>
-			<a href="<?= base_url();?>kader/creditAbgabe"><button class="btn btn-default">Bonuscredit abgeben</button></a>
+			<a href="<?= base_url();?>kader/creditAbgabe/<?= $iEtappe;?>"><button class="btn btn-default">Bonuscredit abgeben</button></a>
 		<?php 
 		}
 		?>
@@ -34,6 +34,11 @@
 		if ($aUser['rolle_id'] == 3 || $aUser['rolle_id'] == 6) {
 		?>
 			<a href="<?= base_url();?>kader/eintragFex/<?= $iEtappe;?>"><button class="btn btn-default">Fexen</button></a>
+		<?php 
+		}
+		if ($iBase >= 31) {
+		?>
+			<a href="<?= base_url();?>kader/moveCredit/<?= $iEtappe;?>"><button class="btn btn-default">Credit verschieben</button></a>
 		<?php 
 		}
 		?>
@@ -97,10 +102,12 @@
 				$iSum = 0;
 				$i = 1;
 				foreach($aKader['aFahrer'] as $k=>$v) {
+					$sColor = ($v['ausgeschieden'] == 1) ? ' class="danger"' : '';
+					$sTextOut = ($v['ausgeschieden'] == 1) ? '<span style="color:red; font-weight: bold">OUT</span>' : '';
 					$sPicture = ($v['fahrer_rundfahrt_credits'] > 0) ? $v['fahrer_rundfahrt_credits'] . '.png' : '0.png';
 					$iSum += $v['fahrer_rundfahrt_credits'];
 					?>
-					<tr>
+					<tr<?= $sColor;?>>
 						<td align="left" width="10%"><img src="<?= base_url();?>img/credits/<?= $sPicture?>" class="credits_img"></td>
 						<td width="5%"><?php
 							if (in_array($v['fahrer_id'], $aWechsel)) {
@@ -109,7 +116,7 @@
 							}
 							?>
 						</td>
-						<td width="70%"> <span class="fahrer<?= $i;?>" id="<?= $v['fahrer_id'];?>">#<?= $v['fahrer_startnummer'] . ' - ' . $v['fahrer_vorname'] . ' ' . $v['fahrer_name'] . ' - ' . $v['team_name']?></span></td>
+						<td width="70%"> <span class="fahrer<?= $i;?>" id="<?= $v['fahrer_id'];?>">#<?= $v['fahrer_startnummer'] . ' - ' . $v['fahrer_vorname'] . ' ' . $v['fahrer_name'] . ' - ' . $v['team_name'] . ' ' . $sTextOut;?></span></td>
 						<td><?php
 							if ($bEdit == true) { ?>
 							<button class="btn btn-default change" id="fahrer<?= $i;?>_1"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span></button>

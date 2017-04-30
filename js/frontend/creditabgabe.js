@@ -10,6 +10,9 @@
 			success: function(s) {
 				if (s == 'ok') {
 					window.location.href = base_url + 'kader/tag';
+				} else if (s == 'nok') {
+					alert("Leider kann Der Empfänger keinen Credit mehr empfangen!");
+					window.location.href = base_url + 'kader/tag';
 				}
 			}
 		})

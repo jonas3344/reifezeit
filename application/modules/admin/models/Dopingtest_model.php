@@ -59,6 +59,7 @@ class Dopingtest_model extends MY_Model
 			$iCreditBase += $aData['teilnehmer'][$k]['einsatz_creditpool'];
 			$iCreditBase += $aData['teilnehmer'][$k]['gewonnene_bonuscredits'];
 			$iCreditBase += $aData['teilnehmer'][$k]['ca'];
+			$iCreditBase += $aData['teilnehmer'][$k]['creditmoves'];
 			$iCreditBase -= $this->_getDoping($v['id'], $iEtappe);
 			
 			$aData['teilnehmer'][$k]['iChanges'] = $iCountChanges;
