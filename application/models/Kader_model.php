@@ -282,6 +282,88 @@ class Kader_model extends MY_Model
 		return $this->db->get('kader k')->result_array();
 	}
 	
+	public function insertCreditmove($iEtappe) {
+		$bReturn = false;
+		$aTeilnahme = $this->_getTeilnahme();
+		
+		if ($aTeilnahme['creditmoves'] > 0) {
+			$this->db->where('user_id', $this->session->userdata('user_id'));
+			$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+			$this->db->update('teilnahme', array('creditmoves' => $aTeilnahme['creditmoves']-1));
+			
+			$this->db->where('user_id', $this->session->userdata('user_id'));
+			$this->db->where('etappen_id', $iEtappe);
+			$this->db->update('kader', array('creditmoves' => -2));
+			
+			$iEtappeNr = $this->_getEtappenNr($iEtappe);
+			$this->db->where('etappen_nr', $iEtappeNr+1);
+			$this->db->where('etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+			$aEtappeZwei = $this->db->get('etappen')->row_array();
+			
+			$this->db->where('user_id', $this->session->userdata('user_id'));
+			$this->db->where('etappen_id', $aEtappeZwei['etappen_id']);
+			$this->db->update('kader', array('creditmoves' => 1));
+			
+			$bReturn = true;
+			
+		}
+		return $bReturn;
+	}
+	
+	public function insertMachtwechsel($iEtappe, $iEmpfaenger, $sType) {
+		$aEtappe = $this->getOneRow('etappen', 'etappen_id=' . $iEtappe);
+		$bReturn = false;		
+		
+		$this->db->join('etappen e', 'e.etappen_id=cm.etappen_id');
+		$this->db->where('cm.abgeber', $this->session->userdata('user_id'));
+		$this->db->where('e.etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$aMoves = $this->db->get('ca_moves cm')->result_array();
+		
+		if ($sType == 'kapitaen') {
+			$iCreditminus = 1;
+			$aAllowedEtappen = array(2, 4);
+		} else if ($sType == 'sprinter') {
+			$iCreditminus = 3;
+			$aAllowedEtappen = array(1);
+		}
+		if (count($aMoves) != 1) {
+			if (in_array($aEtappe['etappen_klassifizierung'], $aAllowedEtappen)) {
+				$aTeilnahme = $this->_getTeilnahme();
+				if ($aTeilnahme['creditempfang'] >= 2) {
+					$this->db->where('user_id', $this->session->userdata('user_id'));
+					$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+					$this->db->update('teilnahme', array('creditempfang' => $aTeilnahme['creditempfang']-2));
+					
+					$this->db->where('user_id', $this->session->userdata('user_id'));
+					$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+					$this->db->update('teilnahme', array('creditabgabe' => $aTeilnahme['creditabgabe']+1));
+					
+					$this->db->where('user_id', $iEmpfaenger);
+					$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+					$this->db->set('creditempfang', 'creditempfang+1', FALSE);
+					$this->db->update('teilnahme');
+					
+					$this->db->where('etappen_id', $iEtappe);
+					$this->db->where('user_id', $this->session->userdata('user_id'));
+					$this->db->set('creditmoves', 'ca_malus-' . $iCreditminus, FALSE);
+					$this->db->update('kader');
+					
+					$this->db->insert('ca_moves', array('etappen_id' 	=>	$iEtappe,
+														'abgeber'		=> 	$this->session->userdata('user_id'),
+														'empfaenger'	=>	$iEmpfaenger));
+					$bReturn = true;
+				}
+			}
+		}
+		return $bReturn;
+	}
+	
+	private function _getTeilnahme() {
+		$this->db->where('user_id', $this->session->userdata('user_id'));
+		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		return $this->db->get('teilnahme')->row_array();
+	}
+	
 	private function _getFahrerId($aArray) {
 		return array($aArray['fahrer1'], $aArray['fahrer2'], $aArray['fahrer3'], $aArray['fahrer4'], $aArray['fahrer5']);
 	}

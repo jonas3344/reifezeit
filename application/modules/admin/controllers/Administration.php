@@ -109,6 +109,11 @@ class Administration extends Admin_my_controller
 		
 	}
 	
+	public function setFahrerOut() {
+		$this->model->setFahrerOut($this->input->post('fahrerid'));
+		echo 'ok';
+	}
+	
 	public function removeFahrerFromTransfermarkt() {
 		$this->model->removeFahrerFromTransfermarkt($this->input->post('fahrerid'), $this->iAktuelleRundfahrt);
 		echo 'ok';

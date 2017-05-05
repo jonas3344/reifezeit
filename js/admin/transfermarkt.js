@@ -50,4 +50,21 @@
 
 		})
 	});
+	
+	$(".out").click(function() {
+		var fahrerid = $(this).attr("id");
+		$.ajax({
+			type: "post",
+			url: base_url + 'administration/setFahrerOut/',
+			data: {fahrerid: fahrerid},
+			success: function(s) {
+					if (s == "ok") {
+						location.reload();
+					} else {
+						alert("Es ist ein Fehler aufgetreten!");
+					}
+				}
+
+		})
+	});
 })(jQuery);

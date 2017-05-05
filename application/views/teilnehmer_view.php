@@ -4,11 +4,14 @@
 	</div>
 	<div class="row well">
 		<table 	data-toggle="table"
-						data-pagination="true" 
-						data-search="true"
-						class="table">
+				data-pagination="true" 
+				data-detail-view="true"
+				data-detail-formatter="detailFormatter"
+				data-search="true"
+				class="table">
 			<thead>
 				<tr>
+					<th data-field="id">ID</th>
 					<th data-sortable="true">Benutzer</th>
 					<th data-sortable="true">RZ-Name</th>
 					<th data-sortable="true">Rolle</th>
@@ -18,13 +21,13 @@
 			<tbody>
 				<?php foreach ($aTeilnehmer as $k=>$v) {
 					if ($v['rolle_id'] == 1) {
-			            $s_color = "active";
+			            $s_color = "warning";
 		            } else if ($v['rolle_id'] == 2) {
 			            $s_color = "success";
 		            } else if ($v['rolle_id'] == 3) {
 			            $s_color = "info";
 		            } else if ($v['rolle_id'] == 4) {
-			            $s_color = "warning";
+			            $s_color = "active";
 		            } else if ($v['rolle_id'] == 5) {
 			            $s_color = "danger";
 		            } else if ($v['rolle_id'] == 6) {
@@ -36,6 +39,7 @@
 		            }
               ?>
 				<tr class="<?= $s_color;?>">
+					<td><?= $v['id'];?></td>
 					<td><?= $v['name'];?></td>
 					<td><?= $v['rzname'];?></td>
 					<td><?= $v['rolle_bezeichnung'];?></td>

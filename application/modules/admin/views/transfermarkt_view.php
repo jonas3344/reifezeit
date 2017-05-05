@@ -31,6 +31,12 @@
 						<td><a href="#" id="fahrercredit" class="fahrercredit" data-type="text" data-pk="<?= $aFahrer['fahrer_id'];?>" data-url="<?= base_url();?>admin/administration/setFahrerCredits/" data-title="Set Credit"><?= $aFahrer['fahrer_rundfahrt_credits'];?></a></td>
 						<td>
 							<a href="#"><button type="button" class="btn btn-default btn-sm remove" id="<?= $aFahrer['fahrer_id'];?>"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button></a>
+							<?php if ($aFahrer['ausgeschieden'] == 0) {
+							?>
+							<a href="#"><button type="button" class="btn btn-default btn-sm out" id="<?= $aFahrer['fahrer_id'];?>">Out</button></a>
+							<?php	
+							}
+							?>
 						</td>
 					</tr>
 				<?php	

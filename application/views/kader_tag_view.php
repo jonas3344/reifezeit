@@ -36,9 +36,19 @@
 			<a href="<?= base_url();?>kader/eintragFex/<?= $iEtappe;?>"><button class="btn btn-default">Fexen</button></a>
 		<?php 
 		}
-		if ($iBase >= 31) {
+		if ($iBase >= 31 && $aUser['creditmoves'] > 0) {
 		?>
 			<a href="<?= base_url();?>kader/moveCredit/<?= $iEtappe;?>"><button class="btn btn-default">Credit verschieben</button></a>
+		<?php 
+		}
+		if ($aUser['rolle_id'] == 1 && ($aEtappe['etappen_klassifizierung'] == 2 || $aEtappe['etappen_klassifizierung'] == 4)) {
+		?>
+			<a href="<?= base_url();?>kader/machtwechsel/<?= $iEtappe;?>"><button class="btn btn-default">Machtwechsel</button></a>
+		<?php 
+		}
+		if ($aUser['rolle_id'] == 7 && $aEtappe['etappen_klassifizierung'] == 1 ) {
+		?>
+			<a href="<?= base_url();?>kader/anziehen/<?= $iEtappe;?>"><button class="btn btn-default">Anziehen</button></a>
 		<?php 
 		}
 		?>
@@ -93,6 +103,36 @@
 			</div>
 			<?php
 		}
+	?>
+	<?php
+		
+	if ($aKader['creditmoves'] < 0) {
+		?>
+			<div class="row">
+				<div class="alert alert-danger">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					Du hast Credits von dieser auf die nächste Etappe verschoben. Das heisst du kannst heute 2 Credits weniger einsetzen.
+				</div>
+			</div>
+			<?php
+		
+	}	
+		if ($aKader['creditmoves'] > 0) {
+		?>
+			<div class="row">
+				<div class="alert alert-success">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					Du hast Credits von der letzten auf diese Etappe verschoben. Das heisst du kannst heute 1 Credit mehr einsetzen.
+				</div>
+			</div>
+			<?php
+		
+	}	
+		
 	?>
 	<div class="row well">
 		<div class="table-responsive">

@@ -40,7 +40,7 @@ class Parserrz {
 			} else if ($iType == 2) {
 				$this->_parseGiroPoints($sResult);
 			} else if ($iType == 3) {
-				$this->_parseGiroMountains($sResult);
+				$this->_parseGiroMountain($sResult);
 			}
 		} else if ($this->iParser == 2) {
 			$this->_parseASO($sResult, $iType);
@@ -163,27 +163,27 @@ class Parserrz {
 	
 	private function _saveToDb($iType) {
 		if ($iType == 1) {
-			foreach($this->aResult as $k=$v) {
-				$data['rang'] = $r['rang'];
-				$data['fahrer_id'] = $a['fahrer_id'];
-				$data['etappen_id'] = $this->aEtappe['etappen_id'];
-				$data['rueckstand'] = $r['rueckstandS'];
-				$data['rueckstandOhneBS'] = $r['rueckstandOhneBS'];
+			foreach($this->aResult as $k=>$v) {
+				$aData['rang'] = $v['rang'];
+				$aData['fahrer_id'] = $v['fahrer_id'];
+				$aData['etappen_id'] = $this->aEtappe['etappen_id'];
+				$aData['rueckstand'] = $v['rueckstandS'];
+				$aData['rueckstandOhneBS'] = $v['rueckstandOhneBS'];
 				$this->CI->model->saveRecord('resultate', $aData, -1);
 			}
 		} else if ($iType == 2) {
-			foreach($this->aResultPoints as $k=$v) {
-				$data['fahrer_id'] = $v['fahrer_id'];
-				$data['etappen_id'] = $this->aEtappe['etappen_id'];
-				$data['punkte'] = $v['punkte'];
+			foreach($this->aResultPoints as $k=>$v) {
+				$aData['fahrer_id'] = $v['fahrer_id'];
+				$aData['etappen_id'] = $this->aEtappe['etappen_id'];
+				$aData['punkte'] = $v['punkte'];
 				$this->CI->model->saveRecord('resultate_punkte', $aData, -1);
 			}
 		} else if ($iType == 3) {
-			foreach($this->aResultountain as $k=$v) {
-				$data['fahrer_id'] = $v['fahrer_id'];
-				$data['etappen_id'] = $this->aEtappe['etappen_id'];
-				$data['bergpunkte'] = $v['bergpunkte'];
-				$this->CI->model->saveRecord('resultate_punkte', $aData, -1);
+			foreach($this->aResultountain as $k=>$v) {
+				$aData['fahrer_id'] = $v['fahrer_id'];
+				$aData['etappen_id'] = $this->aEtappe['etappen_id'];
+				$aData['bergpunkte'] = $v['bergpunkte'];
+				$this->CI->model->saveRecord('resultate_berg', $aData, -1);
 			}
 
 		}
@@ -198,215 +198,90 @@ class Parserrz {
 		
 		$aResult = explode("\n", $sResult);
 		$iRang = 0;
-		
-		$langnamen = array("DE BIE", "PLAZA MOLINA", "URAN URAN", "ROJAS GIL", "VAN ZYL", "LE GAC", "HERRADA LOPEZ", "FRAILE MATARRANZ", "DE MARCHI", "DE BACKER", "ANTON HERNANDEZ", "VAN EMDEN", "KUDUS GHEBREMEDHIN", "LOPEZ GARCIA");
-		$langnamen2 = array("DE LA CRUZ");
-		$langnamen3 = array();
-		
-		$langnamen_vor = array("Eduard Michael", "Axel Maximiliano", "Pier Paolo", "Tom Jelte", "Johan Esteban", "Carlos A.", "Sergio M.", "Javier Alexis", "Francesco Manuel", "Murilo Antonio", "Luis Leon", "Lars Ytting", "Bert Jan", "Jay Robert", "Jean Christophe", "Jose Joaquin", "Joseph Lloyd", "Vegard Stake");
-		
-		$langnamen_vor2 = array("Andre Fernando S");
-		
-		$aTeamlist = array('LOTTO SOUDAL', 'NIPPO - VINI FANTINI', 'TEAM GIANT - ALPECIN', 'ETIXX - QUICK-STEP', 'LAMPRE - MERIDA', 'TEAM KATUSHA', 'GAZPROM - RUSVELO', 'BMC RACING TEAM', 'TINKOFF', 'CANNONDALE PRO CYCLING TEAM', 'WILIER TRIESTINA - SOUTHEAST', 'TREK - SEGAFREDO', 'FDJ', 'TEAM DIMENSION DATA', 'MOVISTAR TEAM', 'TEAM SKY', 'ASTANA PRO TEAM', 'TEAM LOTTO NL - JUMBO', 'BARDIANI CSF', 'AG2R LA MONDIALE', 'IAM CYCLING', 'ORICA GREENEDGE');
-		
+				
+	
 		foreach ($aResult as $sZeile) {
 			// Resultat abkappen
-			$sZeile = trim($sZeile);
-			if ($iRang<9) {
-				$aFinal[$iRang]['rang'] = substr($sZeile, 0, 1);
-				$sZeile = substr($sZeile, 1);
-			} else if (($iRang<99) && ($iRang>8)) {
-				$aFinal[$iRang]['rang'] = substr($sZeile, 0, 2);
-				$sZeile = substr($sZeile, 2);
-			} else if ($iRang>98) {
-				$aFinal[$iRang]['rang'] = substr($sZeile, 0, 3);
-				$sZeile = substr($sZeile, 3);
-			}
+			$aTemp = explode("\t", $sZeile);
 			
-			/*Nation Start*/
-			$sZeile = trim($sZeile);
-			$aFinal[$iRang]['nation'] = substr($sZeile, 0, 3);
-			$sZeile = substr($sZeile, 3);
-			
-			/* Nachnamen */
-			$search = true;
-			
-			foreach($langnamen as $l) {
-				if (strpos($sZeile, $l)) {
-					$sZeile = trim($sZeile);
-					$temp = substr($sZeile, 0, strpos($sZeile, ' '));
-					$sZeile = substr($sZeile, strpos($sZeile, ' '));
-					$sZeile = trim($sZeile);
-					$temp = $temp . " " . substr($sZeile, 0, strpos($sZeile, ' '));
-					$sZeile = substr($sZeile, strpos($sZeile, ' '));
-					$aFinal[$iRang]['nachname'] = $temp;
-					$aFinal[$iRang]['nachname'] = substr($aFinal[$iRang]['nachname'], 0, 1) . strtolower(substr($aFinal[$iRang]['nachname'], 1));
-					$search = false;
-				}
-			}
-			if ($search == true) {
-				foreach($langnamen2 as $l) {
-				if (strpos($sZeile, $l)) {
-					$sZeile = trim($sZeile);
-					$temp = substr($sZeile, 0, strpos($sZeile, ' '));
-					$sZeile = substr($sZeile, strpos($sZeile, ' '));
-					$sZeile = trim($sZeile);
-					$temp = $temp . " " . substr($sZeile, 0, strpos($sZeile, ' '));
-					$sZeile = substr($sZeile, strpos($sZeile, ' '));
-					$sZeile = trim($sZeile);
-					$temp = $temp . " " . substr($sZeile, 0, strpos($sZeile, ' '));
-					$sZeile = substr($sZeile, strpos($a, ' '));
-					$aFinal[$iRang]['nachname'] = $temp;
-					$aFinal[$iRang]['nachname'] = substr($aFinal[$iRang]['nachname'], 0, 1) . strtolower(substr($aFinal[$iRang]['nachname'], 1));
-					$search = false;
-				}
-			}
-			}
-			if ($search == true) {
-				foreach($langnamen3 as $l) {
-				if (strpos($sZeile, $l)) {
-					
-					$sZeile = trim($sZeile);
-					$temp = substr($sZeile, 0, strpos($sZeile, ' '));
-					$sZeile = substr($sZeile, strpos($sZeile, ' '));
-					$sZeile = trim($sZeile);
-					$temp = $temp . " " . substr($sZeile, 0, strpos($sZeile, ' '));
-					$sZeile = substr($sZeile, strpos($sZeile, ' '));
-					$sZeile = trim($sZeile);
-					$temp = $temp . " " . substr($sZeile, 0, strpos($sZeile, ' '));
-					$sZeile = substr($sZeile, strpos($sZeile, ' '));
-					$sZeile = trim($sZeile);
-					$temp = $temp . " " . substr($sZeile, 0, strpos($sZeile, ' '));
-					$sZeile = substr($sZeile, strpos($sZeile, ' '));
-					$aFinal[$iRang]['nachname'] = $temp;
-					$aFinal[$iRang]['nachname'] = substr($aFinal[$iRang]['nachname'], 0, 1) . strtolower(substr($aFinal[$iRang]['nachname'], 1));
-					$search = false;
-					}
-				}
-			}
-			
-				
-			if ($search == true) {
-				$sZeile = trim($sZeile);
-				$temp = substr($sZeile, 0, strpos($sZeile, ' '));
-				$sZeile = substr($sZeile, strpos($sZeile, ' '));
-				$aFinal[$iRang]['nachname'] = $temp;
-				$aFinal[$iRang]['nachname'] = substr($aFinal[$iRang]['nachname'], 0, 1) . strtolower(substr($aFinal[$iRang]['nachname'], 1));
-			}
-			
-			/* Nachnamen End*/
-			/* Vornamen Begin*/
-			$search = true;
-				
-			foreach ($langnamen_vor as $l) {
-				if (strpos($sZeile, $l)) {
-					$sZeile = trim($sZeile);
-					$temp = substr($sZeile, 0, strpos($sZeile, ' '));
-					
-					$sZeile = substr($sZeile, strpos($sZeile, ' '));
-					$sZeile = trim($sZeile);
-					$temp = $temp . " " . substr($sZeile, 0, strpos($sZeile, chr(9)));
-					$sZeile = substr($sZeile, strpos($sZeile, chr(9)));
-					$aFinal[$iRang]['vornamen'] = $temp;
-					
-					$search = false;
-					
-				}
-			}
-			
-			if ($search == true) {
-				foreach ($langnamen_vor2 as $l) {
-				if (strpos($sZeile, $l)) {
-					$sZeile = trim($sZeile);
-					$temp = substr($sZeile, 0, strpos($sZeile, ' '));
-					$sZeile = substr($sZeile, strpos($sZeile, ' '));
-					$sZeile = trim($sZeile);
-					$temp = $temp . " " . substr($sZeile, 0, strpos($sZeile, ' '));
-					$sZeile = substr($sZeile, strpos($sZeile, ' '));
-					$sZeile = trim($sZeile);
-					$temp = $temp . " " . substr($sZeile, 0, strpos($sZeile, chr(9)));
-					$sZeile = substr($sZeile, strpos($sZeile, chr(9)));
-					$aFinal[$iRang]['vornamen'] = $temp;
-					$search = false;
-					
-					}
-			}
-			}
-			
-			if ($search == true) {
-				$sZeile = trim($sZeile);
-				$temp = substr($sZeile, 0, strpos($sZeile, chr(9)));
-				//echo $sZeile . "-" . strpos($sZeile, '\t') . "<br>";
-				$sZeile = substr($sZeile, strpos($sZeile, chr(9)));
-				$aFinal[$iRang]['vornamen'] = $temp;
-			}
-			
-			/* Vornamen End*/
-
-			/* Team Start */
-			$sZeile = trim($sZeile);
-
-			foreach($aTeamlist as $k=>$v) {
-
-				if (stripos($sZeile, $v)!== FALSE) {
-					$aFinal[$iRang]['team'] = substr($sZeile, 0, (strpos($sZeile, $v) + strlen($v)));
-					$sZeile = substr($sZeile, (strpos($sZeile, $v) + strlen($v)));
-					break;
-				}
-			}
-				
-			/*Gesamtzeit start*/
-			$sZeile = trim($sZeile);
-			$temp = substr($sZeile, 0, strpos($sZeile, 'h'));		
-			$sZeile = substr($sZeile, (strpos($sZeile, 'h')+1));
-			trim($sZeile);
-			
-			$temp .= ':' . substr($sZeile, 1, strpos($sZeile, '’'));
-			$temp = substr($temp, 0, strlen($temp) -1) . ':';
-			$sZeile = substr($sZeile, (strpos($sZeile, '’')+1));
-			$sZeile = substr($sZeile, 1);
-			$sZeile = substr($sZeile, 1);
-			$temp .= substr($sZeile, 1, strpos($sZeile, '”'));
-			$temp = substr($temp, 0, strlen($temp) -1);
-			$sZeile = substr($sZeile, strpos($sZeile, '”')+1);
-			$sZeile = substr($sZeile, 1);
-			$sZeile = substr($sZeile, 1);
-			
-			$aFinal[$iRang]['zeit'] = $temp;
-			
-			/*Rückstand*/
-			$sZeile = trim($sZeile);
-			if (strpos($sZeile, ' ') > 0) {
-				$sZeile = trim($sZeile);
-				$temp = substr($sZeile, 0, strpos($sZeile, '’'));
-				$sZeile = substr($sZeile, strpos($sZeile, '’')+1);
-				$sZeile = substr($sZeile, 1);
-				$sZeile = substr($sZeile, 1);
-				$temp .= ':' . substr($sZeile, 1, 2);
-				$aFinal[$iRang]['rueckstand'] = $temp;
-			} else {
-				$aFinal[$iRang]['rueckstand'] = $sZeile;
-			}
+			$aFinal[$iRang]['rang'] = $aTemp[1];
+			$aFinal[$iRang]['nation'] = $aTemp[2];
+			$aFinal[$iRang]['namen'] = $aTemp[3];
 
 			
+			// Zeit berechnen
+			$sZeit = $aTemp[7];
+			$iMin = substr($sZeit, 0, strpos($sZeit, chr(226)));
+			$sZeit = substr($sZeit, strpos($sZeit, chr(226))+3);
+			$iSec = substr($sZeit, 1, 2);
+			$sZeit = $iMin . ":" . $iSec . "<br>";
+			
+			$aFinal[$iRang]['rueckstand'] = $sZeit;
+
 			$iRang++;
+
 		}
-		
-		foreach($aFinal as $k=>$v) {
-			$aFahrer = $this->CI->model->checkFahrer($v['nachname'], $v['vornamen']);
-			$aFinal[$k]['fahrer_id'] = $aFahrer['fahrer_id'];
-			$aFinal[$k]['fahrer_startnummer'] = $aFahrer['fahrer_startnummer'];
 			
-		}
+		$aFinal = $this->CI->model->checkFahrer($aFinal);
+		
 		
 		$this->aResult = $aFinal;
 	}
 	
 	private function _parseGiroPoints($sResult) {
+		$aResult = explode("\n", $sResult);
 		
+		$aFinal = array();
+		
+		$iRang = 0;
+		foreach($aResult as $sZeile) {
+			$aTemp = explode("\t", $sZeile);
+			
+			$aFinal[$iRang]['namen'] = $aTemp[3];
+			$aFinal[$iRang]['punkte'] = $aTemp[5];
+			$iRang++;
+		}
+		
+
+		$aFinal = $this->CI->model->checkFahrer($aFinal);
+		
+		
+		$this->aResultPoints = $aFinal;
+
 	}
 	
-	private function _parseGiroMoutain($sResult) {
+	private function _parseGiroMountain($sResult) {
+		$aResult = explode("\n", $sResult);
+		
+		$aFinal = array();
+		
+		$iRang = 0;
+		foreach($aResult as $sZeile) {
+			$aTemp = explode("\t", $sZeile);
+			
+			$aFinal[$iRang]['namen'] = $aTemp[3];
+			$aFinal[$iRang]['bergpunkte'] = $aTemp[5];
+			$iRang++;
+		}
+		
+		$aBergpunkte = array();
+		foreach($aFinal as $k=>$v) {
+			$bFound = false;
+			foreach($aBergpunkte as $kb=>$vb) {
+				if ($v['namen'] == $vb['namen'] && $bFound == false) {
+					$aBergpunkte[$kb]['bergpunkte'] = $aBergpunkte[$kb]['bergpunkte'] + $v['bergpunkte'];
+					$bFound = true;
+				}
+			}
+			if ($bFound == false) {
+				$aBergpunkte[] = $v;
+			}
+		}
+		
+		$aFinal = $this->CI->model->checkFahrer($aBergpunkte);
+		
+
+		$this->aResultountain = $aFinal;
 		
 	}
 }

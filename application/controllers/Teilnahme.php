@@ -57,4 +57,8 @@ class Teilnahme extends Frontend_my_controller
 	public function insertAnmeldung() {
 		$this->model->insertAnmeldung($this->input->post('rolle'), $this->input->post('team'));
 	}
+	
+	public function getTeilnahmeData() {
+		echo json_encode($this->model->getTeilnahmeData($this->input->post('user_id')));
+	}
 }

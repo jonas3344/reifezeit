@@ -23,7 +23,7 @@ class Dopingtest extends Admin_my_controller
 		}
 		
 		$aData['iAktuelleEtappe'] = $iEtappe;
-		$aData['aEtappen'] = $this->model->getRows('etappen', 'etappen_rundfahrt_id=' . $this->iAktuelleRundfahrt);
+		$aData['aEtappen'] = $this->model->getRows('etappen', 'etappen_rundfahrt_id=' . $this->iAktuelleRundfahrt, array('sort_field'=>'etappen_nr', 'sort_order'=>'ASC'));
 		$aData['aDopingtest'] = $this->model->getDopingtest($iEtappe);
 		
 		$this->renderPage('dopingtest', $aData, array(), array());

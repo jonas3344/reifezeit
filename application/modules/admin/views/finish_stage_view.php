@@ -6,8 +6,9 @@
 	<div class="alert alert-info lead">Damit wir die morgige Etappe starten können musst du hier die aktuelle Etappe ändern sowie die ersten 3 Startnummern der aktuellen Etappe eintragen!<br><br><strong>Bei MZF, bitte jeweils den ersten Fahrer der ersten 3 Teams eintragen!</strong></div>
 	</div>
 	<div class="row well">
+		<form action="<?= base_url();?>admin/parser/finishStage" method="POST">
 		<label for="etappen">Nächste Etappe:</label>
-		<select id="etappen" class="form-control">
+		<select id="etappen" class="form-control" name="etappen">
 		<?php
 		foreach	($aEtappen as $k=>$v) {
 			$sSelected = ($v['etappen_id'] == $iEtappe) ? ' selected' : '';

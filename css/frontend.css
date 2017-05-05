@@ -19,3 +19,18 @@ table.vertical-align > tbody > tr > td {
 .popover{
     max-width: 100%; /* Max Width of the popover (depending on the container!) */
 }
+
+.nav-tabs > li {
+    position:relative;
+}
+.nav-tabs > li > a {
+    display:inline-block;
+}
+.nav-tabs > li > span {
+    cursor:pointer;
+    position:absolute;
+    right: 6px;
+    top: 9px;
+    color: red;
+}
+.nav-tab

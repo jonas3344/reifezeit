@@ -91,7 +91,8 @@ class Teilnahme_model extends MY_Model
 				'user_id'=>$this->session->userdata('user_id'), 
 				'rundfahrt_id'=>$this->config->item('iAktuelleRundfahrt'),
 				'creditabgabe' => $aRolle['creditabgabe'],
-				'creditempfang' => $aRolle['creditannahme']			
+				'creditempfang' => $aRolle['creditannahme'],
+				'creditmoves' => 1
 		);
 		
 		$this->saveRecord('teilnahme', $aData, -1);
@@ -120,5 +121,25 @@ class Teilnahme_model extends MY_Model
 			$aHistory[$k]['aTeilnahme'] = $this->db->get('teilnahme t')->row_array();
 		}
 		return $aHistory;
+	}
+	
+	public function getTeilnahmeData($iId) {
+		$this->db->where('user_id', $iId);
+		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$aReturn = $this->db->get('teilnahme')->row_array();
+		
+		$this->db->join('etappen e', 'e.etappen_id=k.etappen_id');
+		$this->db->where('k.user_id', $iId);
+		$this->db->where('e.etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$aKader = $this->db->get('kader k')->result_array();
+		
+		$iFex = 0;
+		foreach($aKader as $k=>$v) {
+			$iFex += $v['einsatz_creditpool'];
+		}
+		
+		$aReturn['fex'] = $iFex;
+		
+		return $aReturn;
 	}
 }

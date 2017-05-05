@@ -74,6 +74,7 @@ class Administration_model extends MY_Model
 	public function getFahrerTeam($iTeamid, $iRundfahrt) {
 		$this->db->where('fahrer_active', 1);
 		$this->db->where('fahrer_team_id', $iTeamid);
+		$this->db->order_by('fahrer_name', 'ASC');
 		
 		$aAlleFahrer = $this->db->get('fahrer')->result_array();
 		
@@ -107,8 +108,6 @@ class Administration_model extends MY_Model
 		$this->db->where('fr.rundfahrt_id', $iRundfahrt);
 		$aFahrer = $this->db->get('fahrer f')->result_array();
 		
-		echo $this->db->last_query();
-		
 		foreach($aFahrer as $k=>$v) {
 			$this->removeFahrerFromTransfermarkt($v['fahrer_id'], $iRundfahrt);
 		}
@@ -126,5 +125,11 @@ class Administration_model extends MY_Model
 				$this->db->update('team_rundfahrt', array('start_order' => ($k+1)));
 			}
 		}
+	}
+	
+	public function setFahrerOut($iFahrer) {
+		$this->db->where('fahrer_id', $iFahrer);
+		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->update('fahrer_rundfahrt', array('ausgeschieden'=>1));
 	}
 }

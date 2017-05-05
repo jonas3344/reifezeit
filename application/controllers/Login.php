@@ -17,9 +17,12 @@ class Login extends CI_Controller
 	
 	public function index() {
 		$this->load->helper('form_helper');
-				$this->load->library(array('form_validation', 'auth'));
+		$this->load->helper('cookie');
+		$this->load->library(array('form_validation', 'auth'));
 		
 		$aData['aTeilnehmer'] = $this->model->getRows('rz_user', 'active=1', array('sort_field' => 'rzname', 'sort_order' => 'ASC'));
+		
+		$aData['sUsername'] = get_cookie('reifezeit', TRUE);
 		
 		$aData['sError'] = '';
 		
@@ -33,6 +36,7 @@ class Login extends CI_Controller
 		
 		if ($this->form_validation->run() === true) {
 			if ($this->auth->try_login($this->input->post('username'), $this->input->post('password'))) {
+				set_cookie('reifezeit', $this->input->post('username'), '172800', '', '/');
 				redirect('index');
 			} else {
 				$aData['sError'] = 'Passwort/Benutzernamen stimmen nicht überein!';

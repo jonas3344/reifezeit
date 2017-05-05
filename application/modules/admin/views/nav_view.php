@@ -29,7 +29,6 @@
 		          <ul class="dropdown-menu">
 		            <li><a href="<?= base_url()?>admin/administration/teilnehmer">Teilnehmer</a></li>
 		            <li><a href="<?= base_url()?>admin/administration/transfermarkt">Transfermarkt</a></li>
-		            <li><a href="#">Ausgeschiedene Fahrer</a></li>
 		          </ul>
 		        </li>
 	            <li class="dropdown">
@@ -40,7 +39,7 @@
 		            <li><a href="<?= base_url()?>admin/parser/finishStage">Etappe abschliessen</a></li>
 		            <li><a href="<?= base_url()?>admin/parser/deleteStage">Resultate löschen</a></li>
 		            <li><a href="<?= base_url()?>admin/forencode">Forencode generieren</a></li>
-		            <li><a href="#">Ruhmeshalle</a></li>
+		            <li><a href="<?= base_url()?>admin/forencode/ruhmeshalle">Ruhmeshalle</a></li>
 		            <li><a href="<?= base_url()?>admin/parser/finishRundfahrt">Rundfahrt abschliessen</a></li>
 		          </ul>
 		        </li>

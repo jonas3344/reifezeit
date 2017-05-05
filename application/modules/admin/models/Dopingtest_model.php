@@ -28,12 +28,16 @@ class Dopingtest_model extends MY_Model
 			$aData['teilnehmer'][$k]['team'] = $this->db->get('rz_user_team ut')->row_array();
 			
 			// Kader
-			$this->db->select('fahrer1, fahrer2, fahrer3, fahrer4, fahrer5, einsatz_creditpool, gewonnene_bonuscredits');
+			$this->db->select('fahrer1, fahrer2, fahrer3, fahrer4, fahrer5, einsatz_creditpool, gewonnene_bonuscredits, ca_malus, creditmoves');
 			$this->db->where('etappen_id', $iEtappe);
 			$this->db->where('user_id', $v['id']);
 			$aKader = $this->db->get('kader')->row_array();
 			$aData['teilnehmer'][$k]['einsatz_creditpool'] = $aKader['einsatz_creditpool'];
 			$aData['teilnehmer'][$k]['gewonnene_bonuscredits'] = $aKader['gewonnene_bonuscredits'];
+			$aData['teilnehmer'][$k]['creditmoves'] = $aKader['creditmoves'];
+			$aData['teilnehmer'][$k]['ca_malus'] = $aKader['ca_malus'];
+			unset($aKader['ca_malus']);
+			unset($aKader['creditmoves']);
 			unset($aKader['gewonnene_bonuscredits']);
 			unset($aKader['einsatz_creditpool']);
 			$iUsedCredits = 0;
@@ -59,6 +63,7 @@ class Dopingtest_model extends MY_Model
 			$iCreditBase += $aData['teilnehmer'][$k]['einsatz_creditpool'];
 			$iCreditBase += $aData['teilnehmer'][$k]['gewonnene_bonuscredits'];
 			$iCreditBase += $aData['teilnehmer'][$k]['ca'];
+			$iCreditBase += $aData['teilnehmer'][$k]['ca_malus'];
 			$iCreditBase += $aData['teilnehmer'][$k]['creditmoves'];
 			$iCreditBase -= $this->_getDoping($v['id'], $iEtappe);
 			

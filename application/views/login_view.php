@@ -24,7 +24,8 @@
           <h1 class="page-header">Die Reifezeit - Login</h1>
           <button class="btn btn-default">Neues Profil erstellen</button> <button class="btn btn-default">Passwort vergessen</button>
           <hr>
-          <?php if (strlen($sError) > 0) {
+          <?php
+	          if (strlen($sError) > 0) {
 	          ?>
 	          <div class="alert alert-danger"><?= $sError; ?></div>
 	          <?php
@@ -35,9 +36,11 @@
 			    <label for="user">Benutzername</label>
 			    <select name="username" class="form-control">
 			    <?php
+				    
 					foreach($aTeilnehmer as $k=>$v) {
+						$sSelected = ($v['id'] == $sUsername) ? " selected" : "";
 						?>
-						<option value="<?= $v['id'];?>"><?= $v['rzname'];?></option>
+						<option value="<?= $v['id'];?>"<?= $sSelected;?>><?= $v['rzname'];?></option>
 						<?php
 					}
 				?>

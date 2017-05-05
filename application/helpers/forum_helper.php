@@ -177,6 +177,44 @@ if ( ! function_exists('createResultKaderpost'))
 	}
 }
 
+if ( ! function_exists('createRuhmeshalle')) 
+{
+	function createRuhmeshalle($aResultData) {
+		$sOutput = "[table fontsize=9][mrow color=#1C1C1C][color=white]Etappe[/color][mcol color=#eedabc]Etappensieg[mcol color=#ffffcc]Gesamtwertung[mcol color=#eedabc]Team Etappe[mcol color=#5384dc]Team Gesamt[mcol color=#ccffcc]Punkte-Trikot[mcol color=#ffcccc]Berg-Trikot\n";
+		
+		foreach($aResultData['aEtappen'] as $k=>$v) {
+			$sStageColor = '';
+			if ($v['aStage']['etappen_klassifizierung'] == 1) {
+				$sStageColor = 'lime';
+			} else if ($v['aStage']['etappen_klassifizierung'] == 2) {
+				$sStageColor = 'grey';
+			} else if ($v['aStage']['etappen_klassifizierung'] == 4) {
+				$sStageColor = 'red';
+			} else {
+				$sStageColor = 'yellow';
+			}
+			$sOutput .= "[mrow color=" . $sStageColor . "]" . $v['aStage']['etappen_nr'];
+			$sOutput .= "[mcol color=#fffcde]" . $aResultData['aTeilnehmer'][$v['aFirst']['user_id']]['rzname'] . " (" . $aResultData['aTeilnehmer'][$v['aFirst']['user_id']]['rzteam_short'] . ")";
+			$sOutput .= "[mcol color=#eeee33]" . $aResultData['aTeilnehmer'][$v['aLeader']]['rzname'] . " (" . $aResultData['aTeilnehmer'][$v['aLeader']]['rzteam_short'] . ")";
+			$sOutput .= "[mcol color=#fffcde]" . $aResultData['aTeams'][$v['aTeamStage']]['rzteam_name'];
+			$sOutput .= "[mcol color=#1177FF]" . $aResultData['aTeams'][$v['aTeamOverall']]['rzteam_name'];
+			if ($v['aPoints'] == '-') {
+				$sOutput .= "[mcol color=#00cc00]" . '-';
+			} else {
+				$sOutput .= "[mcol color=#00cc00]" . $aResultData['aTeilnehmer'][$v['aPoints']]['rzname'];
+			}
+			if ($v['aBerg'] == '-') {
+				$sOutput .= "[mcol color=#ff3333]" . '-';
+			} else {
+				$sOutput .= "[mcol color=#ff3333]" . $aResultData['aTeilnehmer'][$v['aBerg']]['rzname'];
+			}
+			$sOutput .= "\n";
+		}
+		$sOutput .= "[/table]";
+		return $sOutput;
+	}
+}
+
 if ( ! function_exists('createForumKaderpost'))
 {
 	

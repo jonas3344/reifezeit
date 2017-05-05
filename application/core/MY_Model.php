@@ -52,4 +52,9 @@ class MY_Model extends CI_Model {
 		return $this->db->get('teilnahme t')->result_array();
 		
 	}
+	
+	public function _getEtappenNr($iEtappe) {
+		$aEtappe = $this->getOneRow('etappen', 'etappen_id=' . $iEtappe);
+		return $aEtappe['etappen_nr'];
+	}
 }

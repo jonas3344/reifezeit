@@ -47,6 +47,19 @@
 			?>
 		</div>
 	</div>
+	<div class="row">
+		<div class="alert alert-info fade in">
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			<table>
+				<tr>
+					<th>Verbleibende Creditmoves:</th>
+					<td style="padding-left: 10px"><?= $aUser['creditmoves'];?></td>
+				</tr>
+			</table>
+		</div>
+	</div>
 	<?php
 	if ($aUser['rolle_id'] == 3) {
 		?>

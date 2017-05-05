@@ -20,7 +20,7 @@ class Parser extends Admin_my_controller
 		
 		$aData['iEtappe'] = ($iEtappe == 0) ? $this->config->item('iAktuelleEtappe') : $iEtappe;
 		
-		$aData['aEtappen'] = $this->model->getRows('etappen', 'etappen_rundfahrt_id=' . $this->config->item('iAktuelleRundfahrt'));
+		$aData['aEtappen'] = $this->model->getRows('etappen', 'etappen_rundfahrt_id=' . $this->config->item('iAktuelleRundfahrt'), array('sort_field'=>'etappen_nr', 'sort_order'=>'ASC'));
 		
 		$this->renderPage('parser', $aData, array(), array());
 	}
@@ -40,25 +40,26 @@ class Parser extends Admin_my_controller
 		$aData = array();
 		
 		$this->load->library('form_validation');
+		
+		$this->form_validation->set_rules('erster', 'erster', 'required');
 
 		if ($this->form_validation->run() == FALSE) {
 			$aData['iEtappe'] = $this->config->item('iAktuelleEtappe');
-		
-			$aData['aEtappen'] = $this->model->getRows('etappen', 'etappen_rundfahrt_id=' . $this->config->item('iAktuelleRundfahrt'));
+			$aData['aEtappen'] = $this->model->getRows('etappen', 'etappen_rundfahrt_id=' . $this->config->item('iAktuelleRundfahrt'), array('sort_field'=>'etappen_nr', 'sort_order'=>'ASC'));
 			$this->renderPage('finish_stage', $aData, array(), array());
 		} else {
 			$aData['iNaechsteEtappe'] = $this->input->post('etappen');
-			$aEtappe = $this->getOneRow('etappen', 'etappen_id=' . $this->config->item('iAktuelleEtappe'));
+			$aEtappe = $this->model->getOneRow('etappen', 'etappen_id=' . $this->config->item('iAktuelleEtappe'));
 			$this->config->set_item('iAktuelleEtappe', $aData['iNaechsteEtappe']);
 			
 			// Aktuelle Etappe updaten
-			$this->model->db->saveRecord('config', array('aktuelle_etappe' => $aData['iNaechsteEtappe']), 1, 'id');
+			$this->model->saveRecord('config', array('aktuelle_etappe' => $aData['iNaechsteEtappe']), 1, 'id');
 			
 			$aWinner['iFirst'] = $this->input->post('erster');
 			$aWinner['iSecond'] = $this->input->post('zweiter');
 			$aWinner['iThird'] = $this->input->post('dritter');
 			
-			$this->model->saveBc($this->config->item('iAktuelleEtappe', $aEtappe, $aWinner));
+			$this->model->saveBc($this->config->item('iAktuelleEtappe'), $aEtappe, $aWinner);
 			$this->renderPage('finish_stage_success', array(), array(), array());
 		}
 	}
@@ -68,7 +69,7 @@ class Parser extends Admin_my_controller
 		
 		$aData['iEtappe'] = ($iEtappe == 0) ? $this->config->item('iAktuelleEtappe') : $iEtappe;
 		
-		$aData['aEtappen'] = $this->model->getRows('etappen', 'etappen_rundfahrt_id=' . $this->config->item('iAktuelleRundfahrt'));
+		$aData['aEtappen'] = $this->model->getRows('etappen', 'etappen_rundfahrt_id=' . $this->config->item('iAktuelleRundfahrt'), array('sort_field'=>'etappen_nr', 'sort_order'=>'ASC'));
 		
 		$this->renderPage('delete_stage', $aData, array(), array());
 	}

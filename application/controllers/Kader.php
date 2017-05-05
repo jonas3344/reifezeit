@@ -73,6 +73,7 @@ class Kader extends Frontend_my_controller
 		$iBase += $aData['aKader']['einsatz_creditpool'];
 		$iBase += $aData['aKader']['creditmoves'];
 		$iBase -= $aData['iDoping'];
+		$iBase += $aData['aKader']['ca_malus'];
 		
 		$aData['iCredits'] = $iBase;
 		
@@ -97,7 +98,7 @@ class Kader extends Frontend_my_controller
 	}
 	
 	public function insertCreditmove() {
-		$bAnswer = $this->model->insertCreditmove($iEtappe);
+		$bAnswer = $this->model->insertCreditmove($this->input->post('etappen_id'));
 		if ($bAnswer == true) {
 			echo 'ok';
 		} else {
@@ -111,6 +112,33 @@ class Kader extends Frontend_my_controller
 		$aData['aEtappe'] = $this->model->getEtappe($iEtappe);
 		
 		$this->renderPage('move_credit', $aData, array(), array());
+	}
+	
+	public function machtwechsel($iEtappe) {
+		$aData = array();
+		
+		$aData['aTeamMembers'] = $this->model->getTeamMembers();
+		$aData['iEtappe'] = $iEtappe;
+		
+		$this->renderPage('machtwechsel', $aData, array(), array());
+	}
+	
+	public function anziehen($iEtappe) {
+		$aData = array();
+		
+		$aData['aTeamMembers'] = $this->model->getTeamMembers();
+		$aData['iEtappe'] = $iEtappe;
+		
+		$this->renderPage('anziehen', $aData, array(), array());
+	}
+	
+	public function insertMachtwechsel($sType) {
+		$bAnswer = $this->model->insertMachtwechsel($this->input->post('etappen_id'), $this->input->post('empfaenger'), $sType);
+		if ($bAnswer == true) {
+			echo 'ok';
+		} else {
+			echo 'nok';
+		}
 	}
 	
 	public function creditAbgabe($iEtappe) {
