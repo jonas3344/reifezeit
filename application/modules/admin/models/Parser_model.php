@@ -83,6 +83,8 @@ class Parser_model extends MY_Model
 				}
 			}
 			$aData['gewonnene_bonuscredits'] = $bc;
+
+
 			$this->db->where('etappen_id', $iNaechsteEtappe);
 			$this->db->where('user_id', $aTeilnehmer[$k]);
 			$this->db->update('kader', $aData);

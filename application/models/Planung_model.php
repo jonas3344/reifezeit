@@ -25,6 +25,7 @@ class Planung_model extends MY_Model
 	}
 	
 	public function getPlanungsData($iId) {
+		$this->load->helper('time_helper');
 		$aTempData = $this->getRows('planung_kader', 'planung_id=' . $iId);
 		$aPlanungData['iAktuelleEtappeNr'] = $this->_getEtappenNr($this->config->item('iAktuelleEtappe'));
 		$this->load->library('wechselplanung', $this->config->item('iAktuelleEtappe'));
@@ -32,6 +33,13 @@ class Planung_model extends MY_Model
 		foreach($aTempData as $k=>$v) {
 			$aFahrerId = $this->_getFahrerId($v);
 			$aPlanungData['aKader'][$k]['aEtappe'] = $this->getOneRow('etappen', 'etappen_id=' . $v['etappen_id']);
+			
+			$iTime = _create_timestamp($aPlanungData['aKader'][$k]['aEtappe']['etappen_datum'], $aPlanungData['aKader'][$k]['aEtappe']['etappen_eingabeschluss']);
+			if (time() > $iTime) {
+				$aPlanungData['aKader'][$k]['aEtappe']['bEdit'] = false;
+			} else {
+				$aPlanungData['aKader'][$k]['aEtappe']['bEdit'] = true;
+			}
 			$this->wechselplanung->__construct($v['etappen_id'], $iId);
 			
 			$aWechsel = $this->wechselplanung->getChangeByRider($this->session->userdata('user_id'));

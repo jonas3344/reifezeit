@@ -11,15 +11,20 @@ class Forencode_model extends MY_Model
 {
 	public function getTeilnehmerForum() {
 		$this->db->join('rz_user u', 'u.id=t.user_id');
-		$this->db->join('rz_user_team', 'rz_user_team.user_id=t.user_id');
-		$this->db->join('rz_team rt', 'rt.rzteam_id=rz_user_team.rz_team_id');
 		$this->db->join('rollen r', 't.rolle_id=r.rolle_id');
 		$this->db->where('t.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
 		$aTeilnehmer = $this->db->get('teilnahme t')->result_array();
 		
 		$aReturn = array();
 		foreach($aTeilnehmer as $k=>$v) {
-			$aReturn[$v['id']] = $v;
+			$this->db->where('rut.user_id', $v['user_id']);
+			$this->db->where('rut.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+			$this->db->join('rz_team rt', 'rut.rz_team_id=rt.rzteam_id');
+			$aTeam = $this->db->get('rz_user_team rut')->row_array();
+			if ($aTeam == null) {
+				$aTeam = array('rzteam_short'=>'none');
+			}			
+			$aReturn[$v['id']] = array_merge($v, $aTeam);
 		}
 		return $aReturn;
 	}

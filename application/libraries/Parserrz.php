@@ -49,7 +49,7 @@ class Parserrz {
 	}
 	
 	private function _calculateTime() {
-		$sOutput = "<table>";
+		$sOutput = "<br><br><br><br><br><table>";
 		if (($this->aEtappe['etappen_klassifizierung'] == 3) || ($this->aEtappe['etappen_klassifizierung'] == 5) || ($this->aEtappe['etappen_klassifizierung'] == 6)) {
 			$bZeitfahren = true;
 		} else {
@@ -88,7 +88,7 @@ class Parserrz {
 					$this->aResult[$key]['rueckstandS'] = $zeitS;		
 					
 				}
-				$sOutput .= "<tr><td>" . $r['fahrer_startnummer'] . "</td><td>" . $r['nachname'] . "</td><td>" . $this->aResult[$key]['rueckstandS'] . "</td></tr>";
+				$sOutput .= "<tr><td>" . $r['fahrer_startnummer'] . "</td><td>" . $r['namen'] . "</td><td>" . $this->aResult[$key]['rueckstandS'] . "</td></tr>";
 			}
 			
 		} else if ($this->aAusreisser['iAusreisser'] == 1) {
@@ -154,7 +154,7 @@ class Parserrz {
 				$this->aResult[$key]['rueckstandS'] = $zeitS;
 				$this->aResult[$key]['rueckstandOhneBS'] = ($i_minutes_temp*60) + $i_seconds_temp;
 				
-				$sOutput .= "<tr><td>" . $r['startnummer'] . "</td><td>" . $resultat[$key]['rueckstandS'] . "</td></tr>";
+				$sOutput .= "<tr><td>" . $r['startnummer'] . "</td><td>" . $r['namen'] . "</td><td>" . $zeitS . "</td></tr>";
 			}
 		}
 		$sOutput .= '</table>';

@@ -31,7 +31,12 @@ if ( ! function_exists('createResultKaderpost'))
 			}
 			$sOutputDay .= "[mrow color=" . $color_row . "] " . $rang . " ";
 			$sOutputDay .= "[mcol] " . $user['rzname'] . " [mcol] " . $user['name'];
-			$sOutputDay .= "[mcol color=" . $user['color_code_zelle'] . "][color=" . $user['color_code_schrift'] . "]" . $user['rzteam_short'] . "[/color]";
+			if ($user['rzteam_short'] != 'none') {
+				$sOutputDay .= "[mcol color=" . $user['color_code_zelle'] . "][color=" . $user['color_code_schrift'] . "]" . $user['rzteam_short'] . "[/color]";
+			} else {
+				$sOutputDay .= "[mcol]";
+			}
+			
 			$sOutputDay .= "[mcol color=" . $user['color_code_rolle'] . "]" . $user['rolle_bezeichnung'];
 			$sOutputDay .= "[mcol]" . _convertSeconds($v['zeit']) . "[mcol]" . $v['bc'];
 			
@@ -85,7 +90,11 @@ if ( ! function_exists('createResultKaderpost'))
 			$color_row = (($i%2) == 0) ? "#eeeeee" : "#ffffff";
 			$sOutputGesamt .= "[mrow color=" . $color_row . "] " . $rang . " ";
 			$sOutputGesamt .= "[mcol] " . $user['rzname'] . " [mcol] " . $user['name'];
-			$sOutputGesamt .= "[mcol color=" . $user['color_code_zelle'] . "][color=" . $user['color_code_schrift'] . "]" . $user['rzteam_short'] . "[/color]";
+			if ($user['rzteam_short'] != 'none') {
+				$sOutputGesamt .= "[mcol color=" . $user['color_code_zelle'] . "][color=" . $user['color_code_schrift'] . "]" . $user['rzteam_short'] . "[/color]";
+			} else {
+				$sOutputGesamt .= "[mcol]";
+			}
 			$sOutputGesamt .= "[mcol color=" . $user['color_code_rolle'] . "]" . $user['rolle_bezeichnung'];
 			$sOutputGesamt .= "[mcol]" . _convertSeconds($v['zeit']);
 			$i++;
@@ -133,7 +142,11 @@ if ( ! function_exists('createResultKaderpost'))
 				}
 				$sOutputGesamt .= "[mrow color=" . $color_row . "] " . $rang . " ";
 				$sOutputGesamt .= "[mcol] " . $user['rzname'] . " [mcol] " . $user['name'];
-				$sOutputGesamt .= "[mcol color=" . $user['color_code_zelle'] . "][color=" . $user['color_code_schrift'] . "]" . $user['rzteam_short'] . "[/color]";
+				if ($user['rzteam_short'] != 'none') {
+					$sOutputGesamt .= "[mcol color=" . $user['color_code_zelle'] . "][color=" . $user['color_code_schrift'] . "]" . $user['rzteam_short'] . "[/color]";
+				} else {
+					$sOutputGesamt .= "[mcol]";
+				}
 				$sOutputGesamt .= "[mcol color=" . $user['color_code_rolle'] . "]" . $user['rolle_bezeichnung'];
 				$sOutputGesamt .= "[mcol]" . $v['punkte'];
 				$i++;
@@ -160,7 +173,11 @@ if ( ! function_exists('createResultKaderpost'))
 					}
 					$sOutputGesamt .= "[mrow color=" . $color_row . "] " . $rang . " ";
 					$sOutputGesamt .= "[mcol] " . $user['rzname'] . " [mcol] " . $user['name'];
-					$sOutputGesamt .= "[mcol color=" . $user['color_code_zelle'] . "][color=" . $user['color_code_schrift'] . "]" . $user['rzteam_short'] . "[/color]";
+					if ($user['rzteam_short'] != 'none') {
+						$sOutputGesamt .= "[mcol color=" . $user['color_code_zelle'] . "][color=" . $user['color_code_schrift'] . "]" . $user['rzteam_short'] . "[/color]";
+					} else {
+						$sOutputGesamt .= "[mcol]";
+					}
 					$sOutputGesamt .= "[mcol color=" . $user['color_code_rolle'] . "]" . $user['rolle_bezeichnung'];
 					$sOutputGesamt .= "[mcol]" . $v['berg'];
 					$i++;
@@ -243,7 +260,13 @@ if ( ! function_exists('createForumKaderpost'))
 			    $s_color_player = "#ffff99";
 			}
 			
-			$sOutput .= "[mrow color=" . $s_color_player . "]" . $aTeilnehmer['rzname'] . "[mcol color=" . $aTeilnehmer['team']['color_code_zelle'] . "][color=" . $aTeilnehmer['team']['color_code_schrift'] . "]" . $aTeilnehmer['team']['rzteam_short'] . "[/color]";
+			$sOutput .= "[mrow color=" . $s_color_player . "]" . $aTeilnehmer['rzname'];
+			if (isset($aTeilnehmer['team'])) {
+				$sOutput .= "[mcol color=" . $aTeilnehmer['team']['color_code_zelle'] . "][color=" . $aTeilnehmer['team']['color_code_schrift'] . "]" . $aTeilnehmer['team']['rzteam_short'] . "[/color]";
+			} else {
+				$sOutput .= "[mcol]";
+			}
+			
 			$sOutput .= "[mcol]" . _convertSeconds($aTeilnehmer['gw']);
 			$sum = 0;
 			foreach($aTeilnehmer['kader'] as $k) {

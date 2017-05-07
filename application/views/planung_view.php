@@ -61,7 +61,7 @@
 						} else if ($vk['aEtappe']['etappen_klassifizierung'] == 3 || $vk['aEtappe']['etappen_klassifizierung'] == 5 || $vk['aEtappe']['etappen_klassifizierung'] == 6) {
 							$sColor = ' class = warning'; 
 						}
-						if ($vk['aEtappe']['etappen_nr'] >= $v['aData']['iAktuelleEtappeNr']) {
+						if ($vk['aEtappe']['bEdit'] == true) {
 							$bEditable = true;
 						} else {
 							$bEditable = false;

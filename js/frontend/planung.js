@@ -111,7 +111,6 @@
 	})
 	$('.kaderuebertrag').click(function(e) {
 		post_data = $(this).attr('id').split("_");
-		//alert(etappen_nr[0] + "/" + etappen_nr[1]);
 		$.ajax({
 			type: "post",
 			url: base_url + 'planung/kaderuebertrag',
@@ -137,6 +136,22 @@
 			success: function(s) {
 				alert("Die Planung wurde zurückgesetzt!");
 				window.location.href = base_url + 'planung/index/' + id;
+			}
+		});
+
+	})
+	$('.saveKaderDay').click(function(e) {
+		post_data = $(this).attr('id').split("_");
+		$.ajax({
+			type: "post",
+			url: base_url + 'planung/saveKaderDay',
+			data: {
+					etappen_nr: post_data[0],
+					planung_id: post_data[1]
+			},
+			async: false,
+			success: function(s) {
+				alert("Deine Planung der " + s + ".Etappe wurde übernommen!");
 			}
 		});
 
