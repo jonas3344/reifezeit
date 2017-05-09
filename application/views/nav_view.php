@@ -33,6 +33,7 @@
 		          <ul class="dropdown-menu">
 		            <li><a href="<?= base_url()?>kader/tag">Heutiger Kader</a></li>
 		            <li><a href="<?= base_url()?>kader/kaderuebersicht">Kaderübersicht</a></li>
+		            <li><a href="<?= base_url()?>planung">Kaderplanung</a></li>
 		          </ul>
 		        </li>
 		        <li>

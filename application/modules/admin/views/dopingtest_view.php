@@ -56,7 +56,7 @@
 						<td style="border-right: 1px solid"><?= $v['einsatz_creditpool'];?></td>
 						<td style="border-right: 1px solid"><?= $v['ca'];?></td>
 						<td <?= ($v['doped'] == true) ? 'class="danger"' : '';?>><?= $v['iUsedCredits'] . '(' . $v['iCreditBase'] . ')';?></td>
-						<td><a href="#"><button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button></a></td>
+						<td><a href="#"><button type="button" class="btn btn-default btn-sm resetKader" id="<?= $v['id'] . '_' . $iAktuelleEtappe;?>"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button></a></td>
 					</tr>
 					<?php	
 					}

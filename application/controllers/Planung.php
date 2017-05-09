@@ -58,6 +58,14 @@ class Planung extends Frontend_my_controller
 		}
 	}
 	
+	public function saveKaderDay() {
+		$this->model->saveKaderDay($this->input->post('etappen_nr'),$this->input->post('planung_id'));
+	}
+	
+	public function savePlanung() {
+		$this->model->savePlanung($this->input->post('planung_id'));
+	}
+	
 	public function kaderuebertrag() {
 		$this->model->kaderuebertrag($this->input->post('etappen_nr'),$this->input->post('planung_id'));
 	}

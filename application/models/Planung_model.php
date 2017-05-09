@@ -87,10 +87,7 @@ class Planung_model extends MY_Model
 		$this->db->where('etappen_nr', $iEtappeNr+1);
 		$this->db->where('etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
 		$aNeueEtappe = $this->db->get('etappen')->row_array();
-		
-		var_dump($aAlteEtappe);
-		var_dump($aNeueEtappe);
-		
+			
 		$this->db->where('planung_id', $iPlanungId);
 		$this->db->where('etappen_id', $aAlteEtappe['etappen_id']);
 		
@@ -103,6 +100,48 @@ class Planung_model extends MY_Model
 													'fahrer3' => $aKader['fahrer3'],
 													'fahrer4' => $aKader['fahrer4'],
 													'fahrer5' => $aKader['fahrer5']));
+	}
+	
+	public function saveKaderDay($iEtappeNr, $iPlanungId) {
+		$this->db->where('etappen_nr', $iEtappeNr);
+		$this->db->where('etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$aEtappe = $this->db->get('etappen')->row_array();
+		
+		$this->db->select('fahrer1, fahrer2, fahrer3, fahrer4, fahrer5');
+		$this->db->where('planung_id', $iPlanungId);
+		$this->db->where('etappen_id', $aEtappe['etappen_id']);
+		$aKader = $this->db->get('planung_kader')->row_array();
+		
+		$this->db->where('user_id', $this->session->userdata('user_id'));
+		$this->db->where('etappen_id', $aEtappe['etappen_id']);
+		$this->db->update('kader', $aKader);
+		
+		echo $iEtappeNr;
+	}
+	
+	public function savePlanung($iPlanungId) {
+		$this->load->helper('time_helper');
+		$this->db->where('pk.planung_id', $iPlanungId);
+		$this->db->join('etappen e', 'pk.etappen_id=e.etappen_id');
+		$aKader = $this->db->get('planung_kader pk')->result_array();
+		
+		foreach($aKader as $k=>$v) {
+			$iTime = _create_timestamp($v['etappen_datum'], $v['etappen_eingabeschluss']);
+			if (time() < $iTime) {
+				$aUpdateData = array(	'fahrer1' => $v['fahrer1'],
+										'fahrer2' => $v['fahrer2'],
+										'fahrer3' => $v['fahrer3'],
+										'fahrer4' => $v['fahrer4'],
+										'fahrer5' => $v['fahrer5']);
+										
+				$this->db->where('etappen_id', $v['etappen_id']);
+				$this->db->where('user_id', $this->session->userdata('user_id'));
+				$this->db->update('kader', $aUpdateData);
+			}
+
+		}
+		
+		
 	}
 	
 	public function removeKaderPlanung($iId) {

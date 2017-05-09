@@ -156,4 +156,19 @@
 		});
 
 	})
+		$('.save').click(function(e) {
+		id = $(this).attr('id');
+		$.ajax({
+			type: "post",
+			url: base_url + 'planung/savePlanung',
+			data: {
+					planung_id: id
+			},
+			async: false,
+			success: function(s) {
+				alert("Deine Kader wurden entsprechend der Planung angepasst!");
+			}
+		});
+
+	})
 })(jQuery);
