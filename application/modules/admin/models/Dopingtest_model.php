@@ -124,6 +124,56 @@ class Dopingtest_model extends MY_Model
 		$this->db->update('teilnahme', array('out'=>1, 'out_etappen_id'=>$iEtappe));
 	}
 	
+	public function setKaderLastStage($iUser, $iEtappe) {
+		$iEtappenNr = $this->_getEtappenNr($iEtappe);
+		
+		$this->db->select('etappen_id');
+		$this->db->where('etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->where('etappen_nr', ($iEtappenNr-1));
+		$aEtappe = $this->db->get('etappen')->row_array();
+		
+		$this->db->where('user_id', $iUser);
+		$this->db->where('etappen_id', $aEtappe['etappen_id']);
+		$aKaderOld = $this->db->get('kader')->row_array();
+		
+		$aUpdateData = array(	'fahrer1' => $aKaderOld['fahrer1'],
+								'fahrer2' => $aKaderOld['fahrer2'],
+								'fahrer3' => $aKaderOld['fahrer3'],
+								'fahrer4' => $aKaderOld['fahrer4'],
+								'fahrer5' => $aKaderOld['fahrer5']);
+		
+		$this->db->where('etappen_id', $iEtappe);
+		$this->db->where('user_id', $iUser);
+		$this->db->update('kader', $aUpdateData);
+	}
+	
+	public function getFahrerForDropdown($iSort) {
+		$this->db->select('fr.fahrer_startnummer, f.fahrer_id, f.fahrer_name, f.fahrer_vorname, t.team_short, fr.fahrer_rundfahrt_credits');
+		$this->db->join('fahrer f', 'fr.fahrer_id=f.fahrer_id');
+		$this->db->join('team t', 't.team_id=f.fahrer_team_id');
+		$this->db->where('fr.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		if ($iSort == 1) {
+			$this->db->order_by('fr.fahrer_startnummer', 'ASC');
+		} else if ($iSort == 2) {
+			$this->db->order_by('fr.fahrer_rundfahrt_credits', 'DESC');
+			$this->db->order_by('fr.fahrer_startnummer', 'ASC');
+		}
+		return $this->db->get('fahrer_rundfahrt fr')->result_array();
+	}
+	
+	public function getSingleKader($iUser, $iEtappe) {
+		
+		$this->db->where('user_id', $iUser);
+		$this->db->where('etappen_id', $iEtappe);
+		return $this->db->get('kader')->row_array();
+	}
+	
+	public function freeChangeSubmit($sFahrer, $iFahrer, $iUser, $iEtappe) {
+		$this->db->where('user_id', $iUser);
+		$this->db->where('etappen_id', $iEtappe);
+		$this->db->update('kader', array($sFahrer=>$iFahrer));
+	}
+	
 	private function _getKaderChange($iEtappenNr, $iFahrerid, $iUser) {
 		if ($iEtappenNr > 1) {
 			$this->db->select('etappen_id');

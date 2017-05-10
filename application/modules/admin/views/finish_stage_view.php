@@ -11,7 +11,7 @@
 		<select id="etappen" class="form-control" name="etappen">
 		<?php
 		foreach	($aEtappen as $k=>$v) {
-			$sSelected = ($v['etappen_id'] == $iEtappe) ? ' selected' : '';
+			$sSelected = ($v['etappen_nr'] == $iEtappe) ? ' selected' : '';
 			?>
 			<option value="<?= $v['etappen_id'];?>" <?= $sSelected;?>><?= $v['etappen_nr'] . '.Etappe';?></option>
 			<?php	

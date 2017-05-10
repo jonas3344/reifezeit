@@ -82,12 +82,37 @@ class Dopingtest extends Admin_my_controller
 		$this->renderPage('doper', $aData, array(), array());
 	}
 	
+	public function setKaderLastStage() {
+		$this->model->setKaderLastStage($this->input->post('user'), $this->input->post('etappen_id'));
+	}
+	
+	public function freeChange($iUser, $iEtappe) {
+		$aData = array();
+		
+		$aData['aFahrer'] = $this->model->getFahrerForDropdown(1);
+		$aData['aUser'] = $this->model->getOneRow('rz_user', 'id=' . $this->db->escape($iUser));
+		$aData['aEtappe'] = $this->model->getOneRow('etappen', 'etappen_id=' . $this->db->escape($iEtappe));
+		
+		$aData['aKader'] = $this->model->getSingleKader($iUser, $iEtappe);
+		
+		var_dump($aData['aKader']);
+		
+		$this->renderPage('free_change', $aData, array(), array());
+	}
+	
+	public function freeChangeSubmit() {
+		$this->model->freeChangeSubmit($this->input->post('fahrer'), $this->input->post('fahrer_id'), $this->input->post('user'), $this->input->post('etappen_id'));
+	}
+	
 	public function InsertDoper() {
 		
 		// Check ob das erste Mal
 		$iDoper = $this->input->post('doperid');
 		
-		$aCheck = $this->model->getOneRow('dopingfall', 'user_id=' . $iDoper);
+		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->where('user_id', $iDoper);
+		
+		$aCheck = $this->db->get('dopingfall')->row_array();
 		
 		if (count($aCheck) > 0) {
 			$this->model->dsqUser($this->input->post('doperid'), $this->input->post('etappenid'));

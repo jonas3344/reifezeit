@@ -31,22 +31,22 @@
 		}
 		?>
 		<?php
-		if ($aUser['rolle_id'] == 3 || $aUser['rolle_id'] == 6) {
+		if (($aUser['rolle_id'] == 3 || $aUser['rolle_id'] == 6) && ($bEdit == true)) {
 		?>
 			<a href="<?= base_url();?>kader/eintragFex/<?= $iEtappe;?>"><button class="btn btn-default">Fexen</button></a>
 		<?php 
 		}
-		if ($iBase >= 31 && $aUser['creditmoves'] > 0) {
+		if ($iBase >= 31 && $aUser['creditmoves'] > 0 && $bEdit == true) {
 		?>
 			<a href="<?= base_url();?>kader/moveCredit/<?= $iEtappe;?>"><button class="btn btn-default">Credit verschieben</button></a>
 		<?php 
 		}
-		if ($aUser['rolle_id'] == 1 && ($aEtappe['etappen_klassifizierung'] == 2 || $aEtappe['etappen_klassifizierung'] == 4)) {
+		if ($aUser['rolle_id'] == 1 && ($aEtappe['etappen_klassifizierung'] == 2 || $aEtappe['etappen_klassifizierung'] == 4) && $bEdit == true) {
 		?>
 			<a href="<?= base_url();?>kader/machtwechsel/<?= $iEtappe;?>"><button class="btn btn-default">Machtwechsel</button></a>
 		<?php 
 		}
-		if ($aUser['rolle_id'] == 7 && $aEtappe['etappen_klassifizierung'] == 1 ) {
+		if ($aUser['rolle_id'] == 7 && $aEtappe['etappen_klassifizierung'] == 1  && $bEdit == true) {
 		?>
 			<a href="<?= base_url();?>kader/anziehen/<?= $iEtappe;?>"><button class="btn btn-default">Anziehen</button></a>
 		<?php 

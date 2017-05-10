@@ -69,8 +69,20 @@
 						?>
 						<tr>
 							<td width="8%"><?php if ($bEditable) {
-								?> <button class="btn btn-default btn-xs kaderuebertrag" id="<?= $vk['aEtappe']['etappen_nr'];?>_<?= $v['id'];?>"><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></button>
-								<button class="btn btn-default btn-xs saveKaderDay" id="<?= $vk['aEtappe']['etappen_nr'];?>_<?= $v['id'];?>"><span class="glyphicon glyphicon-ok" aria-hidden="true" style="color: green"></span></button>
+								?> 
+								<div class="dropdown">
+									<button class="btn btn-default btn-xs saveKaderDay" id="<?= $vk['aEtappe']['etappen_nr'];?>_<?= $v['id'];?>"><span class="glyphicon glyphicon-ok" aria-hidden="true" style="color: green"></span></button>
+								  <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-default btn-xs">
+								    <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+								  </button>
+								  <ul class="dropdown-menu" aria-labelledby="dLabel">
+									<li><a href="#" class="kaderuebertragUp" id="<?= $vk['aEtappe']['etappen_nr'];?>_<?= $v['id'];?>"><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span></a></li>
+								    <li><a href="#" class="kaderuebertrag" id="<?= $vk['aEtappe']['etappen_nr'];?>_<?= $v['id'];?>"><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></a></li>
+								    <li><a href="#" class="kaderuebertragAll" id="<?= $vk['aEtappe']['etappen_nr'];?>_<?= $v['id'];?>"><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></a></li>						
+								  </ul>
+								</div>								
+<!-- 								<button class="btn btn-default btn-xs kaderuebertrag" id="<?= $vk['aEtappe']['etappen_nr'];?>_<?= $v['id'];?>"><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></button> -->
+								
 								<?php
 									}
 								?>	

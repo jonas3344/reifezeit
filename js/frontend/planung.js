@@ -58,6 +58,12 @@
         e.preventDefault();
         $(this).tab('show');
     });
+    $('.kaderuebertragUp').click(function(e) {
+	    alert("TODO");
+    });
+     $('.kaderuebertragAll').click(function(e) {
+	    alert("TODO");
+    });
 	$('#new').click(function(e) {
 		e.preventDefault();
 		name = prompt('Wie soll Deine Planung heissen?');

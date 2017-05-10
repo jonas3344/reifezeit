@@ -56,7 +56,17 @@
 						<td style="border-right: 1px solid"><?= $v['einsatz_creditpool'];?></td>
 						<td style="border-right: 1px solid"><?= $v['ca'];?></td>
 						<td <?= ($v['doped'] == true) ? 'class="danger"' : '';?>><?= $v['iUsedCredits'] . '(' . $v['iCreditBase'] . ')';?></td>
-						<td><a href="#"><button type="button" class="btn btn-default btn-sm resetKader" id="<?= $v['id'] . '_' . $iAktuelleEtappe;?>"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button></a></td>
+						<td width="8%">
+							<div class="dropdown">
+							  <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							    <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+							    <span class="caret"></span>
+							  </button>
+							  <ul class="dropdown-menu" aria-labelledby="dLabel">
+							    <li><a href="<?= base_url();?>admin/dopingtest/freeChange/<?=$v['id'];?>/<?= $iAktuelleEtappe;?>">Freies Verändern</a></li>
+							    <li><a href="#" class="setKaderLastStage" id="<?= $v['id'] . '_' . $iAktuelleEtappe;?>">Auf gestrigen Kader zurücksetzen</a></li>
+							  </ul>
+							</td>
 					</tr>
 					<?php	
 					}
