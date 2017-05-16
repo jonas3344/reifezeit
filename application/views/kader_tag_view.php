@@ -24,6 +24,13 @@
 	<div class="row well">
 		<a href="<?= base_url();?>kader/kaderuebersicht"><button class="btn btn-default">Zur Kaderübersicht</button></a>
 		<?php
+		if ($bEdit == true) {
+			?>
+			<button class="btn btn-default resetKader" id="<?=$aEtappe['etappen_id'];?>">Auf Kader des Vortages zurücksetzen</button>
+			<?php
+		}
+		?>
+		<?php
 		if 	($aKader['gewonnene_bonuscredits'] > 0 && $bEdit == true) {
 		?>
 			<a href="<?= base_url();?>kader/creditAbgabe/<?= $iEtappe;?>"><button class="btn btn-default">Bonuscredit abgeben</button></a>

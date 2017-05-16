@@ -7,6 +7,18 @@
 	</div>
 	<div class="row well">
 		<form action="<?= base_url();?>admin/parser/finishStage" method="POST">
+			<label for="etappen">Aktuelle Etappe:</label>
+		<select id="etappe_aktuell" class="form-control" name="etappe_aktuell">
+		<?php
+		foreach	($aEtappen as $k=>$v) {
+			$sSelected = ($v['etappen_nr'] == $iAktuelleEtappe) ? ' selected' : '';
+			?>
+			<option value="<?= $v['etappen_id'];?>" <?= $sSelected;?>><?= $v['etappen_nr'] . '.Etappe';?></option>
+			<?php	
+		}
+		?>
+		</select>
+		<hr>
 		<label for="etappen">Nächste Etappe:</label>
 		<select id="etappen" class="form-control" name="etappen">
 		<?php

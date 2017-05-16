@@ -49,6 +49,20 @@
 		var fahrer_id = $('select[name="fahrer5"] option:selected').attr("id");
 		ajax_call('fahrer5', fahrer_id);
 	});
+	$('.resetKader').on('click', function() {
+		$.ajax({
+			type:	"post",
+			url:	base_url + "kader/resetKader",
+			data:	{ 
+					etappe: this.id
+			},
+			success: function(s) {
+					alert("Dein Kader wurde zurückgesetzt!");
+					location.reload();
+			}
+		})
+
+	});
 	function ajax_call(position, fahrer_id) {
 		var etappen_id = $('.etappen_id').attr("id");
 		$.ajax({

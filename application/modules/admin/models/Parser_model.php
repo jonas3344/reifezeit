@@ -42,6 +42,7 @@ class Parser_model extends MY_Model
 		$aTeilnehmer = array();
 		$aKaderTemp = $this->getRows('kader', 'etappen_id=' . $aAktuelleEtappe['etappen_id']);
 		
+
 		foreach($aKaderTemp as $k=>$v) {
 			$aKader[$k] = $this->_kaderIntoArray($v);
 			$aTeilnehmer[$k] = $v['user_id'];
@@ -66,12 +67,6 @@ class Parser_model extends MY_Model
 				}
 				
 			} else {
-/*
-				echo "<pre>";
-				print_r($v);
-				echo "</pre>";
-				echo $this->_getFahrerId($aWinner['iSecond']) . "----";
-*/
 				if (in_array($this->_getFahrerId($aWinner['iFirst']), $v)) {
 					$bc += 3;
 				}
@@ -83,6 +78,17 @@ class Parser_model extends MY_Model
 				}
 			}
 			$aData['gewonnene_bonuscredits'] = $bc;
+			
+			echo $aTeilnehmer[$k] . '-' . $bc . "<br>";
+			if ($bc > 0) {
+				var_dump($v);
+				echo "<br>";
+			}
+			
+			if ($aTeilnehmer[$k] == 131) {
+				var_dump($v);
+				echo "<br>";
+			}
 
 
 			$this->db->where('etappen_id', $iNaechsteEtappe);

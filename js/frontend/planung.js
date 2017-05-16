@@ -59,10 +59,34 @@
         $(this).tab('show');
     });
     $('.kaderuebertragUp').click(function(e) {
-	    alert("TODO");
+	    post_data = $(this).attr('id').split("_");
+		$.ajax({
+			type: "post",
+			url: base_url + 'planung/kaderuebertragUp',
+			data: {
+					etappen_nr: post_data[0],
+					planung_id: post_data[1]
+			},
+			async: false,
+			success: function(s) {
+				window.location.href = base_url + 'planung/index/' + post_data[1];
+			}
+		});
     });
      $('.kaderuebertragAll').click(function(e) {
-	    alert("TODO");
+	    post_data = $(this).attr('id').split("_");
+		$.ajax({
+			type: "post",
+			url: base_url + 'planung/kaderuebertragAll',
+			data: {
+					etappen_nr: post_data[0],
+					planung_id: post_data[1]
+			},
+			async: false,
+			success: function(s) {
+				window.location.href = base_url + 'planung/index/' + post_data[1];
+			}
+		});
     });
 	$('#new').click(function(e) {
 		e.preventDefault();
@@ -162,7 +186,7 @@
 		});
 
 	})
-		$('.save').click(function(e) {
+	$('.save').click(function(e) {
 		id = $(this).attr('id');
 		$.ajax({
 			type: "post",

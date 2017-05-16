@@ -25,13 +25,7 @@ class Planung extends Frontend_my_controller
 		foreach($aData['aPlanung'] as $k=>$v) {
 			$aData['aPlanung'][$k]['aData'] = $this->model->getPlanungsData($v['id']);
 		}
-		
-/*
-		echo "<pre>";
-		print_r($aData['aPlanung']);
-		echo "</pre>";
-*/
-		
+			
 		$this->renderPage('planung', $aData, array(), array());
 	}
 	
@@ -47,7 +41,6 @@ class Planung extends Frontend_my_controller
 	}
 	
 	public function resetPlanung() {
-		
 		$this->model->removeKaderPlanung($this->input->post('id'));
 		
 		$aKader = $this->model->getKader();
@@ -56,6 +49,14 @@ class Planung extends Frontend_my_controller
 			$v['planung_id'] = $this->input->post('id');
 			$this->model->saveRecord('planung_kader', $v, -1);
 		}
+	}
+	
+	public function kaderuebertragUp() {
+		$this->model->kaderuebertragUp($this->input->post('etappen_nr'),$this->input->post('planung_id'));
+	}
+	
+	public function kaderuebertragAll() {
+		$this->model->kaderuebertragAll($this->input->post('etappen_nr'),$this->input->post('planung_id'));
 	}
 	
 	public function saveKaderDay() {

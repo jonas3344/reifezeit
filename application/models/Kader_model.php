@@ -358,6 +358,23 @@ class Kader_model extends MY_Model
 		return $bReturn;
 	}
 	
+	public function resetKader($iEtappe) {
+		$iEtappenNr = $this->_getEtappenNr($iEtappe);
+		
+		$this->db->where('etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->where('etappen_nr', ($iEtappenNr-1));
+		$aEtappe = $this->db->get('etappen')->row_array();
+		
+		$this->db->select('fahrer1, fahrer2, fahrer3, fahrer4, fahrer5');
+		$this->db->where('user_id', $this->session->userdata('user_id'));
+		$this->db->where('etappen_id', $aEtappe['etappen_id']);
+		$aKader = $this->db->get('kader')->row_array();
+		
+		$this->db->where('user_id', $this->session->userdata('user_id'));
+		$this->db->where('etappen_id', $iEtappe);
+		$this->db->update('kader', $aKader);
+	}
+	
 	private function _getTeilnahme() {
 		$this->db->where('user_id', $this->session->userdata('user_id'));
 		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));

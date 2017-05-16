@@ -182,6 +182,11 @@ class Kader extends Frontend_my_controller
 		$this->renderPage('eintragfex', $aData, array(), array());
 	}
 	
+	public function resetKader() {
+		$this->model->resetKader($this->input->post('etappe'));
+		echo 'ok';
+	}
+	
 	public function addFex() {
 		$this->model->addFex($this->input->post('punkte'), $this->input->post('etappe'));
 		echo 'ok';

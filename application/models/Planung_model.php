@@ -102,6 +102,60 @@ class Planung_model extends MY_Model
 													'fahrer5' => $aKader['fahrer5']));
 	}
 	
+	public function kaderuebertragUp($iEtappeNr,$iPlanungId) {
+		$this->load->helper('time_helper');
+		$this->db->where('etappen_nr', $iEtappeNr);
+		$this->db->where('etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$aAlteEtappe = $this->db->get('etappen')->row_array();
+		
+		$this->db->where('etappen_nr', $iEtappeNr-1);
+		$this->db->where('etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$aNeueEtappe = $this->db->get('etappen')->row_array();
+		
+		$iTime = _create_timestamp($aNeueEtappe['etappen_datum'], $aNeueEtappe['etappen_eingabeschluss']);
+		if (time() < $iTime) {
+			$this->db->where('planung_id', $iPlanungId);
+			$this->db->where('etappen_id', $aAlteEtappe['etappen_id']);
+			$aKader = $this->db->get('planung_kader')->row_array();
+			
+			$this->db->where('planung_id', $iPlanungId);
+			$this->db->where('etappen_id', $aNeueEtappe['etappen_id']);
+			$this->db->update('planung_kader', array('fahrer1' => $aKader['fahrer1'],
+													'fahrer2' => $aKader['fahrer2'],
+													'fahrer3' => $aKader['fahrer3'],
+													'fahrer4' => $aKader['fahrer4'],
+													'fahrer5' => $aKader['fahrer5']));
+		}
+	}
+	
+	public function kaderuebertragAll($iEtappeNr, $iPlanungId) {
+		$aEtappen = $this->getRows('etappen', 'etappen_rundfahrt_id=' . $this->config->item('iAktuelleRundfahrt'));
+		
+		$this->db->where('etappen_nr', $iEtappeNr);
+		$this->db->where('etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$aAlteEtappe = $this->db->get('etappen')->row_array();
+		
+		$this->db->where('planung_id', $iPlanungId);
+		$this->db->where('etappen_id', $aAlteEtappe['etappen_id']);
+		
+		$aKader = $this->db->get('planung_kader')->row_array();
+		
+		foreach($aEtappen as $k=>$v) {
+			if ($v['etappen_nr'] > $iEtappeNr) {
+				echo "gugus";
+				$this->db->where('planung_id', $iPlanungId);
+				$this->db->where('etappen_id', $v['etappen_id']);
+				$this->db->update('planung_kader', array(	'fahrer1' => $aKader['fahrer1'],
+															'fahrer2' => $aKader['fahrer2'],
+															'fahrer3' => $aKader['fahrer3'],
+															'fahrer4' => $aKader['fahrer4'],
+															'fahrer5' => $aKader['fahrer5']));
+			}
+		}
+	}
+	
+
+	
 	public function saveKaderDay($iEtappeNr, $iPlanungId) {
 		$this->db->where('etappen_nr', $iEtappeNr);
 		$this->db->where('etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));

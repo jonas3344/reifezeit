@@ -44,12 +44,13 @@ class Parser extends Admin_my_controller
 		$this->form_validation->set_rules('erster', 'erster', 'required');
 
 		if ($this->form_validation->run() == FALSE) {
+			$aData['iAktuelleEtappe'] = $this->model->_getEtappenNr($this->config->item('iAktuelleEtappe'));
 			$aData['iEtappe'] = $this->model->_getEtappenNr($this->config->item('iAktuelleEtappe'))+1;
 			$aData['aEtappen'] = $this->model->getRows('etappen', 'etappen_rundfahrt_id=' . $this->config->item('iAktuelleRundfahrt'), array('sort_field'=>'etappen_nr', 'sort_order'=>'ASC'));
 			$this->renderPage('finish_stage', $aData, array(), array());
 		} else {
 			$aData['iNaechsteEtappe'] = $this->input->post('etappen');
-			$aEtappe = $this->model->getOneRow('etappen', 'etappen_id=' . $this->config->item('iAktuelleEtappe'));
+			$aEtappe = $this->model->getOneRow('etappen', 'etappen_id=' . $this->input->post('etappe_aktuell'));
 			$this->config->set_item('iAktuelleEtappe', $aData['iNaechsteEtappe']);
 			
 			// Aktuelle Etappe updaten
