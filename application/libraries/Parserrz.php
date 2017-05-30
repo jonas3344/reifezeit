@@ -81,7 +81,7 @@ class Parserrz {
 						} else {
 							$zeitS = ($i_minutes_temp*60) + $i_seconds_temp + 15;
 						}
-					} else if ($zeitfahren == true) {
+					} else if ($bZeitfahren == true) {
 						$zeitS = ($i_minutes_temp*60) + $i_seconds_temp;
 					}
 					$this->aResult[$key]['rueckstandOhneBS'] = ($i_minutes_temp*60) + $i_seconds_temp;
@@ -96,7 +96,7 @@ class Parserrz {
 			// Rückstand Hauptfeld herausfinden
 			$iRueckstandHauptfeld = 0;
 			
-			foreach($resultat as $key => $r){
+			foreach($this->aResult as $key => $r){
 				if ($r['rang'] == $this->aAusreisser['iFirstHauptfeld']) {
 					$i_minutes_temp = substr($r['rueckstand'], 0, strpos($r['rueckstand'], ':'));
 					$i_seconds_temp = substr($r['rueckstand'], strpos($r['rueckstand'], ':')+1);
@@ -106,9 +106,10 @@ class Parserrz {
 				}
 				
 			}
-			
+				
 			$zahl1 = ($bBergetappe==true) ? 180 : 60;
 			$zahl2 = ($bBergetappe==true) ? 90 : 30;
+			
 			
 			foreach($this->aResult as $key => $r){
 				$i_minutes_temp = substr($r['rueckstand'], 0, strpos($r['rueckstand'], ':'));
@@ -118,7 +119,7 @@ class Parserrz {
 				if ($r['rang'] == 1) {
 					$zeitS = 0;
 					$this->aResult[$key]['rueckstandOhneBS'] = 0;
-				} else if ($r['rang'] < $i_rang_hauptfeld) {
+				} else if ($r['rang'] < $this->aAusreisser['iFirstHauptfeld']) {
 					// Vor Hauptfeld
 					if ($i_ruckstand_temp < $zahl2) {
 						$zeitS = $i_ruckstand_temp;
@@ -128,9 +129,9 @@ class Parserrz {
 						$zeitS = $zahl2;
 					}
 					
-				} else if ($r['rang'] >= $i_rang_hauptfeld) {
+				} else if ($r['rang'] >= $this->aAusreisser['iFirstHauptfeld']) {
 					if ($iRueckstandHauptfeld > $zahl1) {
-						$zeitS = $zahl1 + ($iRueckstandHauptfeld - $i_ruckstand_hauptfeld);
+						$zeitS = $zahl1 + ($i_ruckstand_temp - $iRueckstandHauptfeld);
 					} else {
 						$zeitS = $i_ruckstand_temp;
 					}
@@ -154,7 +155,7 @@ class Parserrz {
 				$this->aResult[$key]['rueckstandS'] = $zeitS;
 				$this->aResult[$key]['rueckstandOhneBS'] = ($i_minutes_temp*60) + $i_seconds_temp;
 				
-				$sOutput .= "<tr><td>" . $r['startnummer'] . "</td><td>" . $r['namen'] . "</td><td>" . $zeitS . "</td></tr>";
+				$sOutput .= "<tr><td>" . $r['fahrer_startnummer'] . "</td><td>" . $r['namen'] . "</td><td>" . $zeitS . "</td></tr>";
 			}
 		}
 		$sOutput .= '</table>';
@@ -204,13 +205,19 @@ class Parserrz {
 			// Resultat abkappen
 			$aTemp = explode("\t", $sZeile);
 			
+			
 			$aFinal[$iRang]['rang'] = $aTemp[1];
 			$aFinal[$iRang]['nation'] = $aTemp[2];
 			$aFinal[$iRang]['namen'] = $aTemp[3];
 
 			
 			// Zeit berechnen
-			$sZeit = $aTemp[7];
+			if ($this->aEtappe['etappen_klassifizierung'] == 3) {
+				$sZeit = $aTemp[6];
+			} else {
+				$sZeit = $aTemp[7];
+			}
+			
 			$iMin = substr($sZeit, 0, strpos($sZeit, chr(226)));
 			$sZeit = substr($sZeit, strpos($sZeit, chr(226))+3);
 			$iSec = substr($sZeit, 1, 2);
@@ -221,7 +228,7 @@ class Parserrz {
 			$iRang++;
 
 		}
-			
+					
 		$aFinal = $this->CI->model->checkFahrer($aFinal);
 		
 		

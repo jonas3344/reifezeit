@@ -218,12 +218,12 @@ if ( ! function_exists('createRuhmeshalle'))
 			if ($v['aPoints'] == '-') {
 				$sOutput .= "[mcol color=#00cc00]" . '-';
 			} else {
-				$sOutput .= "[mcol color=#00cc00]" . $aResultData['aTeilnehmer'][$v['aPoints']]['rzname'];
+				$sOutput .= "[mcol color=#00cc00]" . $aResultData['aTeilnehmer'][$v['aPoints']]['rzname'] . " (" . $aResultData['aTeilnehmer'][$v['aPoints']]['rzteam_short'] . ")";
 			}
 			if ($v['aBerg'] == '-') {
 				$sOutput .= "[mcol color=#ff3333]" . '-';
 			} else {
-				$sOutput .= "[mcol color=#ff3333]" . $aResultData['aTeilnehmer'][$v['aBerg']]['rzname'];
+				$sOutput .= "[mcol color=#ff3333]" . $aResultData['aTeilnehmer'][$v['aBerg']]['rzname'] . " (" . $aResultData['aTeilnehmer'][$v['aBerg']]['rzteam_short'] . ")";
 			}
 			$sOutput .= "\n";
 		}

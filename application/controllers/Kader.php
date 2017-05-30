@@ -35,7 +35,12 @@ class Kader extends Frontend_my_controller
 		if (time() > $iTime) {
 			$aData['bEdit'] = false;
 		} else {
-			$aData['bEdit'] = true;
+			if ($aData['aUser']['out'] == 0) {
+				$aData['bEdit'] = true;
+			} else {
+				$aData['bEdit'] = false;
+			}
+			
 		}
 		
 		$aData['iDoping'] = $this->model->getDoping($aData['iEtappe']);

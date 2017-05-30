@@ -31,7 +31,7 @@
 		}
 		?>
 		<?php
-		if 	($aKader['gewonnene_bonuscredits'] > 0 && $bEdit == true) {
+		if 	($aKader['gewonnene_bonuscredits'] > 0 && $bEdit == true && ($aEtappe['klassifizierung_id'] != 3 && $aEtappe['klassifizierung_id'] != 5)) {
 		?>
 			<a href="<?= base_url();?>kader/creditAbgabe/<?= $iEtappe;?>"><button class="btn btn-default">Bonuscredit abgeben</button></a>
 		<?php 

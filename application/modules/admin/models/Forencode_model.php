@@ -43,11 +43,18 @@ class Forencode_model extends MY_Model
 		$aTemp = $this->getRows('etappen', 'etappen_rundfahrt_id=' . $this->config->item('iAktuelleRundfahrt'), array('sort_field'=>'etappen_nr', 'sort_order'=>'ASC'));
 		$aEtappen = array();
 		$iEtappeNr = $this->_getEtappenNr($this->config->item('iAktuelleEtappe'));
-		foreach($aTemp as $k=>$v) {
-			if ($v['etappen_nr']<$iEtappeNr) {
+		if ($iEtappeNr == 21) {
+			foreach($aTemp as $k=>$v) {
 				$aEtappen[] = $v;
 			}
+		} else {
+			foreach($aTemp as $k=>$v) {
+				if ($v['etappen_nr']<$iEtappeNr) {
+					$aEtappen[] = $v;
+				}
+			}
 		}
+		
 		return $aEtappen;
 	}
 }

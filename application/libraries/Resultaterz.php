@@ -88,11 +88,13 @@ class Resultaterz {
 		$this->_calculateTeam();
 		$this->_calculateTeamGesamt();
 		
+
 /*
 		echo "<pre>";
-		print_r($this->aRzTageswertungen);
+		print_r($this->aRzTageswertungen[17]);
 		echo "</pre>";
 */
+
 	}
 	
 		/*
@@ -429,6 +431,7 @@ class Resultaterz {
 			$punkte = 0;
 			foreach ($this->aEtappen as $iNrEtappe=>$aEtappe) {
 				$doped = false;
+				$bOut = false;
 				$fahrer_ids = array();
 				$fahrer_ids[] = $this->aKader[$iNrEtappe][$t['user_id']]['fahrer1'];
 				$fahrer_ids[] = $this->aKader[$iNrEtappe][$t['user_id']]['fahrer2'];
@@ -446,6 +449,12 @@ class Resultaterz {
 					}
 				}
 				
+				if ($t['out'] == 1) {
+					if ($t['out_etappen_id'] <= $aEtappe['etappen_id']) {
+						$bOut = true;
+					}
+				}
+				
 				foreach($fahrer_ids as $k=>$v) {
 					if ($doped == false) {
 						if (isset($this->aResultatePunkte[$iNrEtappe][$v]['punkte'])) {
@@ -454,7 +463,9 @@ class Resultaterz {
 					} 
 				}
 			}
-			$this->aRzPunkte[$t['user_id']]['punkte'] = $punkte;
+			if ($bOut == false) {
+				$this->aRzPunkte[$t['user_id']]['punkte'] = $punkte;
+			}
 		}
 		
 		for($i=0;$i<count($this->aRzPunkte);$i++) {
@@ -491,6 +502,7 @@ class Resultaterz {
 			$bergpunkte = 0;
 			foreach ($this->aEtappen as $iNrEtappe=>$aEtappe) {
 				$doped = false;
+				$bOut = false;
 				$fahrer_ids = array();
 				$fahrer_ids[] = $this->aKader[$iNrEtappe][$t['user_id']]['fahrer1'];
 				$fahrer_ids[] = $this->aKader[$iNrEtappe][$t['user_id']]['fahrer2'];
@@ -507,6 +519,12 @@ class Resultaterz {
 						}
 					}
 				}
+				
+				if ($t['out'] == 1) {
+					if ($t['out_etappen_id'] <= $aEtappe['etappen_id']) {
+						$bOut = true;
+					}
+				}
 
 				foreach($fahrer_ids as $k=>$v) {
 					if ($doped == false) {
@@ -516,7 +534,10 @@ class Resultaterz {
 					}
 				}
 			}
-			$this->aRzBerg[$t['user_id']]['berg'] = $bergpunkte;
+			if ($bOut == false) {
+				$this->aRzBerg[$t['user_id']]['berg'] = $bergpunkte;
+			}
+			
 		}
 		
 		// Sortieren	
@@ -559,7 +580,14 @@ class Resultaterz {
 					$key = array_keys($this->aRzTageswertungen[$iNrEtappe]);
 					$mem = array();
 					foreach($v['members'] as $x=>$y) {
-						$mem[]  = $y['user_id'];
+						if ($this->aTeilnehmer[$y['user_id']]['out'] == 0) {
+							$mem[]  = $y['user_id'];
+						} else {
+							if ($this->aTeilnehmer[$y['user_id']]['out_etappen_id'] >= $aEtappe['etappen_id']) {
+								$mem[]  = $y['user_id'];
+							}
+						}
+						
 					}
 					
 					if (in_array($key[$l], $mem)) {
@@ -568,8 +596,12 @@ class Resultaterz {
 					}
 					$l++;
 				}
+				if (count($mem) >= 3) {
+					$this->aRzTeamwertungen[$iNrEtappe][$v['rzteam_id']]['zeit_real'] = $zeit;
+				} else {
+					unset($this->aTeams[$v['rzteam_id']]);
+				}
 				
-				$this->aRzTeamwertungen[$iNrEtappe][$v['rzteam_id']]['zeit_real'] = $zeit;
 			}
 			
 		}
@@ -620,18 +652,24 @@ class Resultaterz {
 		foreach($this->aTeilnehmer as $t) {
 			$i = 1;
 			$zeit = 0;
-			foreach ($this->aEtappen as $iNrEtappe=>$aEtappe) {	
+			$bOut = false;
+			foreach ($this->aEtappen as $iNrEtappe=>$aEtappe) {
 				if ($t['out'] == 1) {
 					if ($t['out_etappen_id'] >= $this->aEtappen[$iNrEtappe]['etappen_id']) {
 						$zeit += $this->aRzTageswertungen[$i][$t['user_id']]['zeit_real'];
 						$i++;	
+					} else {
+						$bOut = true;
 					}
 				} else {
 					$zeit += $this->aRzTageswertungen[$i][$t['user_id']]['zeit_real'];
 					$i++;
 				}
 			}
-			$temp[$t['user_id']] = $zeit;
+			if ($bOut == false) {
+				$temp[$t['user_id']] = $zeit;	
+			}
+			
 			
 		}
 		asort($temp);

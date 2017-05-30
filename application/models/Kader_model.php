@@ -321,9 +321,11 @@ class Kader_model extends MY_Model
 		
 		if ($sType == 'kapitaen') {
 			$iCreditminus = 1;
+			$iCreditPlus = 0;
 			$aAllowedEtappen = array(2, 4);
 		} else if ($sType == 'sprinter') {
 			$iCreditminus = 3;
+			$iCreditPlus = 1;
 			$aAllowedEtappen = array(1);
 		}
 		if (count($aMoves) != 1) {
@@ -348,6 +350,11 @@ class Kader_model extends MY_Model
 					$this->db->set('creditmoves', 'ca_malus-' . $iCreditminus, FALSE);
 					$this->db->update('kader');
 					
+					$this->db->where('etappen_id', $iEtappe);
+					$this->db->where('user_id', $iEmpfaenger);
+					$this->db->set('creditmoves', 'ca_malus+' . $iCreditPlus, FALSE);
+					$this->db->update('kader');
+					
 					$this->db->insert('ca_moves', array('etappen_id' 	=>	$iEtappe,
 														'abgeber'		=> 	$this->session->userdata('user_id'),
 														'empfaenger'	=>	$iEmpfaenger));
@@ -370,9 +377,17 @@ class Kader_model extends MY_Model
 		$this->db->where('etappen_id', $aEtappe['etappen_id']);
 		$aKader = $this->db->get('kader')->row_array();
 		
-		$this->db->where('user_id', $this->session->userdata('user_id'));
-		$this->db->where('etappen_id', $iEtappe);
-		$this->db->update('kader', $aKader);
+		for($i = $iEtappenNr; $i<22;$i++) {
+			$this->db->where('etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+			$this->db->where('etappen_nr', $i);
+			$aEtappe = $this->db->get('etappen')->row_array();
+			
+			$this->db->where('user_id', $this->session->userdata('user_id'));
+			$this->db->where('etappen_id', $aEtappe['etappen_id']);
+			$this->db->update('kader', $aKader);
+		}
+		
+		
 	}
 	
 	private function _getTeilnahme() {
