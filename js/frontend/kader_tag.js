@@ -63,6 +63,23 @@
 		})
 
 	});
+	$("#backwards").on("click", function() {
+		prev = $('#etappen > option:selected').prev('option').val();
+		if (prev == undefined) {
+			alert("Du bist bereits am Beginn der Rundfahrt!")
+		} else {
+			window.location.href = base_url + 'kader/tag/' + prev;
+		}
+	});
+	$("#forward").on("click", function() {
+		next = $('#etappen > option:selected').next('option').val();
+		if (next == undefined) {
+			alert("Du bist bereits am Ende der Rundfahrt");
+		} else {
+			window.location.href = base_url + 'kader/tag/' + next;
+		}
+		
+	});
 	function ajax_call(position, fahrer_id) {
 		var etappen_id = $('.etappen_id').attr("id");
 		$.ajax({
