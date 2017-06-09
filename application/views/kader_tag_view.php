@@ -3,7 +3,7 @@
 		<h1>Dein Kader</h1>
 	</div>
 	<div class="row well">
-		<div class="col-md-1">
+		<div class="col-md-1 text-center">
 			<button class="btn btn-default" id="backwards"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span></button>
 		</div>
 		<div class="col-md-10">
@@ -18,7 +18,7 @@
 			?>
 		</select>
 		</div>
-		<div class="col-md-1">
+		<div class="col-md-1 text-center">
 			<button class="btn btn-default" id="forward"><span class="glyphicon glyphicon-forward" aria-hidden="true"></span></button>
 		</div>
 	</div>
