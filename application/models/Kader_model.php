@@ -421,4 +421,10 @@ class Kader_model extends MY_Model
 		$this->db->where('creditabgabe_id', $iAbgabe);
 		$this->db->delete('creditabgabe');		
 	}
+	
+	public function removeFex($iEtappe) {
+		$this->db->where('user_id', $this->session->userdata('user_id'));
+		$this->db->where('etappen_id', $iEtappe);
+		$this->db->update('kader', array('einsatz_creditpool'=>0));
+	}
 }

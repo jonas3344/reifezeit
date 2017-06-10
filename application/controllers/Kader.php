@@ -206,6 +206,10 @@ class Kader extends Frontend_my_controller
 		$this->model->removeBc($this->input->post('abgabeId'));
 	}
 	
+	public function removeFex() {
+		$this->model->removeFex($this->input->post('etappenid'));
+	}
+	
 	public function getFahrerForDropdown($iSort) {
 		echo json_encode($this->model->getFahrerForDropdown($iSort));
 	}

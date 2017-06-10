@@ -90,7 +90,19 @@
 				location.reload();
 			}
 		})
-	})
+	});
+	$(".removeFex").on("click", function() {
+		alert($(this).attr("id"));
+		$.ajax({
+			type:	"post",
+			url:	base_url + "kader/removeFex",
+			data:	{ etappenid:  $(this).attr("id")},
+			success: function(s) {
+				alert("Deine eingesetzten Fexpunkte wurden wieder gelöscht!");
+				location.reload();
+			}
+		})
+	});
 	function ajax_call(position, fahrer_id) {
 		var etappen_id = $('.etappen_id').attr("id");
 		$.ajax({

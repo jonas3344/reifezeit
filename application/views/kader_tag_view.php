@@ -123,8 +123,26 @@
 			</div>
 			<?php
 		}
-	?>
-	<?php
+	if ($aKader['einsatz_creditpool'] > 0) {
+		?>
+		<div class="row">
+				<div class="alert alert-success">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<?php
+					if ($bEdit == true) {
+					?>
+						<button class="btn btn-default removeFex" id="<?= $aEtappe['etappen_id'];?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+						<?php
+					}
+					?>
+					Du hast auf dieser Etappe <?= $aKader['einsatz_creditpool'];?> Fexpunkte eingesetzt!
+				</div>
+			</div>
+
+		<?php
+	}
 		
 	if ($aKader['creditmoves'] < 0) {
 		?>
