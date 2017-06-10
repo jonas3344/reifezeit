@@ -80,6 +80,17 @@
 		}
 		
 	});
+	$(".removeBc").on("click", function() {
+		$.ajax({
+			type:	"post",
+			url:	base_url + "kader/removeBc",
+			data:	{ abgabeId:  $(this).attr("id")},
+			success: function(s) {
+				alert("Die Creditabgabe wurde wieder gelöscht!");
+				location.reload();
+			}
+		})
+	})
 	function ajax_call(position, fahrer_id) {
 		var etappen_id = $('.etappen_id').attr("id");
 		$.ajax({

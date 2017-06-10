@@ -93,6 +93,11 @@
 					</button>
 					<?php
 						foreach($aAbgabe as $k=>$v) {
+							if ($bEdit == true) {
+								?>
+								<button class="btn btn-default removeBc" id="<?= $v['creditabgabe_id'];?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+								<?php
+							}
 							echo 'Du hast einen Bonuscredit an ' . $v['rzname'] . ' abgegeben!<br>';							
 						}
 					?>

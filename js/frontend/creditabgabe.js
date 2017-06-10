@@ -5,14 +5,15 @@
 			type: "post",
 			url: base_url + 'kader/insertCreditabgabe/',
 			data: {
-					empfaenger: empfaenger
+					empfaenger: empfaenger,
+					etappen_id: $("#etappenid").val()
 			},
 			success: function(s) {
 				if (s == 'ok') {
-					window.location.href = base_url + 'kader/tag';
+					window.location.href = base_url + 'kader/tag/' + $("#etappenid").val();
 				} else if (s == 'nok') {
 					alert("Leider kann Der Empfänger keinen Credit mehr empfangen!");
-					window.location.href = base_url + 'kader/tag';
+					window.location.href = base_url + 'kader/tag/' + $("#etappenid").val();
 				}
 			}
 		})

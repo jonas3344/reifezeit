@@ -14,6 +14,7 @@
 		} else {	
 	?>
 	<div class="row well">
+		<input type="hidden" id="etappenid" value="<?= $aEtappe['etappen_id'];?>">
 		<select name="empfaenger" id="empfaenger" class="form-control" style="margin-bottom: 5px">
 		<?php
 		foreach($aTeamMembers as $k=>$v) {

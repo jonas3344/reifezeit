@@ -404,4 +404,21 @@ class Kader_model extends MY_Model
 		$aEtappe = $this->getOneRow('etappen', 'etappen_id=' . $iEtappe);
 		return $aEtappe['etappen_nr'];
 	}
+	
+	public function removeBc($iAbgabe) {
+		$aAbgabe = $this->getOneRow('creditabgabe', 'creditabgabe_id=' . $this->db->escape($iAbgabe));
+		
+		$this->db->where('user_id', $aAbgabe['abgeber']);
+		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->set('creditabgabe', 'creditabgabe+1', FALSE);
+		$this->db->update('teilnahme');
+		
+		$this->db->where('user_id', $aAbgabe['empfaenger']);
+		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->set('creditempfang', 'creditempfang+1', FALSE);
+		$this->db->update('teilnahme');
+		
+		$this->db->where('creditabgabe_id', $iAbgabe);
+		$this->db->delete('creditabgabe');		
+	}
 }

@@ -92,13 +92,7 @@ class Kader extends Frontend_my_controller
 		$aData['aDoping'] = $this->model->getDopingAll();
 		$aData['aCa'] = $this->model->getAllCa();
 		$aData['aUser'] = $this->model->getUser();
-			
-/*
-		echo "<pre>";
-		print_r($aData);
-		echo "</pre>"
-*/;
-		
+				
 		$this->renderPage('kaderuebersicht', $aData, array(), array());
 	}
 	
@@ -200,12 +194,16 @@ class Kader extends Frontend_my_controller
 	public function insertCreditabgabe() {
 		$bPossible = $this->model->reduceCa($this->session->userdata('user_id'), $this->input->post('empfaenger'));
 		if ($bPossible == true) {
-			$this->model->saveRecord('creditabgabe', array('abgeber'=> $this->session->userdata('user_id'), 'empfaenger'=>$this->input->post('empfaenger'), 'etappen_id'=> $this->config->item('iAktuelleEtappe')), -1);
+			$this->model->saveRecord('creditabgabe', array('abgeber'=> $this->session->userdata('user_id'), 'empfaenger'=>$this->input->post('empfaenger'), 'etappen_id'=> $this->input->post('etappen_id')), -1);
 			echo 'ok';
 		} else {
 			echo 'nok';
 		}
 		
+	}
+	
+	public function removeBc() {
+		$this->model->removeBc($this->input->post('abgabeId'));
 	}
 	
 	public function getFahrerForDropdown($iSort) {
