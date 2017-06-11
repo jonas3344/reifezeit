@@ -15,15 +15,21 @@ class Forencode extends Admin_my_controller
 		$this->load->model('Forencode_model', 'model');
 	}
 
-	public function index() {
+	public function index($iEtappe = 0) {
 		$aData = array();
 		$this->load->library('Resultaterz', 69);
 		$this->load->helper('forum_helper');
 		$this->load->helper('time_helper');
 		
-		$a = new Resultaterz(69);
+		if ($iEtappe == 0) {
+			$iEtappe = $this->config->item('iAktuelleEtappe');
+		}
 		
-		$aResultData['etappe'] = $this->model->getOneRow('etappen', 'etappen_id=' . 69);
+		$a = new Resultaterz($iEtappe);
+		
+		
+		
+		$aResultData['etappe'] = $this->model->getOneRow('etappen', 'etappen_id=' . $iEtappe);
 		$aResultData['stage_result'] = $a->getTagesWertung();
 		$aResultData['stage_team'] = $a->getTeam();
 		$aResultData['overall'] = $a->getGesamtWertung();
@@ -32,12 +38,6 @@ class Forencode extends Admin_my_controller
 		$aResultData['overall_team'] = $a->getTeamGesamt();
 		$aResultData['teilnehmer'] = $this->model->getTeilnehmerForum();
 		$aResultData['teams'] = $this->model->getTeamsForum();
-		
-/*
-		echo "<pre>";
-		print_r($aResultData['stage_result']);
-		echo "</pre>";
-*/
 		
 		if ($aResultData['etappe']['etappen_nr'] > 1) {
 			$this->db->where('etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
@@ -63,7 +63,10 @@ class Forencode extends Admin_my_controller
 		
 		$aData = createResultKaderpost($aResultData, $aExFuehrung);
 		
-		$this->renderPage('forencode', $aData, array(), array());
+		$aData['aAlleEtappen'] = $this->model->getRows('etappen', 'etappen_rundfahrt_id=' . $this->config->item('iAktuelleRundfahrt'), array('sort_field' => 'etappen_nr', 'sort_order' => 'ASC'));
+		$aData['iEtappe'] = $iEtappe;
+		
+		$this->renderPage('forencode', $aData, array('clipboard.min.js'), array());
 	}
 	
 	public function ruhmeshalle() {
