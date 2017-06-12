@@ -20,7 +20,7 @@
 			}	
 			?>
 	    </ul>
-	    <div class="tab-content panel">
+	    <div class="tab-content panel" style="margin-bottom: 300px;">
 			<?php
 			foreach($aPlanung as $k=>$v) {
 				if ($v['id'] == $iPlanung) {
@@ -50,7 +50,38 @@
 						</label>
 						</div>
 					</div>
-					<table class="table table-striped">
+					<table class="table table-header-rotated">
+						<thead>
+							<th class="rotate"><div class="rotate"><span class="rotate">Aktion</span></div></th>
+							<th class="rotate"><div class="rotate"><span class="rotate">Etappe</span></div></th>
+							<th class="rotate"><div class="rotate"><span class="rotate">Fahrer 1</span></div></th>
+							<th></th>
+							<th></th>
+							<th class="rotate"><div class="rotate"><span class="rotate">Fahrer 2</span></div</th>
+							<th></th>
+							<th></th>
+							<th class="rotate"><div class="rotate"><span class="rotate">Fahrer 3</span></div</th>
+							<th></th>
+							<th></th>
+							<th class="rotate"><div class="rotate"><span class="rotate">Fahrer 4</span></div</th>
+							<th></th>
+							<th></th>
+							<th class="rotate"><div class="rotate"><span class="rotate">Fahrer 5</span></div></th>
+							<th></th>
+							<th></th>
+							<th class="rotate"><div class="rotate"><span class="rotate">Eingesetzte Credits</span></div></th>
+							<?php
+							if (($aUser['rolle_id'] == 3) || ($aUser['rolle_id'] == 6)) {
+								?>
+								<th class="rotate"><div class="rotate"><span class="rotate">Fexpunkte</span></div></th>
+								<?php
+							}
+							?>
+							<th class="rotate"><div class="rotate"><span class="rotate">CA/BC, etc.</span></div></th>
+							<th class="rotate"><div class="rotate"><span class="rotate">Verfügbare Credits</span></div></th>
+							
+						</thead>
+						<tbody>
 					<?php
 					foreach($v['aData']['aKader'] as $kk=>$vk) {
 						$sColor = '';
@@ -68,11 +99,11 @@
 						}
 						?>
 						<tr>
-							<td width="8%"><?php if ($bEditable) {
+							<td width="4%"><?php if ($bEditable) {
 								?> 
 								<div class="dropdown">
-									<button class="btn btn-default btn-xs saveKaderDay" id="<?= $vk['aEtappe']['etappen_nr'];?>_<?= $v['id'];?>"><span class="glyphicon glyphicon-ok" aria-hidden="true" style="color: green"></span></button>
-								  <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-default btn-xs">
+									<button class="btn btn-default btn-xs saveKaderDay" id="<?= $vk['aEtappe']['etappen_nr'];?>_<?= $v['id'];?>"><span class="glyphicon glyphicon-ok" aria-hidden="true" style="color: green"></span></button><br>
+								  <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-default btn-xs" style="margin-top:2px;">
 								    <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
 								  </button>
 								  <ul class="dropdown-menu" aria-labelledby="dLabel">
@@ -100,23 +131,65 @@
 									$sChange = '';
 								}
 								?>
-								<td width="10%"<?= $sChange;?>><span class="fahrer<?= $i . '_' . $v['id'] . '_' . $vk['aEtappe']['etappen_nr'];?> span_select" id="<?= $vf['fahrer_id'];?>"><?= strtoupper(substr($vf['fahrer_vorname'], 0, 1));?>.<?= $vf['fahrer_name'];?></span></td>
-								<td width="4%"><?php if ($bEditable) {
+								<td width="9%"<?= $sChange;?>><span class="fahrer<?= $i . '_' . $v['id'] . '_' . $vk['aEtappe']['etappen_nr'];?> span_select" id="<?= $vf['fahrer_id'];?>"><?= strtoupper(substr($vf['fahrer_vorname'], 0, 1));?>.<?= $vf['fahrer_name'];?></span></td>
+								<td width="3%"><?php if ($bEditable) {
 									?>
 									<button class="btn btn-default btn-xs change" id="<?= $i . '_' . $v['id'] . '_' . $vk['aEtappe']['etappen_nr'];?>"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
 									<?php } ?>
 									</td>
-								<td width="4%"><?= $vf['fahrer_rundfahrt_credits'];?></td>
+								
+								
+								<td width="3%"><?= $vf['fahrer_rundfahrt_credits'];?></td>
+								
 								<?php
 									$i++;
 							}	
 							?>
+							
 							<td width="4%"><?= $iSum;?></td>
+							<?php
+							if (($aUser['rolle_id'] == 3) || ($aUser['rolle_id'] == 6)) {
+								?>
+									<td width="6%">
+										<?php
+											if ($aUser['rolle_id'] == 3) {
+												if (($vk['aEtappe']['etappen_klassifizierung'] != 3) && ($vk['aEtappe']['etappen_klassifizierung'] != 5) && ($vk['aEtappe']['etappen_klassifizierung'] != 6)) {
+												?>
+												<select class="form-control fex" id="fex_<?= $v['id'];?>_<?= $vk['aEtappe']['etappen_id'];?>">
+													<option value="0"<?= ($vk['iFex'] == 0) ? ' selected' : ''?>>0</option>
+													<option value="2"<?= ($vk['iFex'] == 2) ? ' selected' : ''?>>2</option>
+													<option value="4"<?= ($vk['iFex'] == 4) ? ' selected' : ''?>>4</option>
+												</select>
+												<?php
+												}
+											} else if ($aUser['rolle_id'] == 6) {
+												if ($vk['aEtappe']['etappen_klassifizierung'] == 4) {
+													?>
+													<select class="form-control fex" id="fex_<?= $v['id'];?>_<?= $vk['aEtappe']['etappen_id'];?>">
+														<option value="0"<?= ($vk['iFex'] == 0) ? ' selected' : ''?>>0</option>
+														<option value="1"<?= ($vk['iFex'] == 1) ? ' selected' : ''?>>1</option>
+														<option value="2"<?= ($vk['iFex'] == 2) ? ' selected' : ''?>>2</option>
+														<option value="3"<?= ($vk['iFex'] == 3) ? ' selected' : ''?>>3</option>
+														<option value="4"<?= ($vk['iFex'] == 4) ? ' selected' : ''?>>4</option>
+														<option value="5"<?= ($vk['iFex'] == 5) ? ' selected' : ''?>>5</option>
+													</select>
+												<?php
+												}
+												
+											}
+											?>
+									</td>
+								<?php
+							}
+							?>
+							<td width="6%"><input type="text" class="form-control spielfeld" id="spielfeld_<?= $v['id'];?>_<?= $vk['aEtappe']['etappen_id'];?>" value="<?= $vk['iSpielfeld'];?>"></td>
+							<td><span id="avCredits_<?= $v['id'];?>_<?= $vk['aEtappe']['etappen_id'];?>"><?= $vk['iCreditbase'] + $vk['iSpielfeld'] + $vk['iFex'];?></span></td>
 						</tr>
 						<?php
 					}
 					
 					?>
+						</tbody>
 					</table>
 					</div>
 				</div>

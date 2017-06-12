@@ -22,6 +22,8 @@ class Planung extends Frontend_my_controller
 		
 		$aData['iPlanung'] = $iPlanung;
 		
+		$aData['aUser'] = $this->model->getTeilnahme($this->session->userdata('user_id'));
+		
 		foreach($aData['aPlanung'] as $k=>$v) {
 			$aData['aPlanung'][$k]['aData'] = $this->model->getPlanungsData($v['id']);
 		}
@@ -81,5 +83,13 @@ class Planung extends Frontend_my_controller
 	
 	public function removePlanung() {
 		$this->model->removePlanung($this->input->post('id'));
+	}
+	
+	public function saveSpielfeld() {
+		$this->model->saveSpielfeld($this->input->post('planung_id'), $this->input->post('etappen_id'), $this->input->post('wert'));
+	}
+	
+	public function saveFex() {
+		$this->model->saveFex($this->input->post('planung_id'), $this->input->post('etappen_id'), $this->input->post('wert'));
 	}
 }

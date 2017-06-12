@@ -33,6 +33,9 @@ class Planung_model extends MY_Model
 		foreach($aTempData as $k=>$v) {
 			$aFahrerId = $this->_getFahrerId($v);
 			$aPlanungData['aKader'][$k]['aEtappe'] = $this->getOneRow('etappen', 'etappen_id=' . $v['etappen_id']);
+			$aPlanungData['aKader'][$k]['iCreditbase'] = $this->getCreditBase($v['etappen_id']);
+			$aPlanungData['aKader'][$k]['iSpielfeld'] = $v['spielfeld'];
+			$aPlanungData['aKader'][$k]['iFex'] = $v['fex'];
 			
 			$iTime = _create_timestamp($aPlanungData['aKader'][$k]['aEtappe']['etappen_datum'], $aPlanungData['aKader'][$k]['aEtappe']['etappen_eingabeschluss']);
 			if (time() > $iTime) {
@@ -161,10 +164,13 @@ class Planung_model extends MY_Model
 		$this->db->where('etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
 		$aEtappe = $this->db->get('etappen')->row_array();
 		
-		$this->db->select('fahrer1, fahrer2, fahrer3, fahrer4, fahrer5');
+		$this->db->select('fahrer1, fahrer2, fahrer3, fahrer4, fahrer5, fex');
 		$this->db->where('planung_id', $iPlanungId);
 		$this->db->where('etappen_id', $aEtappe['etappen_id']);
 		$aKader = $this->db->get('planung_kader')->row_array();
+		
+		$aKader['einsatz_creditpool'] = $aKader['fex'];
+		unset($aKader['fex']);
 		
 		$this->db->where('user_id', $this->session->userdata('user_id'));
 		$this->db->where('etappen_id', $aEtappe['etappen_id']);
@@ -186,7 +192,8 @@ class Planung_model extends MY_Model
 										'fahrer2' => $v['fahrer2'],
 										'fahrer3' => $v['fahrer3'],
 										'fahrer4' => $v['fahrer4'],
-										'fahrer5' => $v['fahrer5']);
+										'fahrer5' => $v['fahrer5'],
+										'einsatz_creditpool' => $v['fex']);
 										
 				$this->db->where('etappen_id', $v['etappen_id']);
 				$this->db->where('user_id', $this->session->userdata('user_id'));
@@ -201,6 +208,17 @@ class Planung_model extends MY_Model
 	public function removeKaderPlanung($iId) {
 		$this->db->where('planung_id', $iId);
 		$this->db->delete('planung_kader');
+	}
+	
+	public function saveSpielfeld($iPlanung, $iEtappe, $iWert) {
+		$this->db->where('planung_id', $iPlanung);
+		$this->db->where('etappen_id', $iEtappe);
+		$this->db->update('planung_kader', array('spielfeld' => $iWert));
+	}
+	public function saveFex($iPlanung, $iEtappe, $iWert) {
+		$this->db->where('planung_id', $iPlanung);
+		$this->db->where('etappen_id', $iEtappe);
+		$this->db->update('planung_kader', array('fex' => $iWert));
 	}
 	
 	private function _getFahrerId($aArray) {

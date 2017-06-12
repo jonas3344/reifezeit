@@ -167,6 +167,7 @@ class Kader_model extends MY_Model
 		$this->db->join('fahrer f', 'fr.fahrer_id=f.fahrer_id');
 		$this->db->join('team t', 't.team_id=f.fahrer_team_id');
 		$this->db->where('fr.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->where('fr.ausgeschieden', 0);
 		if ($iSort == 1) {
 			$this->db->order_by('fr.fahrer_startnummer', 'ASC');
 		} else if ($iSort == 2) {

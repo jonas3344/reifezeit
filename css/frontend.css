@@ -33,4 +33,23 @@ table.vertical-align > tbody > tr > td {
     top: 9px;
     color: red;
 }
-.nav-tab
+
+
+  th.rotate {
+    height: 160px;
+    white-space: nowrap;
+          text-align: center;
+    
+  }
+  div.rotate {
+    transform:
+		translate(-9px, 0px)
+        rotate(-90deg);
+      width: 30px;
+    }
+   span.rotate {
+      padding: 5px 10px;
+      text-decoration: underline;
+	  text-align: center;
+	  vertical-align: middle;
+    }

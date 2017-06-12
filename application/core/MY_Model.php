@@ -57,4 +57,43 @@ class MY_Model extends CI_Model {
 		$aEtappe = $this->getOneRow('etappen', 'etappen_id=' . $iEtappe);
 		return $aEtappe['etappen_nr'];
 	}
+	
+	public function getTeilnahme($iUser) {
+		$this->db->where('user_id', $iUser);
+		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		return $this->db->get('teilnahme')->row_array();
+	}
+	
+	public function getCreditBase($iEtappe) {
+		$this->db->where('user_id', $this->session->userdata('user_id'));
+		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$aUser = $this->db->get('teilnahme')->row_array();
+		$aRolle = $this->getOneRow('rollen', 'rolle_id=' . $aUser['rolle_id']);
+		
+		$aEtappe = $this->getOneRow('etappen', 'etappen_id=' . $iEtappe);
+		
+		$iCredit = 0;
+		switch($aEtappe['etappen_klassifizierung']) {
+			case 1:
+				$iCredit = $aRolle['credit_sprint'];
+				break;
+			case 2:
+				$iCredit = $aRolle['credit_normal'];
+				break;
+			case 3:
+				$iCredit = $aRolle['credit_zf'];
+				break;
+			case 4:
+				$iCredit = $aRolle['credit_berg'];
+				break;
+			case 5:
+				$iCredit = $aRolle['credit_bzf'];
+				break;
+			case 6:
+				$iCredit = $aRolle['credit_mzf'];
+				break;
+			
+		}
+		return $iCredit;
+	}
 }

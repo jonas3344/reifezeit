@@ -1,4 +1,6 @@
 ;(function($) {
+	var wert = 0;
+	var wert_dropdown = 0;
 	$('a[rel=popover]').popover({
 	  html: true,
 	  trigger: 'hover',
@@ -200,5 +202,67 @@
 			}
 		});
 
-	})
+	});
+	$(".spielfeld").focus(function() {
+		var value=$.trim($(this).val());
+		if (value.length > 0) {
+			if (isNaN(parseInt($(this).val())) == false) {
+				wert = parseInt($(this).val());
+			}
+		} else {
+			wert = 0;
+		}
+	});
+	$(".spielfeld").blur(function() {
+		id = $(this).attr('id');
+		planung = id.split('_')[1];
+		etappe = id.split('_')[2];
+		
+		var value=$.trim($(this).val());
+		aktuellerWert = parseInt($("#avCredits_" + planung + "_" + etappe).html());
+		if (value.length > 0) {
+			if (isNaN($(this).val()) == false) {
+				saveWert = parseInt($(this).val());
+				neuerWert = aktuellerWert - wert + parseInt($(this).val());
+				$("#avCredits_" + planung + "_" + etappe).html(neuerWert);
+			}	
+		} else {
+			neuerWert = aktuellerWert - wert;
+			saveWert = 0;
+			$("#avCredits_" + planung + "_" + etappe).html(neuerWert);
+		}
+		$.ajax({
+			type:	"post",
+			url:	base_url + 'planung/saveSpielfeld',
+			data:	{
+					planung_id: planung,
+					etappen_id: etappe,
+					wert: saveWert
+			}
+		});
+	});
+	$(".fex").on("focusin", function() {
+		$(this).data('val', $(this).val());
+	});
+	$(".fex").on("change", function() {
+		id = $(this).attr('id');
+		planung = id.split('_')[1];
+		etappe = id.split('_')[2];
+		aktuellerWert = parseInt($("#avCredits_" + planung + "_" + etappe).html());
+		
+		aktuellerWert = aktuellerWert - $(this).data('val');
+		aktuellerWert = aktuellerWert + parseInt($(this).val());
+
+		$("#avCredits_" + planung + "_" + etappe).html(aktuellerWert);
+		$.ajax({
+			type:	"post",
+			url:	base_url + 'planung/saveFex',
+			data:	{
+					planung_id: planung,
+					etappen_id: etappe,
+					wert: $(this).val()
+			}
+		});
+		$(this).blur();
+	});
 })(jQuery);
