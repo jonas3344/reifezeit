@@ -16,7 +16,7 @@ class Planung_model extends MY_Model
 	}
 	
 	public function getKader() {
-		$this->db->select('k.etappen_id, k.fahrer1, k.fahrer2, k.fahrer3, k.fahrer4, k.fahrer5');
+		$this->db->select('k.etappen_id, k.fahrer1, k.fahrer2, k.fahrer3, k.fahrer4, k.fahrer5, k.einsatz_creditpool AS fex');
 		$this->db->join('etappen e', 'e.etappen_id=k.etappen_id');
 		$this->db->order_by('e.etappen_nr', 'ASC');
 		$this->db->where('e.etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));

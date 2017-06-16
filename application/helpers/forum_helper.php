@@ -312,6 +312,20 @@ if ( ! function_exists('createForumKaderpost'))
 	
 }
 
+if ( ! function_exists('forumShortlist'))
+{
+	function forumShortlist($aShortlist, $aFahrer, $aUser) {
+		$sOutput = "[b][size=18]Shortlist " . $aShortlist['name'] . "[/size][/b]<br>";
+		$sOutput .= '[b][size=14]Von ' . $aUser['name'] . '[/size][/b]<br><br>';
+		$sOutput .= '[table fontsize=9][mcol]Startnummer[mcol]Fahrer[mcol]Team[mcol]Nation[mcol]Credits<br>';
+		foreach($aFahrer as $k=>$v) {
+			$sOutput .= '[mrow]' . $v['fahrer_startnummer'] . '[mcol]' . $v['fahrer_vorname'] . ' ' . $v['fahrer_name'] . '[mcol]' . $v['team_short'] . '[mcol]' . $v['fahrer_nation'] . '[mcol]' . $v['fahrer_rundfahrt_credits'];
+		}
+		$sOutput .= '[/table]';
+		return $sOutput;
+	}
+}
+
 if ( ! function_exists('_cmpWechsel'))
 {
 	function _cmpWechsel ($a, $b) 

@@ -31,6 +31,8 @@ class Kader extends Frontend_my_controller
 		
 		$aData['aUser'] = $this->model->getUser();
 		
+		$aData['aShortlists'] = $this->model->getShortlists();
+		
 		$iTime = _create_timestamp($aData['aEtappe']['etappen_datum'], $aData['aEtappe']['etappen_eingabeschluss']);
 		if (time() > $iTime) {
 			$aData['bEdit'] = false;
@@ -210,8 +212,9 @@ class Kader extends Frontend_my_controller
 		$this->model->removeFex($this->input->post('etappenid'));
 	}
 	
-	public function getFahrerForDropdown($iSort) {
-		echo json_encode($this->model->getFahrerForDropdown($iSort));
+	public function getFahrerForDropdown($iSort, $iShortlist) {
+		echo json_encode($this->model->getFahrerForDropdown($iSort, $iShortlist));
+		
 	}
 	
 	public function saveKader() {

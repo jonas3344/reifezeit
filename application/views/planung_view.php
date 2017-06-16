@@ -48,6 +48,18 @@
 						<label class="radio-inline">
 						  <input type="radio" name="<?= $v['id'];?>_sortorder" value="1"> Sortierung nach #
 						</label>
+						<label class="radio-inline">
+						  <input type="radio" name="<?= $v['id'];?>_sortorder" value="3" style="margin-top: 10px;">
+						  <select class="form-control" id="<?= $v['id'];?>_sortorder_select">
+							  <?php
+								foreach($aShortlists as $kS=>$vS) {
+								?>
+									<option value="<?= $vS['id'];?>"><?= $vS['name'];?></option>
+								<?php	
+								}							  
+							  ?>
+						  </select>
+						</label>
 						</div>
 					</div>
 					<table class="table table-header-rotated">
@@ -155,7 +167,7 @@
 											if ($aUser['rolle_id'] == 3) {
 												if (($vk['aEtappe']['etappen_klassifizierung'] != 3) && ($vk['aEtappe']['etappen_klassifizierung'] != 5) && ($vk['aEtappe']['etappen_klassifizierung'] != 6)) {
 												?>
-												<select class="form-control fex" id="fex_<?= $v['id'];?>_<?= $vk['aEtappe']['etappen_id'];?>">
+												<select class="form-control fex" id="fex_<?= $v['id'];?>_<?= $vk['aEtappe']['etappen_id'];?>"<?= ($bEditable == false) ? ' disabled' : ''?>>
 													<option value="0"<?= ($vk['iFex'] == 0) ? ' selected' : ''?>>0</option>
 													<option value="2"<?= ($vk['iFex'] == 2) ? ' selected' : ''?>>2</option>
 													<option value="4"<?= ($vk['iFex'] == 4) ? ' selected' : ''?>>4</option>
@@ -165,7 +177,7 @@
 											} else if ($aUser['rolle_id'] == 6) {
 												if ($vk['aEtappe']['etappen_klassifizierung'] == 4) {
 													?>
-													<select class="form-control fex" id="fex_<?= $v['id'];?>_<?= $vk['aEtappe']['etappen_id'];?>">
+													<select class="form-control fex" id="fex_<?= $v['id'];?>_<?= $vk['aEtappe']['etappen_id'];?>"<?= ($bEditable == false) ? ' disabled' : ''?>>
 														<option value="0"<?= ($vk['iFex'] == 0) ? ' selected' : ''?>>0</option>
 														<option value="1"<?= ($vk['iFex'] == 1) ? ' selected' : ''?>>1</option>
 														<option value="2"<?= ($vk['iFex'] == 2) ? ' selected' : ''?>>2</option>

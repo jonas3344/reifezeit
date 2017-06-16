@@ -22,9 +22,12 @@ class Planung extends Frontend_my_controller
 		
 		$aData['iPlanung'] = $iPlanung;
 		
+		$aData['aShortlists'] = $this->model->getShortlists();
+		
 		$aData['aUser'] = $this->model->getTeilnahme($this->session->userdata('user_id'));
 		
 		foreach($aData['aPlanung'] as $k=>$v) {
+			$aData['iPlanung'] = ($aData['iPlanung'] == 0) ? $v['id'] : $aData['iPlanung'];
 			$aData['aPlanung'][$k]['aData'] = $this->model->getPlanungsData($v['id']);
 		}
 			

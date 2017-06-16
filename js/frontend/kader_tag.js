@@ -9,7 +9,7 @@
 		$saved = $('.' + span[0]).html();
 		$.ajax({
 			type: "post",
-			url: base_url + 'kader/getFahrerForDropdown/' + span[1],
+			url: base_url + 'kader/getFahrerForDropdown/' + span[1] + '/' + span[2],
 			success: function(s) {
 				data = $.parseJSON(s);
 				var selectList = "<select name='" + span[0] + "' class='form-control " + span + "'>";

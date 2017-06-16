@@ -162,19 +162,35 @@ class Kader_model extends MY_Model
 		return $aReturn;
 	}
 	
-	public function getFahrerForDropdown($iSort) {
-		$this->db->select('fr.fahrer_startnummer, f.fahrer_id, f.fahrer_name, f.fahrer_vorname, t.team_short, fr.fahrer_rundfahrt_credits');
-		$this->db->join('fahrer f', 'fr.fahrer_id=f.fahrer_id');
-		$this->db->join('team t', 't.team_id=f.fahrer_team_id');
-		$this->db->where('fr.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
-		$this->db->where('fr.ausgeschieden', 0);
-		if ($iSort == 1) {
-			$this->db->order_by('fr.fahrer_startnummer', 'ASC');
-		} else if ($iSort == 2) {
+	public function getFahrerForDropdown($iSort, $iShortlist) {
+		if ($iShortlist == 0) {
+			$this->db->select('fr.fahrer_startnummer, f.fahrer_id, f.fahrer_name, f.fahrer_vorname, t.team_short, fr.fahrer_rundfahrt_credits');
+			$this->db->join('fahrer f', 'fr.fahrer_id=f.fahrer_id');
+			$this->db->join('team t', 't.team_id=f.fahrer_team_id');
+			$this->db->where('fr.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+			$this->db->where('fr.ausgeschieden', 0);
+			if ($iSort == 1) {
+				$this->db->order_by('fr.fahrer_startnummer', 'ASC');
+			} else if ($iSort == 2) {
+				$this->db->order_by('fr.fahrer_rundfahrt_credits', 'DESC');
+				$this->db->order_by('fr.fahrer_startnummer', 'ASC');
+			}
+			$aFahrer = $this->db->get('fahrer_rundfahrt fr')->result_array();
+		} else {
+			$this->db->select('t.team_short, f.fahrer_id, f.fahrer_name, f.fahrer_vorname, f.fahrer_nation, fr.fahrer_startnummer, fr.fahrer_rundfahrt_credits');
+			$this->db->join('fahrer f', 'sf.fahrer_id=f.fahrer_id');
+			$this->db->join('team t', 'f.fahrer_team_id=t.team_id');
+			$this->db->join('fahrer_rundfahrt fr', 'fr.fahrer_id=f.fahrer_id');
+			$this->db->from('shortlists_fahrer sf');
+			$this->db->where('sf.shortlist_id', $iShortlist);
+			$this->db->where('fr.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+			$this->db->where('fr.ausgeschieden', 0);
 			$this->db->order_by('fr.fahrer_rundfahrt_credits', 'DESC');
-			$this->db->order_by('fr.fahrer_startnummer', 'ASC');
+			$aFahrer = $this->db->get()->result_array();
+
 		}
-		return $this->db->get('fahrer_rundfahrt fr')->result_array();
+		return $aFahrer;
+		
 	}
 	
 	public function saveKader($iEtappe, $sPosition, $iFahrer) {

@@ -197,8 +197,23 @@
 						<td width="70%"> <span class="fahrer<?= $i;?>" id="<?= $v['fahrer_id'];?>">#<?= $v['fahrer_startnummer'] . ' - ' . $v['fahrer_vorname'] . ' ' . $v['fahrer_name'] . ' - ' . $v['team_name'] . ' ' . $sTextOut;?></span></td>
 						<td><?php
 							if ($bEdit == true) { ?>
-							<button class="btn btn-default change" id="fahrer<?= $i;?>_1"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span></button>
-							<button class="btn btn-default change" id="fahrer<?= $i;?>_2"><span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span></button>
+							<div class="dropdown">
+							<button class="btn btn-default change" id="fahrer<?= $i;?>_1_0"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span></button>
+							<button class="btn btn-default change" id="fahrer<?= $i;?>_2_0"><span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span></button>
+							
+								<button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-default">
+								     <span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
+								</button>
+								  <ul class="dropdown-menu" aria-labelledby="dLabel">
+								  		<?php
+										foreach($aShortlists as $k=>$v) {
+											?>
+												<li><a href="#" class="change" id="fahrer<?= $i . '_3_' . $v['id'];?>"><?= $v['name'];?></a></li>
+										  <?php
+										}
+										?>	
+								  </ul>
+							</div>
 							<?php
 							}
 							?>	

@@ -15,6 +15,7 @@
 				<th>Nation</th>
 				<th></th>
 				<th>Credits</th>
+				<th width="10%">Shortlist</th>
 			</thead>
 			<tbody>
 			<?php
@@ -27,6 +28,31 @@
 					<td><img src="<?= base_url() . 'img/flags/' . strtolower($aFahrer['fahrer_nation']) . '.png';?>" width="20"></td>
 					<td><?= $aFahrer['team_short'];?></td>
 					<td><?= $aFahrer['fahrer_rundfahrt_credits'];?></td>
+					<td>
+							<?php
+							if (count($aShortlists) > 0) {
+								?>
+								<div class="dropdown">
+									<button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-default" style="margin-top:2px;">
+									     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+									</button>
+									  <ul class="dropdown-menu" aria-labelledby="dLabel">
+										  <?php
+											  foreach($aShortlists as $k=>$v) {
+												  if ($this->Shortlist_model->checkFahrerShortlist($aFahrer['fahrer_id'], $v['id']) == false)
+												  {
+														?>
+														<li><a href="#" class="addToShortlist" id="<?= $aFahrer['fahrer_id'] . '_' . $v['id'];?>"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> <?= $v['name'];?></a></li>
+												  <?php
+													}
+											  }
+											  ?>	
+									  </ul>
+								</div>	
+								<?php
+							}
+							?>
+						</td>
 				</tr>
 				<?php
 			}	

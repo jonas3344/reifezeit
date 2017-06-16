@@ -34,6 +34,11 @@ class MY_Model extends CI_Model {
 		return $iId;
 	}
 	
+	public function deleteRecord($sTable, $iId, $sIdField = 'id') {
+		$this->db->where($sIdField, $iId);
+		$this->db->delete($sTable);
+	}
+	
 	public function getLatestSort($sTable, $sWhere, $sSortField) {
 		$this->db->where($sWhere);
 		$this->db->order_by($sSortField, 'DESC');
@@ -95,5 +100,42 @@ class MY_Model extends CI_Model {
 			
 		}
 		return $iCredit;
+	}
+	
+	public function getShortlists($bShared = false) {
+		if ($bShared == false) {
+			$this->db->select('id, name, share_to_team');
+			$this->db->where('user_id', $this->session->userdata('user_id'));
+			$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+			$aShortlists = $this->db->get('shortlists')->result_array();
+		} else {
+			$this->db->select('rz_team_id');
+			$this->db->from('rz_user_team');
+			$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+			$this->db->where('user_id', $this->session->userdata('user_id'));
+			$aTeam = $this->db->get()->row_array();
+			
+			$this->db->select('user_id');
+			$this->db->from('rz_user_team');
+			$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+			$this->db->where('rz_team_id', $aTeam['rz_team_id']);
+			$aTeamMembers = $this->db->get()->result_array();
+			
+			$aShortlists = array();
+			
+			foreach($aTeamMembers as $k=>$v) {
+				if ($v['user_id'] != $this->session->userdata('user_id')) {
+					$this->db->select('s.id, s.name, s.share_to_team, u.name as username, u.rzname as rzname');
+					$this->db->where('s.user_id', $v['user_id']);
+					$this->db->where('s.share_to_team', 1);
+					$this->db->join('rz_user u', 's.user_id=u.id');
+					$aTemp = $this->db->get('shortlists s')->result_array();
+					foreach($aTemp as $kT=>$vT) {
+						$aShortlists[] = $vT;
+					}
+				}
+			}
+		}
+		return $aShortlists;
 	}
 }

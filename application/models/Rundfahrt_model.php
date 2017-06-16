@@ -72,4 +72,5 @@ class Rundfahrt_model extends MY_Model
 		
 		return $aResult;
 	}
+	
 }

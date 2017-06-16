@@ -24,6 +24,7 @@
 		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Rundfahrt <span class="caret"></span></a>
 		          <ul class="dropdown-menu">
 		            <li><a href="<?= base_url()?>rundfahrt/transfermarkt">Transfermarkt</a></li>
+		            <li><a href="<?= base_url()?>shortlist">Shortlists</a></li>
 		            <li><a href="<?= base_url()?>rundfahrt/etappen">Etappen</a></li>
 		            <li><a href="<?= base_url()?>rundfahrt/resultate">Resultate</a></li>
 		          </ul>

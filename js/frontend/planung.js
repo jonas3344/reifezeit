@@ -13,9 +13,14 @@
 		control_name = 'fahrer' + object_name[0] + "_" + object_name[1] + "_" + object_name[2];
 		id = $('.fahrer'+this.id).attr('id');
 		sort_order = $('input[name=' + object_name[1] + '_sortorder]:checked').val();
+		if (sort_order == 3) {
+			shortlist = $("#" + object_name[1] + "_sortorder_select").val();
+		} else {
+			shortlist = 0;
+		}
 		$.ajax({
 			type: "post",
-			url: base_url + 'kader/getFahrerForDropdown/' + sort_order,
+			url: base_url + 'kader/getFahrerForDropdown/' + sort_order + '/' + shortlist,
 			success: function(s) {
 				data = $.parseJSON(s);
 				var selectList = "<select name='" + control_name + "' class='form-control'>";
@@ -93,7 +98,7 @@
 	$('#new').click(function(e) {
 		e.preventDefault();
 		name = prompt('Wie soll Deine Planung heissen?');
-	    var id = $(".nav-tabs").children().length; //think about it ;);
+	    var id = $(".nav-tabs").children().length;
 		id = id+1;
 	    var tabId = name;
 	    $.ajax({
