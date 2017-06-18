@@ -33,6 +33,16 @@ class Administration extends Admin_my_controller
 		$this->renderPage('transfermarkt', $aData, array('bootstrap-editable.js'), array('bootstrap-editable.css'));
 	}
 	
+	public function edit_teilnehmer($iTeilnehmer) {
+		$aData = array();
+		
+		$aData['aTeilnehmer'] = $this->model->getOneTeilnehmer($iTeilnehmer);
+		$aData['aTeams'] = $this->model->getTable('rz_team');
+		$aData['aRollen'] = $this->model->getTable('rollen');
+		
+		$this->renderPage('edit_teilnehmer', $aData, array(), array());
+	}
+	
 	public function addTeam() {
 		$aData = array();
 		
@@ -128,5 +138,13 @@ class Administration extends Admin_my_controller
 		$aIds = $this->input->post(NULL, true);
 		
 		$this->model->saveTeamOrder($aIds['item'], $this->iAktuelleRundfahrt);
+	}
+	
+	public function changeTeamOfTeilnehmer() {
+		$this->model->changeTeamOfTeilnehmer($this->input->post('user_id'), $this->input->post('teamid'));
+	}
+	
+	public function changeRolleOfTeilnehmer() {
+		$this->model->changeRolleOfTeilnehmer($this->input->post('user_id'), $this->input->post('rolle'));
 	}
 }

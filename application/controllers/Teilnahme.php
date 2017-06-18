@@ -46,11 +46,6 @@ class Teilnahme extends Frontend_my_controller
 		
 		$aData['aHistory'] = $this->model->getHistorie();
 		
-/*
-		echo "<pre>";
-		print_r($aData);
-		echo "</pre>";
-*/
 		$this->renderPage('historie', $aData, array(), array());
 	}
 	

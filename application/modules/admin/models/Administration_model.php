@@ -26,6 +26,17 @@ class Administration_model extends MY_Model
 		return $aUser;
 	}
 	
+	public function getOneTeilnehmer($iTeilnehmer) {
+		$this->db->where('t.user_id', $iTeilnehmer);
+		$this->db->where('t.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->where('ut.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->join('rz_user u', 'u.id=t.user_id');
+		$this->db->join('rollen r', 'r.rolle_id=t.rolle_id');
+		$this->db->join('rz_user_team ut', 'ut.user_id=t.user_id');
+		$this->db->join('rz_team rt', 'rt.rzteam_id=ut.rz_team_id');
+		return $this->db->get('teilnahme t')->row_array();
+	}
+	
 	public function getTransfermarkt($iRundfahrt) {
 		$this->db->where('tr.rundfahrt_id', $iRundfahrt);
 		$this->db->join('team t', 't.team_id=tr.team_id');
@@ -131,5 +142,20 @@ class Administration_model extends MY_Model
 		$this->db->where('fahrer_id', $iFahrer);
 		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
 		$this->db->update('fahrer_rundfahrt', array('ausgeschieden'=>1));
+	}
+	
+	public function changeTeamOfTeilnehmer($iUser, $iTeam) {
+		$this->db->where('user_id', $iUser);
+		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->update('rz_user_team', array('rz_team_id'=>$iTeam));
+	}
+	
+	public function changeRolleOfTeilnehmer($iUser, $iRolle) {
+		// Get Infos on Rolle
+		$aRolle = $this->getOneRow('rollen', 'rolle_id=' . $iRolle);
+		
+		$this->db->where('user_id', $iUser);
+		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->update('teilnahme', array('rolle_id' => $iRolle, 'creditabgabe' => $aRolle['creditabgabe'], 'creditempfang'=>$aRolle['creditannahme']));
 	}
 }

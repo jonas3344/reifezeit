@@ -14,6 +14,7 @@
 					<th data-sortable="true">RZ-Name</th>
 					<th data-sortable="true">Rolle</th>
 					<th data-sortable="true">Team</th>
+					<th>Aktion</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -42,6 +43,7 @@
 					<td><?= $v['rzname'];?></td>
 					<td><?= $v['rolle_bezeichnung'];?></td>
 					<td><?= $v['team']['rzteam_name'];?></td>
+					<td><a href="<?= base_url();?>admin/administration/edit_teilnehmer/<?=$v['user_id'];?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
 				</tr>
 			<?php
 				}
