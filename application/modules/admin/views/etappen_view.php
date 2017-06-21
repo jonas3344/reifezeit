@@ -4,7 +4,11 @@
 			</div>
 			<div class="row well">
 				<table class="table">
-					<tr><td colspan="3" align="right"><a href="<?= base_url();?>admin/stammdaten/edit_etappe/-1"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Neue Etappe</button></a></td>
+					<tr>
+						<td colspan="3" align="right">
+							<a href="<?= base_url();?>admin/stammdaten/parse_etappen"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Etappen Parsen</button></a>
+							<a href="<?= base_url();?>admin/stammdaten/edit_etappe/-1"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Neue Etappe</button></a>
+						</td>
 					</tr>
 				</table>
 			<table data-toggle="table" class="table">

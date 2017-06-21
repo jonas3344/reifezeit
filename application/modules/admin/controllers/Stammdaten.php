@@ -12,13 +12,13 @@ class Stammdaten extends Admin_my_controller
 {
 	public function __construct() {
 		parent::__construct();
-		$this->load->model('Stammdaten_model');
+		$this->load->model('Stammdaten_model', 'model');
 	}
 	
 	public function rundfahrt() {
 		$aData = array();
 		
-		$aData['aRundfahrten'] = $this->Stammdaten_model->getTable('rundfahrt');
+		$aData['aRundfahrten'] = $this->model->getTable('rundfahrt');
 		
 		$this->renderPage('rundfahrt', $aData, array('bootstrap-table.js', 'bootstrap-table-de-DE.js'), array('bootstrap-table.css'));
 	}
@@ -42,16 +42,16 @@ class Stammdaten extends Admin_my_controller
 		$aData['iId'] = $iId;
 		
 		if ($iId != -1) {
-			$aData['aRundfahrt'] = $this->Stammdaten_model->getOneRow('rundfahrt', 'rundfahrt_id = ' . $iId);
-			$aData['aRegeln'] = $this->Stammdaten_model->getOneRow('regeln', 'rundfahrt_id=' . $iId);
+			$aData['aRundfahrt'] = $this->model->getOneRow('rundfahrt', 'rundfahrt_id = ' . $iId);
+			$aData['aRegeln'] = $this->model->getOneRow('regeln', 'rundfahrt_id=' . $iId);
 		} else {
 			$aData['aRundfahrt']['rundfahrt_bezeichnung'] = "";
 			$aData['aRundfahrt']['rundfahrt_jahr'] = "";
 		}
 		
 		if ($this->form_validation->run() === true) {
-			$this->Stammdaten_model->saveRecord('rundfahrt', array('rundfahrt_bezeichnung' => $this->input->post('rundfahrt_bezeichnung'), 'rundfahrt_jahr' => $this->input->post('rundfahrt_jahr')), $iId, 'rundfahrt_id');
-			$this->Stammdaten_model->saveRecord('regeln', array('regeln' => $this->input->post('regeln')), $iId, 'rundfahrt_id');
+			$this->model->saveRecord('rundfahrt', array('rundfahrt_bezeichnung' => $this->input->post('rundfahrt_bezeichnung'), 'rundfahrt_jahr' => $this->input->post('rundfahrt_jahr')), $iId, 'rundfahrt_id');
+			$this->model->saveRecord('regeln', array('regeln' => $this->input->post('regeln')), $iId, 'rundfahrt_id');
 			redirect('admin/stammdaten/rundfahrt');
 		}
 		
@@ -62,17 +62,55 @@ class Stammdaten extends Admin_my_controller
 		$aData = array();
 		
 		$aData['sRundfahrt'] = $this->sAktuelleRundfahrt;
-		$aData['aEtappen'] = $this->Stammdaten_model->getEtappen($this->iAktuelleRundfahrt);
+		$aData['aEtappen'] = $this->model->getEtappen($this->iAktuelleRundfahrt);
 		
 		$this->renderPage('etappen', $aData, array('bootstrap-table.js', 'bootstrap-table-de-DE.js'), array('bootstrap-table.css'));
+	}
+	
+	public function parse_etappen() {
+		$aData = array();
+		
+		$aData['aRundfahrten'] = $this->model->getTable('rundfahrt');
+		
+		$this->renderPage('parse_etappen', $aData, array(), array());
+	}
+	
+	public function parse_etappen_submit() {
+		$iRundfahrt = $this->input->post('rundfahrt');
+		$sParseText = $this->input->post('parse_text');
+		
+		$aLines = explode("\n", $sParseText);
+		
+		foreach($aLines as $k=>$v) {
+			$aItems = explode("\t", $v);
+			$aEtappen[$aItems[0]]['etappen_nr'] = $aItems[0];
+			$aEtappen[$aItems[0]]['etappen_klassifizierung'] = $aItems[1];
+			$aEtappen[$aItems[0]]['etappen_datum'] = $aItems[2];
+			$aEtappen[$aItems[0]]['etappen_start_ziel'] = $aItems[3];
+			$aEtappen[$aItems[0]]['etappen_distanz'] = $aItems[4];
+			$aEtappen[$aItems[0]]['etappen_eingabeschluss'] = $aItems[5];
+			$aEtappen[$aItems[0]]['etappen_profil'] = $aItems[6];
+			$aEtappen[$aItems[0]]['etappen_rundfahrt_id'] = $iRundfahrt;
+			
+		}
+		
+		echo "<pre>";
+		print_r($aLines);
+		echo "</pre>";
+		
+		if (null !== $this->input->post('replace')) {
+			$this->model->parseEtappen($aEtappen, 'replace');
+			
+		} else {
+			$this->model->parseEtappen($aEtappen, 'new');
+		}
+		redirect(base_url() . 'admin/stammdaten/etappen');
 	}
 	
 	public function edit_etappe($iId) {
 		$aData = array();
 		
-		//var_dump($this->Stammdaten_model->getLatestEtappenNr($this->iAktuelleRundfahrt));
-		
-		$aData['aEk'] = $this->Stammdaten_model->getEk();
+		$aData['aEk'] = $this->model->getEk();
 		if ($iId == -1) {
 			$aSavedData = array(	'etappen_rundfahrt_id' => $this->iAktuelleRundfahrt,
 									'etappen_eingabeschluss' => '00:00',
@@ -81,12 +119,12 @@ class Stammdaten extends Admin_my_controller
 									'etappen_datum' => 'dd.mm.yyyy',
 									'etappen_klassifizierung' => 1,
 									'etappen_profil'=> 'xx/xx/xx.jpg',
-									'etappen_nr' => ($this->Stammdaten_model->getLatestEtappenNr($this->iAktuelleRundfahrt)+1));
+									'etappen_nr' => ($this->model->getLatestEtappenNr($this->iAktuelleRundfahrt)+1));
 									
-			$aData['iId'] = $this->Stammdaten_model->saveRecord('etappen', $aSavedData, $iId, 'etappen_id');
+			$aData['iId'] = $this->model->saveRecord('etappen', $aSavedData, $iId, 'etappen_id');
 			redirect(base_url() . 'admin/stammdaten/edit_etappe/' . $aData['iId']);
 		} else {
-			$aData['aEtappe'] = $this->Stammdaten_model->getOneRow('etappen', 'etappen_id=' . $iId);
+			$aData['aEtappe'] = $this->model->getOneRow('etappen', 'etappen_id=' . $iId);
 			$aData['iId'] = $iId;
 		}	
 		
@@ -96,7 +134,7 @@ class Stammdaten extends Admin_my_controller
 	public function teams() {
 		$aData = array();
 		
-		$aData['aTeams'] = $this->Stammdaten_model->getRows('team', 'team_active=1', array('sort_field'=>'team_name', 'sort_order'=>'ASC'));
+		$aData['aTeams'] = $this->model->getRows('team', 'team_active=1', array('sort_field'=>'team_name', 'sort_order'=>'ASC'));
 		
 		$this->renderPage('teams', $aData, array('bootstrap-table.js', 'bootstrap-table-de-DE.js'), array('bootstrap-table.css'));
 	}
@@ -105,26 +143,26 @@ class Stammdaten extends Admin_my_controller
 		$aData = array();
 		
 		if ($iId == -1) {
-			$iId = $this->Stammdaten_model->saveRecord('team', array('team_name'=>'Neues Team', 'team_short'=>'SHR', 'team_active'=>1), -1, 'team_id');
+			$iId = $this->model->saveRecord('team', array('team_name'=>'Neues Team', 'team_short'=>'SHR', 'team_active'=>1), -1, 'team_id');
 			redirect(base_url() . 'admin/stammdaten/edit_team/' . $iId);
 		}
 		
-		$aData['aTeam'] = $this->Stammdaten_model->getOneRow('team', 'team_id=' . $iId);
-		$aData['aRiders'] = $this->Stammdaten_model->getRows('fahrer', 'fahrer_team_id='.$iId, array('sort_field'=>'fahrer_name', 'sort_order'=>'ASC'));
+		$aData['aTeam'] = $this->model->getOneRow('team', 'team_id=' . $iId);
+		$aData['aRiders'] = $this->model->getRows('fahrer', 'fahrer_team_id='.$iId, array('sort_field'=>'fahrer_name', 'sort_order'=>'ASC'));
 		
 		$this->renderPage('edit_team', $aData, array('bootstrap-editable.js'), array('bootstrap-editable.css'));
 	}
 	
 	public function change_team($iId) {
-		$aData['aRider'] = $this->Stammdaten_model->getOneRow('fahrer', 'fahrer_id=' . $iId);
-		$aData['aTeams'] = $this->_rebuildArray($this->Stammdaten_model->getRows('team', 'team_active=1', array('sort_field'=>'team_name', 'sort_order'=>'ASC')), 'team_id');
+		$aData['aRider'] = $this->model->getOneRow('fahrer', 'fahrer_id=' . $iId);
+		$aData['aTeams'] = $this->_rebuildArray($this->model->getRows('team', 'team_active=1', array('sort_field'=>'team_name', 'sort_order'=>'ASC')), 'team_id');
 		
 		$this->renderPage('change_team', $aData, array(), array());
 	}
 	
 	public function fahrer() {
 		$aData = array();
-		$aData['aRiders'] = $this->Stammdaten_model->getFahrer();
+		$aData['aRiders'] = $this->model->getFahrer();
 		
 		$this->renderPage('fahrer', $aData, array('bootstrap-table.js', 'bootstrap-table-de-DE.js'), array('bootstrap-table.css'));
 	}
@@ -133,11 +171,11 @@ class Stammdaten extends Admin_my_controller
 		$aData = array();
 		
 		if ($iId == -1) {
-			$iId = $this->Stammdaten_model->saveRecord('fahrer', array('fahrer_name'=>'Name', 'fahrer_vorname'=>'vorname', 'fahrer_nation'=>'SUI', 'fahrer_active'=>1, 'fahrer_team_id'=>0), -1, 'fahrer_id');
+			$iId = $this->model->saveRecord('fahrer', array('fahrer_name'=>'Name', 'fahrer_vorname'=>'vorname', 'fahrer_nation'=>'SUI', 'fahrer_active'=>1, 'fahrer_team_id'=>0), -1, 'fahrer_id');
 			redirect(base_url() . 'admin/stammdaten/edit_fahrer/' . $iId);
 		}
-		$aData['aFahrer'] = $this->Stammdaten_model->getOneRow('fahrer', 'fahrer_id=' . $iId);
-		$aData['aTeams'] = $this->_rebuildArray($this->Stammdaten_model->getRows('team', 'team_active=1'), 'team_id');
+		$aData['aFahrer'] = $this->model->getOneRow('fahrer', 'fahrer_id=' . $iId);
+		$aData['aTeams'] = $this->_rebuildArray($this->model->getRows('team', 'team_active=1'), 'team_id');
 		array_unshift($aData['aTeams'], array('team_name'=>'Kein Team', 'team_id'=>0));
 		
 		$this->renderPage('fahrer_edit', $aData, array('bootstrap-editable.js'), array('bootstrap-editable.css'));
@@ -146,7 +184,7 @@ class Stammdaten extends Admin_my_controller
 	public function rollen() {
 		$aData = array();
 		
-		$aData['aRollen'] = $this->Stammdaten_model->getTable('rollen');
+		$aData['aRollen'] = $this->model->getTable('rollen');
 		$aData['aHeader'] = array_keys($aData['aRollen'][0]);
 		
 		$this->renderPage('rollen', $aData, array(), array());
@@ -155,7 +193,7 @@ class Stammdaten extends Admin_my_controller
 	public function rzUser() {
 		$aData = array();
 		
-		$aData['aRzuser'] = $this->Stammdaten_model->getTable('rz_user');
+		$aData['aRzuser'] = $this->model->getTable('rz_user');
 		
 		$this->renderPage('rz_user', $aData, array('bootstrap-table.js', 'bootstrap-table-de-DE.js'), array('bootstrap-table.css'));
 	}
@@ -163,7 +201,7 @@ class Stammdaten extends Admin_my_controller
 	public function parse_fahrer($iTeam) {
 		$aData = array();
 		
-		$aData['aTeam'] = $this->Stammdaten_model->getOneRow('team', 'team_id=' . $this->db->escape($iTeam));
+		$aData['aTeam'] = $this->model->getOneRow('team', 'team_id=' . $this->db->escape($iTeam));
 		
 		$this->renderPage('parse_fahrer', $aData, array(), array());
 	}
@@ -171,7 +209,7 @@ class Stammdaten extends Admin_my_controller
 	public function parseFahrerResult($iTeam) {
 		$aData = array();
 		
-		$aData['aTeam'] = $this->Stammdaten_model->getOneRow('team', 'team_id=' . $this->db->escape($iTeam));
+		$aData['aTeam'] = $this->model->getOneRow('team', 'team_id=' . $this->db->escape($iTeam));
 		
 		$sFahrer = $this->input->post('fahrer');
 		$aFahrer = preg_split("/[\r\n]+/", $sFahrer, -1, PREG_SPLIT_NO_EMPTY);
@@ -181,7 +219,7 @@ class Stammdaten extends Admin_my_controller
 		foreach($aFahrer as $k=>$v) {
 			$aD = explode("\t", $v);
 
-			$mCheck = $this->Stammdaten_model->checkFahrer($aD);
+			$mCheck = $this->model->checkFahrer($aD);
 			
 			if ($mCheck == false) {
 				$aTemp = array('fahrer_vorname' => $aD[2], 'fahrer_name' => $aD[1], 'fahrer_nation' => $aD[3]);
@@ -195,11 +233,11 @@ class Stammdaten extends Admin_my_controller
 		
 		$aData['aFahrer'] = $aReturn;
 		
-		$this->Stammdaten_model->resetTeam($iTeam);
+		$this->model->resetTeam($iTeam);
 		
 		foreach($aReturn as $k=>$v) {
 			if ($v['inDb'] == 1) {
-				$this->Stammdaten_model->saveRecord('fahrer', array('fahrer_team_id' => $iTeam), $v['fahrer_id'], 'fahrer_id');
+				$this->model->saveRecord('fahrer', array('fahrer_team_id' => $iTeam), $v['fahrer_id'], 'fahrer_id');
 			}
 		}
 		
@@ -210,31 +248,31 @@ class Stammdaten extends Admin_my_controller
 	/* AJAX */
 	
 	public function addFahrerToDb() {
-		$this->Stammdaten_model->saveRecord('fahrer', array('fahrer_team_id' => $this->input->post('fahrer_team_id'), 'fahrer_vorname' => trim($this->input->post('fahrer_vorname')), 'fahrer_name' => trim($this->input->post('fahrer_name')),'fahrer_nation' => trim($this->input->post('fahrer_nation')), 'fahrer_active' => 1), -1);
+		$this->model->saveRecord('fahrer', array('fahrer_team_id' => $this->input->post('fahrer_team_id'), 'fahrer_vorname' => trim($this->input->post('fahrer_vorname')), 'fahrer_name' => trim($this->input->post('fahrer_name')),'fahrer_nation' => trim($this->input->post('fahrer_nation')), 'fahrer_active' => 1), -1);
 		echo 'ok';
 	}
 	
 	public function deleteTeam() {
-		$this->Stammdaten_model->saveRecord('team', array('team_active'=>0), $this->input->post('teamid'), 'team_id');
+		$this->model->saveRecord('team', array('team_active'=>0), $this->input->post('teamid'), 'team_id');
 		echo 'ok';
 		
 	}
 	
 	public function setTeamname($iId) {
-		$this->Stammdaten_model->saveRecord('team', array('team_name'=>$this->input->post('value')), $iId, 'team_id');
+		$this->model->saveRecord('team', array('team_name'=>$this->input->post('value')), $iId, 'team_id');
 	}
 	
 	public function setTeamShort($iId) {
-		$this->Stammdaten_model->saveRecord('team', array('team_short'=>$this->input->post('value')), $iId, 'team_id');
+		$this->model->saveRecord('team', array('team_short'=>$this->input->post('value')), $iId, 'team_id');
 	}
 	
 	public function deleteRider() {
-		$this->Stammdaten_model->saveRecord('fahrer', array('fahrer_team_id'=>0, 'fahrer_active'=>0), $this->input->post('fahrerid'), 'fahrer_id');
+		$this->model->saveRecord('fahrer', array('fahrer_team_id'=>0, 'fahrer_active'=>0), $this->input->post('fahrerid'), 'fahrer_id');
 		echo 'ok';
 	}
 	
 	public function changeTeam() {
-		$this->Stammdaten_model->saveRecord('fahrer', array('fahrer_team_id'=>$this->input->post('teamid')), $this->input->post('fahrerid'), 'fahrer_id');
+		$this->model->saveRecord('fahrer', array('fahrer_team_id'=>$this->input->post('teamid')), $this->input->post('fahrerid'), 'fahrer_id');
 		echo 'ok';
 	}
 	
@@ -250,7 +288,7 @@ class Stammdaten extends Admin_my_controller
 				$aData = array('fahrer_nation'=>$this->input->post('value'));
 				break;
 		}
-		$this->Stammdaten_model->saveRecord('fahrer', $aData, $this->input->post('pk'), 'fahrer_id');
+		$this->model->saveRecord('fahrer', $aData, $this->input->post('pk'), 'fahrer_id');
 	}
 	
 	public function setEtappenDetails() {
@@ -278,7 +316,7 @@ class Stammdaten extends Admin_my_controller
 				$aData = array('etappen_klassifizierung' => $this->input->post('value'));
 				break;
 		}
-		$this->Stammdaten_model->saveRecord('etappen', $aData, $this->input->post('pk'), 'etappen_id');
+		$this->model->saveRecord('etappen', $aData, $this->input->post('pk'), 'etappen_id');
 	}
 	
 	private function _rebuildArray($aArray, $sId) {

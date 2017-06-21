@@ -59,4 +59,18 @@ class Stammdaten_model extends MY_Model
 		$this->db->where('fahrer_team_id', $iTeam);
 		$this->db->update('fahrer', array('fahrer_team_id'=> 0));
 	}
+	
+	public function parseEtappen($aEtappen, $sType) {
+		if ($sType == 'new') {
+			foreach($aEtappen as $k=>$v) {
+				$this->model->saveRecord('etappen', $v, -1);
+			}
+		} else if ($sType == 'replace') {
+			foreach($aEtappen as $k=>$v) {
+				$this->db->where('etappen_rundfahrt_id', $v['etappen_rundfahrt_id']);
+				$this->db->where('etappen_nr', $v['etappen_nr']);
+				$this->db->update('etappen', $v);
+			}
+		}
+	}
 }
