@@ -68,6 +68,20 @@ class Administration extends Admin_my_controller
 		$this->renderPage('order_teams', $aData, array(), array());
 	}
 	
+	public function exportTransfermarkt() {
+		$this->load->dbutil();
+		$this->load->helper(array('file', 'download'));
+		
+		$aTransfermarkt = $this->model->getTransfermarktForCSV();
+		$new_report = $this->dbutil->csv_from_result($aTransfermarkt);
+		
+		if (!write_file('transfermarkt.csv',$new_report)) {
+			echo "fehler";	
+		} else {
+			force_download('transfermarkt.csv', NULL);
+		}
+	}
+	
 	public function openTransfermarkt() {		
 		if ($this->iFreigabeTransfermarkt == 1) {
 			$aData['freigabe_transfermarkt'] = 0;

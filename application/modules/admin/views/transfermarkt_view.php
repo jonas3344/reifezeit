@@ -6,6 +6,8 @@
 		<table class="table">
 			<tr>
 				<td colspan="3" align="right">
+					<a href="<?= base_url();?>admin/administration/exportTransfermarkt/"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Export CSV</button></a>
+					<a href="<?= base_url();?>admin/administration/parseTransfermarkt/"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Parse</button></a> 
 					<a href="<?= base_url();?>admin/administration/addTeam/"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Team hinzufügen</button></a> 
 					<a href="<?= base_url();?>admin/administration/orderTeams/"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-resize-vertical" aria-hidden="true"></span> Teams sortieren</button></a>
 					<a href="#"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Transfermarkt checken</button></a>

@@ -26,6 +26,16 @@ class Administration_model extends MY_Model
 		return $aUser;
 	}
 	
+	public function getTransfermarktForCSV() {
+		$this->db->select('f.fahrer_id, fr.fahrer_startnummer, f.fahrer_vorname, f.fahrer_name, f.fahrer_nation, t.team_short, fr.fahrer_rundfahrt_credits');
+		$this->db->join('fahrer f', 'f.fahrer_id=fr.fahrer_id');
+		$this->db->join('team t', 'f.fahrer_team_id=t.team_id');
+		$this->db->where('fr.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->order_by('fr.fahrer_startnummer', 'ASC');
+		$this->db->order_by('f.fahrer_team_id', 'ASC');
+		return $this->db->get('fahrer_rundfahrt fr');
+	}
+	
 	public function getOneTeilnehmer($iTeilnehmer) {
 		$this->db->where('t.user_id', $iTeilnehmer);
 		$this->db->where('t.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));

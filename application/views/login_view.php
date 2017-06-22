@@ -22,7 +22,7 @@
       <div class="row">
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-1 main" style="margin-top:100px;">
           <h1 class="page-header">Die Reifezeit - Login</h1>
-          <button class="btn btn-default">Neues Profil erstellen</button> <button class="btn btn-default">Passwort vergessen</button>
+          <button class="btn btn-default" disabled>Neues Profil erstellen</button> <button class="btn btn-default" disabled>Passwort vergessen</button>
           <hr>
           <?php
 	          if (strlen($sError) > 0) {

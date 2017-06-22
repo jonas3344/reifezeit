@@ -3,11 +3,14 @@
 		<h1>Transfermarkt</h1>
 	</div>
 	<div class="row well">
-		<a href="<?= base_url();?>rundfahrt/transfermarkt/1"><button class="btn btn-default"><span class="glyphicon glyphicon-sort-by-order" aria-hidden="true"></span> Sortieren nach Teams</button></a>
-		<a href="<?= base_url();?>rundfahrt/transfermarkt/2"><button class="btn btn-default"><span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span> Sortieren nach Credits</button></a>
-		<a href="<?= base_url();?>rundfahrt/transfermarkt/3"><button class="btn btn-default"><span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true"></span> Sortieren nach Namen</button></a>
+		<a href="<?= base_url();?>rundfahrt/transfermarkt/1"><button class="btn btn-default"<?= !$bView ? ' disabled' : ''?>><span class="glyphicon glyphicon-sort-by-order" aria-hidden="true"></span> Sortieren nach Teams</button></a>
+		<a href="<?= base_url();?>rundfahrt/transfermarkt/2"><button class="btn btn-default"<?= !$bView ? ' disabled' : ''?>><span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span> Sortieren nach Credits</button></a>
+		<a href="<?= base_url();?>rundfahrt/transfermarkt/3"><button class="btn btn-default"<?= !$bView ? ' disabled' : ''?>><span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true"></span> Sortieren nach Namen</button></a>
 	</div>
 	<div class="row well responsive-table">
+		<?php
+			if ($bView) {
+		?>
 		<table class="table table-striped">
 			<thead>
 				<th>#</th>
@@ -18,6 +21,8 @@
 			</thead>
 			<tbody>
 			<?php
+					
+
 			foreach($aData as $k=>$aTeams) {
 				?>
 				<tr class="success">
@@ -61,8 +66,15 @@
 					<?php
 				}
 			}	
+
 			?>
 			</tbody>
 		</table>
+		<?php
+			}
+			else {
+				echo "Der Transfermarkt ist noch nicht veröffentlicht!";
+			}
+			?>
 	</div>
 </div>

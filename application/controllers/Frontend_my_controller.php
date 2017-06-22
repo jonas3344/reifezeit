@@ -32,6 +32,7 @@ class Frontend_my_controller extends CI_Controller
 		$this->config->set_item('iAktuelleRundfahrt', $aConfig['aktuelle_rundfahrt']);
 		$this->config->set_item('iAktuelleEtappe', $aConfig['aktuelle_etappe']);
 		$this->config->set_item('iRundfahrtGestartet', $aConfig['rundfahrt_gestartet']);
+		$this->config->set_item('iFreigabeTransfermarkt', $aConfig['freigabe_transfermarkt']);
 		$this->iAktuelleEtappe = $aConfig['aktuelle_etappe'];
 		$this->iAktuelleRundfahrt = $aConfig['aktuelle_rundfahrt'];
 		$this->iFreigabeTransfermarkt = $aConfig['freigabe_transfermarkt'];

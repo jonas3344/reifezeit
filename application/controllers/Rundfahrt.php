@@ -19,6 +19,8 @@ class Rundfahrt extends Frontend_my_controller
 		$this->load->model('Shortlist_model');
 		$aData = array();
 		$aData['aShortlists'] = $this->model->getShortlists();
+		$aData['bView'] = ($this->config->item('iFreigabeTransfermarkt') == 1) ? true : false;
+
 		
 		if ($iSort == 1) {
 			$aData['aData'] = $this->model->getFahrerByTeams();
