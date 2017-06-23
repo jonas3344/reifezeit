@@ -78,6 +78,7 @@ class Stammdaten extends Admin_my_controller
 	public function parse_etappen_submit() {
 		$iRundfahrt = $this->input->post('rundfahrt');
 		$sParseText = $this->input->post('parse_text');
+		$aEtappen = array();
 		
 		$aLines = explode("\n", $sParseText);
 		

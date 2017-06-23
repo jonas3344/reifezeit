@@ -168,4 +168,12 @@ class Administration_model extends MY_Model
 		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
 		$this->db->update('teilnahme', array('rolle_id' => $iRolle, 'creditabgabe' => $aRolle['creditabgabe'], 'creditempfang'=>$aRolle['creditannahme']));
 	}
+	
+	public function updateTransfermarkt($aFahrer) {
+		foreach($aFahrer as $k=>$v) {
+			$this->db->where('fahrer_id', $v['fahrer_id']);
+			$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+			$this->db->update('fahrer_rundfahrt', $v);
+		}
+	}
 }

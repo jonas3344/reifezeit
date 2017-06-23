@@ -51,6 +51,12 @@ class Administration extends Admin_my_controller
 		$this->renderPage('add_team', $aData, array(), array());
 	}
 	
+	public function parseTransfermarkt() {
+		$aData = array();
+		
+		$this->renderPage('parse_transfermarkt', $aData, array(), array());
+	}
+	
 	public function addFahrerTransfermarkt($iTeamid) {
 		$aData = array();
 		
@@ -58,6 +64,25 @@ class Administration extends Admin_my_controller
 		$aData['aFahrer'] = $this->model->getFahrerTeam($iTeamid, $this->iAktuelleRundfahrt);
 		
 		$this->renderPage('add_fahrer_transfermarkt', $aData, array(), array());
+	}
+	
+	public function final_parse_transfermarkt() {
+		$iRundfahrt = $this->config->item('iAktuelleRundfahrt');
+		$sParseText = $this->input->post('fahrer');
+		
+		$aLines = explode("\n", $sParseText);
+		$aFahrer = array();		
+		
+		foreach($aLines as $k=>$v) {
+			$aItems = explode("\t", $v);
+			$aFahrer[$aItems[0]]['fahrer_id'] = $aItems[0];
+			$aFahrer[$aItems[0]]['fahrer_startnummer'] = $aItems[1];
+			$aFahrer[$aItems[0]]['fahrer_rundfahrt_credits'] = $aItems[6];			
+		}
+		
+		$this->model->updateTransfermarkt($aFahrer);
+		redirect(base_url() . 'admin/administration/transfermarkt');
+
 	}
 	
 	public function orderTeams() {
