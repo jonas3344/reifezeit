@@ -43,9 +43,20 @@ class Parserrz {
 				$this->_parseGiroMountain($sResult);
 			}
 		} else if ($this->iParser == 2) {
-			$this->_parseASO($sResult, $iType);
+			if ($iType == 1) {
+				$this->_parseAsoTime($sResult, $iType);
+				$this->_calculateTime();
+			} else if ($iType == 2) {
+				$this->_parseAsoPoints($sResult);
+			} else if ($iType == 3) {
+				$this->_parseAsoMountain($sResult);
+			}
 		}
-		$this->_saveToDb($iType);
+		
+		echo "<pre>";
+		print_r($this->aResult);
+		echo "</pre>";
+		//$this->_saveToDb($iType);
 	}
 	
 	private function _calculateTime() {
@@ -108,9 +119,7 @@ class Parserrz {
 			}
 				
 			$zahl1 = ($bBergetappe==true) ? 180 : 60;
-			$zahl2 = ($bBergetappe==true) ? 90 : 30;
-			
-			
+					
 			foreach($this->aResult as $key => $r){
 				$i_minutes_temp = substr($r['rueckstand'], 0, strpos($r['rueckstand'], ':'));
 				$i_seconds_temp = substr($r['rueckstand'], strpos($r['rueckstand'], ':')+1);
@@ -121,13 +130,8 @@ class Parserrz {
 					$this->aResult[$key]['rueckstandOhneBS'] = 0;
 				} else if ($r['rang'] < $this->aAusreisser['iFirstHauptfeld']) {
 					// Vor Hauptfeld
-					if ($i_ruckstand_temp < $zahl2) {
-						$zeitS = $i_ruckstand_temp;
-					} else if (($iRueckstandHauptfeld - $i_ruckstand_temp) < $zahl2) {
-						$zeitS = $zahl1 - ($iRueckstandHauptfeld - $i_ruckstand_temp);
-					} else {
-						$zeitS = $zahl2;
-					}
+				
+					$zeitS = round(($i_ruckstand_temp / $iRueckstandHauptfeld) * $zahl1, 0);
 					
 				} else if ($r['rang'] >= $this->aAusreisser['iFirstHauptfeld']) {
 					if ($iRueckstandHauptfeld > $zahl1) {
@@ -190,7 +194,39 @@ class Parserrz {
 		}
 	}	
 	
-	private function _parseASO($sResult, $iRangType) {
+	private function _parseAsoTime($sResult, $iRangType) {
+		$aFinal = array();
+		
+		$aResult = explode("\n", $sResult);
+		$iRang = 0;
+		
+		foreach ($aResult as $sZeile) {
+			$aTemp = explode("\t", $sZeile);
+			
+			$aFinal[$iRang]['rang'] = substr($aTemp[0], 0, -1);
+			$aFinal[$iRang]['nation'] = substr($aTemp[1], 0, 3);
+			$aFinal[$iRang]['namen'] = substr($aTemp[1], 3);
+			$aFinal[$iRang]['startnummer'] = $aTemp[2];
+			
+			$sZeit = $aTemp[5];
+			
+			
+			$iMin = substr($sZeit, 2, 2);
+			$iSec = substr($sZeit, 6, 2);
+			if (trim($sZeit) == "") {
+				$iMin = "00";
+				$iSec = "00";
+			}
+			
+			$aFinal[$iRang]['rueckstand'] = $iMin . ":" . $iSec;
+			
+			$iRang++;
+			
+		}
+		
+		$aFinal = $this->CI->model->checkFahrer($aFinal, $this->iParser);
+
+		$this->aResult = $aFinal;
 		
 	}
 	
@@ -229,7 +265,7 @@ class Parserrz {
 
 		}
 					
-		$aFinal = $this->CI->model->checkFahrer($aFinal);
+		$aFinal = $this->CI->model->checkFahrer($aFinal, $this->iParser);
 		
 		
 		$this->aResult = $aFinal;
@@ -250,7 +286,7 @@ class Parserrz {
 		}
 		
 
-		$aFinal = $this->CI->model->checkFahrer($aFinal);
+		$aFinal = $this->CI->model->checkFahrer($aFinal, $this->iParser);
 		
 		
 		$this->aResultPoints = $aFinal;

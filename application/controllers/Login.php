@@ -49,6 +49,22 @@ class Login extends CI_Controller
 		$this->load->view('login_view', $aData);
 	}
 	
+	public function new_profil() {
+		$this->load->helper('form_helper');
+		
+		$this->load->view('new_profil_view', $aData);
+	}
+	
+	public function saveNewProfile() {
+		$aUser = array(	'name' => $this->input->post('sattlerei_user'),
+					'rzname' => $this->input->post('rz_user'),
+					'email' => $this->input->post('email'),
+					'active' => 1,
+					'pass' => md5($this->input->post('password')));
+		$this->model->saveRecord('rz_user', $aUser, -1, 'id');
+		redirect(base_url() . 'login');
+	}
+	
 	public function logout() {
 		$this->session->sess_destroy();
 		redirect(base_url());

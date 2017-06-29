@@ -18,13 +18,13 @@
 		<form action="<?= base_url();?>admin/parser/parserResult/<?= $iEtappe;?>" method="post">
 		<div class="radio-inline">
 		  <label>
-		    <input type="radio" name="parser" value="1" checked>
+		    <input type="radio" name="parser" value="1">
 		    Giro
 		  </label>
 		</div>
 		<div class="radio-inline">
 		  <label>
-		    <input type="radio" name="parser" value="2">
+		    <input type="radio" name="parser" value="2" checked>
 		   Tour/Vuelta
 		  </label>
 		</div>

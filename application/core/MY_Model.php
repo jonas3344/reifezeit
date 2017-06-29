@@ -138,4 +138,17 @@ class MY_Model extends CI_Model {
 		}
 		return $aShortlists;
 	}
+	
+	public function checkValueinDb($sTable, $aValues) {
+		foreach($aValues as $k=>$v) {
+			$this->db->where($k, $v);
+		}
+		$oQuery = $this->db->get($sTable);
+		if ($oQuery->num_rows() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+		
+	}
 }

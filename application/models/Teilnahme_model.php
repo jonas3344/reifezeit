@@ -56,14 +56,11 @@ class Teilnahme_model extends MY_Model
 		}
 		
 		$bIsNeo = true;
-		for($i=1;$i<3;$i++) {
-			$this->db->where('user_id', $this->session->userdata('user_id'));
-			$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt')-$i);
-			$aTeilnahme = $this->db->get('teilnahme')->result_array();
-			if (count($aTeilnahme) == 1) {
-				if ($aTeilnahme[0]['out'] == 0) {
-					$bIsNeo = false;
-				}
+		$this->db->where('user_id', $this->session->userdata('user_id'));
+		$aTeilnahme = $this->db->get('teilnahme')->result_array();
+		if (count($aTeilnahme) >= 1) {
+			if ($aTeilnahme[0]['out'] == 0) {
+				$bIsNeo = false;
 			}
 		}
 		
@@ -96,8 +93,9 @@ class Teilnahme_model extends MY_Model
 		);
 		
 		$this->saveRecord('teilnahme', $aData, -1);
-		
-		$this->saveRecord('rz_user_team', array('rz_team_id'=>$iTeam, 'user_id'=>$this->session->userdata('user_id'), 'rundfahrt_id'=>$this->config->item('iAktuelleRundfahrt')), -1);
+		if ($iTeam > 0) {
+			$this->saveRecord('rz_user_team', array('rz_team_id'=>$iTeam, 'user_id'=>$this->session->userdata('user_id'), 'rundfahrt_id'=>$this->config->item('iAktuelleRundfahrt')), -1);
+		}
 		
 		$aEtappen = $this->getRows('etappen', 'etappen_rundfahrt_id=' . $this->config->item('iAktuelleRundfahrt'));
 		

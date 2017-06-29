@@ -9,22 +9,33 @@
  
 class Parser_model extends MY_Model 
 {
-	public function checkFahrer($aFinal) {
+	public function checkFahrer($aFinal, $iType) {
 		$this->db->join('fahrer f', 'f.fahrer_id=fr.fahrer_id');
 		$this->db->where('fr.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
 		$aFahrer = $this->db->get('fahrer_rundfahrt fr')->result_array();
 		
-		foreach($aFinal as $k=>$v) {
-			foreach($aFahrer as $kf=>$vf) {
-				$sName = $vf['fahrer_name'] . ' ' . $vf['fahrer_vorname'];
-				//echo $sName . "-" . $v['namen'] . "_" . strcasecmp($v['namen'], $sName) . "<br>";
-				
-				if (strcasecmp($v['namen'], $sName) == 0) {
-					$aFinal[$k]['fahrer_id'] = $vf['fahrer_id'];
-					$aFinal[$k]['fahrer_startnummer'] = $vf['fahrer_startnummer'];
+		if ($iType == 1) {
+			foreach($aFinal as $k=>$v) {
+				foreach($aFahrer as $kf=>$vf) {
+					$sName = $vf['fahrer_name'] . ' ' . $vf['fahrer_vorname'];
+					//echo $sName . "-" . $v['namen'] . "_" . strcasecmp($v['namen'], $sName) . "<br>";
+					
+					if (strcasecmp($v['namen'], $sName) == 0) {
+						$aFinal[$k]['fahrer_id'] = $vf['fahrer_id'];
+						$aFinal[$k]['fahrer_startnummer'] = $vf['fahrer_startnummer'];
+					}
+				}
+			}
+		} else if ($iType == 2) {
+			foreach($aFinal as $k=>$v) {
+				foreach($aFahrer as $kf=>$vf) {	
+					if ($v['startnummer'] == $vf['fahrer_startnummer']) {
+						$aFinal[$k]['fahrer_id'] = $vf['fahrer_id'];
+					}
 				}
 			}
 		}
+		
 		return $aFinal;
 	}
 	
@@ -44,8 +55,11 @@ class Parser_model extends MY_Model
 		
 
 		foreach($aKaderTemp as $k=>$v) {
-			$aKader[$k] = $this->_kaderIntoArray($v);
-			$aTeilnehmer[$k] = $v['user_id'];
+			$bDoping = $this->checkValueinDb('dopingfall', array('user_id'=>$v['user_id'], 'etappen_id' => $aAktuelleEtappe['etappen_id']));
+			if ($bDoping == false) {
+				$aKader[$k] = $this->_kaderIntoArray($v);
+				$aTeilnehmer[$k] = $v['user_id'];
+			}
 		}
 		
 		

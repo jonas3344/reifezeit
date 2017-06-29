@@ -40,6 +40,8 @@ class Administration extends Admin_my_controller
 		$aData['aTeams'] = $this->model->getTable('rz_team');
 		$aData['aRollen'] = $this->model->getTable('rollen');
 		
+		var_dump($aData['aTeilnehmer']);
+		
 		$this->renderPage('edit_teilnehmer', $aData, array(), array());
 	}
 	

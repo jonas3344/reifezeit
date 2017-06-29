@@ -32,6 +32,7 @@
 			   <div class="form-group">
 			       <label for="team">Dein Team</label>
 			       <select id="team" name="team" class="form-control">
+				       <option value="0">Teamlos</option>
 				    <?php
 						foreach($aTeams as $k=>$v) {
 							?>
