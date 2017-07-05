@@ -18,7 +18,7 @@ class Parserrz {
 	
 	protected $aResult;
 	protected $aResultPoints;
-	protected $aResultMoutain;
+	protected $aResultMountain;
 	
 	
 	
@@ -53,14 +53,11 @@ class Parserrz {
 			}
 		}
 		
-		echo "<pre>";
-		print_r($this->aResult);
-		echo "</pre>";
-		//$this->_saveToDb($iType);
+		$this->_saveToDb($iType);
 	}
 	
 	private function _calculateTime() {
-		$sOutput = "<br><br><br><br><br><table>";
+		$sOutput = "<br><br><br><br><br><table width=\"60%\">";
 		if (($this->aEtappe['etappen_klassifizierung'] == 3) || ($this->aEtappe['etappen_klassifizierung'] == 5) || ($this->aEtappe['etappen_klassifizierung'] == 6)) {
 			$bZeitfahren = true;
 		} else {
@@ -99,7 +96,7 @@ class Parserrz {
 					$this->aResult[$key]['rueckstandS'] = $zeitS;		
 					
 				}
-				$sOutput .= "<tr><td>" . $r['fahrer_startnummer'] . "</td><td>" . $r['namen'] . "</td><td>" . $this->aResult[$key]['rueckstandS'] . "</td></tr>";
+				$sOutput .= "<tr><td>" . $r['fahrer_id'] . "</td><td>" . $r['fahrer_startnummer'] . "</td><td>" . $r['namen'] . "</td><td>" . $this->aResult[$key]['rueckstandS'] . "</td></tr>";
 			}
 			
 		} else if ($this->aAusreisser['iAusreisser'] == 1) {
@@ -159,7 +156,7 @@ class Parserrz {
 				$this->aResult[$key]['rueckstandS'] = $zeitS;
 				$this->aResult[$key]['rueckstandOhneBS'] = ($i_minutes_temp*60) + $i_seconds_temp;
 				
-				$sOutput .= "<tr><td>" . $r['fahrer_startnummer'] . "</td><td>" . $r['namen'] . "</td><td>" . $zeitS . "</td></tr>";
+				$sOutput .= "<tr><td>" . $r['fahrer_id'] . "</td><td>" . $r['fahrer_startnummer'] . "</td><td>" . $r['namen'] . "</td><td>" . $zeitS . "</td></tr>";
 			}
 		}
 		$sOutput .= '</table>';
@@ -184,7 +181,7 @@ class Parserrz {
 				$this->CI->model->saveRecord('resultate_punkte', $aData, -1);
 			}
 		} else if ($iType == 3) {
-			foreach($this->aResultountain as $k=>$v) {
+			foreach($this->aResultMountain as $k=>$v) {
 				$aData['fahrer_id'] = $v['fahrer_id'];
 				$aData['etappen_id'] = $this->aEtappe['etappen_id'];
 				$aData['bergpunkte'] = $v['bergpunkte'];
@@ -203,12 +200,17 @@ class Parserrz {
 		foreach ($aResult as $sZeile) {
 			$aTemp = explode("\t", $sZeile);
 			
-			$aFinal[$iRang]['rang'] = substr($aTemp[0], 0, -1);
-			$aFinal[$iRang]['nation'] = substr($aTemp[1], 0, 3);
-			$aFinal[$iRang]['namen'] = substr($aTemp[1], 3);
-			$aFinal[$iRang]['startnummer'] = $aTemp[2];
+/*
+			echo "<pre>";
+			print_r($aTemp);
+			echo "</pre>";
 			
-			$sZeit = $aTemp[5];
+*/
+			$aFinal[$iRang]['rang'] = $aTemp[0];
+			$aFinal[$iRang]['namen'] = $aTemp[1];
+			$aFinal[$iRang]['fahrer_startnummer'] = $aTemp[2];
+			
+			$sZeit = $aTemp[7];
 			
 			
 			$iMin = substr($sZeit, 2, 2);
@@ -228,6 +230,86 @@ class Parserrz {
 
 		$this->aResult = $aFinal;
 		
+	}
+	
+	private function _parseAsoPoints($sResult) {
+		$aResult = explode("\n", $sResult);
+		
+		$aFinal = array();
+		
+		$iRang = 0;
+		foreach($aResult as $sZeile) {
+			$aTemp = explode("\t", $sZeile);
+			
+			print_r($aTemp);
+			
+			$aFinal[$iRang]['namen'] = $aTemp[1];
+			$aFinal[$iRang]['fahrer_startnummer'] = $aTemp[2];
+			$aFinal[$iRang]['punkte'] = intval($aTemp[4]);
+			$iRang++;
+		}
+		
+		$aPunkte = array();
+		foreach($aFinal as $k=>$v) {
+			$bFound = false;
+			foreach($aPunkte as $kb=>$vb) {
+				if ($v['namen'] == $vb['namen'] && $bFound == false) {
+					$aPunkte[$kb]['punkte'] = $aPunkte[$kb]['punkte'] + $v['punkte'];
+					$bFound = true;
+				}
+			}
+			if ($bFound == false) {
+				$aPunkte[] = $v;
+			}
+		}
+		$aFinal = $this->CI->model->checkFahrer($aPunkte, $this->iParser);
+		
+		$this->aResultPoints = $aFinal;
+		
+		echo "<pre>";
+		print_r($this->aResultPoints);
+		echo "</pre>";
+	}
+	
+	private function _parseAsoMountain($sResult) {
+		$aResult = explode("\n", $sResult);
+		
+		$aFinal = array();
+		
+		$iRang = 0;
+		foreach($aResult as $sZeile) {
+			$aTemp = explode("\t", $sZeile);
+			$aFinal[$iRang]['namen'] = substr($aTemp[1], 3);
+			$aFinal[$iRang]['fahrer_startnummer'] = $aTemp[2];
+			$aFinal[$iRang]['bergpunkte'] = intval($aTemp[4]);
+			$iRang++;
+		}
+		
+		
+		
+		$aBergpunkte = array();
+		foreach($aFinal as $k=>$v) {
+			$bFound = false;
+			foreach($aBergpunkte as $kb=>$vb) {
+				if ($v['namen'] == $vb['namen'] && $bFound == false) {
+					$aBergpunkte[$kb]['bergpunkte'] = $aBergpunkte[$kb]['bergpunkte'] + $v['bergpunkte'];
+					$bFound = true;
+				}
+			}
+			if ($bFound == false) {
+				$aBergpunkte[] = $v;
+			}
+		}
+		
+		
+		
+		$aFinal = $this->CI->model->checkFahrer($aBergpunkte, $this->iParser);
+		
+		$this->aResultMountain = $aFinal;
+		
+		echo "<pre>";
+		print_r($this->aResultMountain);
+		echo "</pre>";
 	}
 	
 	private function _parseGiroTime($sResult) {
@@ -321,10 +403,10 @@ class Parserrz {
 			}
 		}
 		
-		$aFinal = $this->CI->model->checkFahrer($aBergpunkte);
+		$aFinal = $this->CI->model->checkFahrer($aBergpunkte, $this->iParser);
 		
 
-		$this->aResultountain = $aFinal;
+		$this->aResultMountain = $aFinal;
 		
 	}
 }

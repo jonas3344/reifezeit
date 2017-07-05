@@ -1,5 +1,13 @@
 ;(function($) {
 	var $saved;
+	$('a[rel=popover]').popover({
+	  html: true,
+	  trigger: 'hover',
+	  placement: 'bottom',
+	  container: 'body',
+	  content: function(){return '<img src="'+$(this).data('img') + '" width="400px" />';}
+	});
+
 	$('#etappen').on('change', function() {
 		window.location.href = base_url + 'kader/tag/' + this.value;
 	});

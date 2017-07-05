@@ -42,7 +42,7 @@
 												  if ($this->Shortlist_model->checkFahrerShortlist($aFahrer['fahrer_id'], $v['id']) == false)
 												  {
 														?>
-														<li><a href="#" class="addToShortlist" id="<?= $aFahrer['fahrer_id'] . '_' . $v['id'];?>"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> <?= $v['name'];?></a></li>
+														<li><a class="addToShortlist" id="<?= $aFahrer['fahrer_id'] . '_' . $v['id'];?>"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> <?= $v['name'];?></a></li>
 												  <?php
 													}
 											  }

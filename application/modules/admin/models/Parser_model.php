@@ -28,8 +28,8 @@ class Parser_model extends MY_Model
 			}
 		} else if ($iType == 2) {
 			foreach($aFinal as $k=>$v) {
-				foreach($aFahrer as $kf=>$vf) {	
-					if ($v['startnummer'] == $vf['fahrer_startnummer']) {
+				foreach($aFahrer as $kf=>$vf) {					
+					if ($v['fahrer_startnummer'] == $vf['fahrer_startnummer']) {
 						$aFinal[$k]['fahrer_id'] = $vf['fahrer_id'];
 					}
 				}

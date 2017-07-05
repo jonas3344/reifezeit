@@ -14,6 +14,7 @@
 	});
 	$("#rolle").on("change", function() {
 		user_id = $("#user_id").val();
+		alert(user_id);
 		$.ajax({
 			type: "post",
 			url: base_url + 'administration/changeRolleOfTeilnehmer/',

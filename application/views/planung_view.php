@@ -43,13 +43,13 @@
 						
 						<div class="form-group" style="margin-top:5px;">
 						<label class="radio-inline">
-						  <input type="radio" name="<?= $v['id'];?>_sortorder" value="2" checked> Sortierung nach Credits
+						  <input type="radio" class="sort" name="<?= $v['id'];?>_sortorder" value="2" <?= ($v['sort']==2) ? 'checked' : '';?>> Sortierung nach Credits
 						</label>
 						<label class="radio-inline">
-						  <input type="radio" name="<?= $v['id'];?>_sortorder" value="1"> Sortierung nach #
+						  <input type="radio" class="sort" name="<?= $v['id'];?>_sortorder" value="1" <?= ($v['sort']==1) ? 'checked' : '';?>> Sortierung nach #
 						</label>
 						<label class="radio-inline">
-						  <input type="radio" name="<?= $v['id'];?>_sortorder" value="3" style="margin-top: 10px;">
+						  <input type="radio" class="sort" name="<?= $v['id'];?>_sortorder" value="3" <?= ($v['sort']==3) ? 'checked' : '';?> style="margin-top: 10px;">
 						  <select class="form-control" id="<?= $v['id'];?>_sortorder_select">
 							  <?php
 								foreach($aShortlists as $kS=>$vS) {

@@ -15,8 +15,6 @@
 				} else {
 					alert("Du hast diesen Fahrer bereits der Shortlist hinzugefügt!");
 				}
-				
-				
 			}
 
 		})

@@ -16,6 +16,7 @@
 					<tr>
 						<th width="20%">Team</th>
 						<td><select id="team" class="form-control">
+							<option value="0">Teamlos</option>
 							<?php
 							foreach($aTeams as $k=>$v) {
 								$sSel = ($aTeilnehmer['rz_team_id'] == $v['rzteam_id']) ? ' selected' : '';

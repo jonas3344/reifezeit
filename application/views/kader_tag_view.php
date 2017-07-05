@@ -24,7 +24,7 @@
 	</div>
 	<div class="row">
 		<div class="alert alert-info lead">
-			<?= $aEtappe['etappen_nr'];?>.Etappe: <?= $aEtappe['klassifizierung_name'] . ' - ' . $aEtappe['etappen_start_ziel'] . '(' . $aEtappe['etappen_distanz'] . ' km)';?><br><br>
+			<?= $aEtappe['etappen_nr'];?>.Etappe: <?= $aEtappe['klassifizierung_name'] . ' - ' . $aEtappe['etappen_start_ziel'] . '(' . $aEtappe['etappen_distanz'] . ' km)';?> <a rel="popover" class="btn btn-default" data-img="<?= base_url();?>img/<?= $aEtappe['etappen_profil'];?>"><span class="glyphicon glyphicon-picture" aria-hidden="true"></span></a><br><br>
 			<strong>Eingabeschluss: <?= $aEtappe['etappen_datum'] . ' - ' . $aEtappe['etappen_eingabeschluss'];?></strong><br><br>
 			Du hast heute <strong><?= $iCredits;?> Credits</strong> zur Verfügung!
 		</div>

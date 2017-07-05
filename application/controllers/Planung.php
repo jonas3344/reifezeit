@@ -95,4 +95,8 @@ class Planung extends Frontend_my_controller
 	public function saveFex() {
 		$this->model->saveFex($this->input->post('planung_id'), $this->input->post('etappen_id'), $this->input->post('wert'));
 	}
+	
+	public function changeSort() {
+		$this->model->saveRecord('planung', array('sort'=>$this->input->post('wert')), $this->input->post('planung_id'), 'id');
+	}
 }

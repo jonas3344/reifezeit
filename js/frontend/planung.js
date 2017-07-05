@@ -270,4 +270,15 @@
 		});
 		$(this).blur();
 	});
+	$(".sort").on("click", function() {
+		planung = $(this).attr("name").split('_')[0];
+		$.ajax({
+			type: "post",
+			url:	base_url + 'planung/changeSort',
+			data:	{
+				planung_id: planung,
+				wert:	$(this).val()
+			}
+		})
+	});
 })(jQuery);

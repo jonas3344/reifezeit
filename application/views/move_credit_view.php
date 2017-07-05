@@ -4,7 +4,7 @@
 	</div>
 	<div class="row">
 		<div class="alert alert-info">	
-			Es ist möglich, Basiscredits in eine Folgeetappe zu verschieben. Dazu muss ein Fahrer aber eine Creditbasis von mindestens 31 Credits besitzen. Die Creditbasis verringert sich für diese Etappe um <strong>-2</strong>, die der nachfolgenden Etappe erhöht sich um <strong>+1</strong>, unabhängig von der Etappenklassierung. Dies kann bis zu <strong>zweimal</strong> pro Spieler und Rundfahrt erfolgen.
+			Es ist möglich, Basiscredits in eine Folgeetappe zu verschieben. Dazu muss ein Fahrer aber eine Creditbasis von mindestens 31 Credits besitzen. Die Creditbasis verringert sich für diese Etappe um <strong>-2</strong>, die der nachfolgenden Etappe erhöht sich um <strong>+1</strong>, unabhängig von der Etappenklassierung. Dies kann <strong>einmal</strong> pro Spieler und Rundfahrt erfolgen.
 		</div>
 	</div>
 	<div class="row well">

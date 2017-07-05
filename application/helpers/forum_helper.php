@@ -271,7 +271,7 @@ if ( ! function_exists('createForumKaderpost'))
 			$sum = 0;
 			foreach($aTeilnehmer['kader'] as $k) {
 				$color = ($k['change'] == 1) ? "#ff9999" : "#ffffff";
-				$fahrer_name = ($k['fahrer_name'] == "Martin") ? substr($$k['fahrer_vorname'], 0, 1) . "." . $k['fahrer_name'] : $k['fahrer_name'];
+				$fahrer_name = ($k['fahrer_name'] == "Martin") ? substr($k['fahrer_vorname'], 0, 1) . "." . $k['fahrer_name'] : $k['fahrer_name'];
 				$sOutput .= "[mcol color=" . $color . "]" . $fahrer_name . "[mcol color=#ffffff]" . $k['fahrer_rundfahrt_credits'];
 				$sum += $k['fahrer_rundfahrt_credits'];
 			}

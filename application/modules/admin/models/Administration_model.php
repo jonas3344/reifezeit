@@ -22,7 +22,6 @@ class Administration_model extends MY_Model
 			$this->db->join('rz_team rt', 'rt.rzteam_id=ut.rz_team_id');
 			$aUser[$k]['team'] = $this->db->get('rz_user_team ut')->row_array();
 		}
-		
 		return $aUser;
 	}
 	
@@ -37,14 +36,19 @@ class Administration_model extends MY_Model
 	}
 	
 	public function getOneTeilnehmer($iTeilnehmer) {
+		
+		if ($this->checkValueinDb('rz_user_team', array('rundfahrt_id' => $this->config->item('iAktuelleRundfahrt'), 'user_id'=>$iTeilnehmer))) {
+			$this->db->where('ut.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		}
+		$this->db->select('t.user_id, ut.rz_team_id, t.rolle_id, u.name, u.rzname');
 		$this->db->where('t.user_id', $iTeilnehmer);
 		$this->db->where('t.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
-		$this->db->where('ut.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
 		$this->db->join('rz_user u', 'u.id=t.user_id');
 		$this->db->join('rollen r', 'r.rolle_id=t.rolle_id');
-		$this->db->join('rz_user_team ut', 'ut.user_id=t.user_id');
-		$this->db->join('rz_team rt', 'rt.rzteam_id=ut.rz_team_id');
-		return $this->db->get('teilnahme t')->row_array();
+		$this->db->join('rz_user_team ut', 'ut.user_id=t.user_id', 'LEFT');
+		$this->db->join('rz_team rt', 'rt.rzteam_id=ut.rz_team_id', 'LEFT');
+		$aTemp = $this->db->get('teilnahme t')->row_array();
+		return $aTemp;
 	}
 	
 	public function getTransfermarkt($iRundfahrt) {
@@ -167,6 +171,8 @@ class Administration_model extends MY_Model
 		$this->db->where('user_id', $iUser);
 		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
 		$this->db->update('teilnahme', array('rolle_id' => $iRolle, 'creditabgabe' => $aRolle['creditabgabe'], 'creditempfang'=>$aRolle['creditannahme']));
+		
+		echo $this->db->last_query();
 	}
 	
 	public function updateTransfermarkt($aFahrer) {

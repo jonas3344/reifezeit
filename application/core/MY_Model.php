@@ -144,6 +144,7 @@ class MY_Model extends CI_Model {
 			$this->db->where($k, $v);
 		}
 		$oQuery = $this->db->get($sTable);
+		
 		if ($oQuery->num_rows() > 0) {
 			return true;
 		} else {
