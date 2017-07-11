@@ -56,6 +56,18 @@ class Dopingtest_model extends MY_Model
 				}
 				$aData['teilnehmer'][$k]['kader'][] = $aTemp;
 			}
+			$aTemp = $this->_getKaderYesterday($aData['etappe']['etappen_nr'], $v['id']);
+			$i=0;
+			foreach($aTemp as $kk=>$vk) {
+				$aData['teilnehmer'][$k]['kaderOld'][$i] = $this->_getFahrerDetails($vk);
+				$i++;
+			}
+			
+/*
+			echo "<pre>";
+			print_r($aData['teilnehmer'][$k]['kaderOld']);
+			echo "</pre>";
+*/
 			// Creditabgaben
 			$aData['teilnehmer'][$k]['ca'] = $this->_getCa($iEtappe, $v['id']);
 			
@@ -194,6 +206,18 @@ class Dopingtest_model extends MY_Model
 		} else if ($iEtappenNr == 1) {
 			return true;
 		}
+	}
+	
+	private function _getKaderYesterday($iEtappenNr, $iUser) {
+		$this->db->select('etappen_id');
+		$this->db->where('etappen_nr', $iEtappenNr-1);
+		$this->db->where('etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$aEtappe = $this->db->get('etappen')->row_array();
+		
+		$this->db->select('fahrer1, fahrer2, fahrer3, fahrer4, fahrer5');
+		$this->db->where('user_id', $iUser);
+		$this->db->where('etappen_id', $aEtappe['etappen_id']);
+		return $this->db->get('kader')->row_array();
 	}
 	
 	private function _getFahrerDetails($iFahrerid) {

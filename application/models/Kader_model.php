@@ -353,9 +353,11 @@ class Kader_model extends MY_Model
 					$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
 					$this->db->update('teilnahme', array('creditempfang' => $aTeilnahme['creditempfang']-2));
 					
+/*
 					$this->db->where('user_id', $this->session->userdata('user_id'));
 					$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
 					$this->db->update('teilnahme', array('creditabgabe' => $aTeilnahme['creditabgabe']+1));
+*/
 					
 					$this->db->where('user_id', $iEmpfaenger);
 					$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));

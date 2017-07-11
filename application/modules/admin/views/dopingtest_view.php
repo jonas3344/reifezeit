@@ -47,8 +47,8 @@
 						<?php
 						foreach($v['kader'] as $kk=>$aKader) {
 							?>
-							<td <?= ($aKader['change'] == true) ? 'class="info"' : ''?>>#<?= $aKader['fahrer_startnummer'];?> <?= substr($aKader['fahrer_vorname'], 0, 1) . '.' . $aKader['fahrer_name'];?></td>
-							<td style="border-right: 1px solid"><?= $aKader['fahrer_rundfahrt_credits'];?></td>
+							<td <?= ($aKader['change'] == true) ? 'class="info"' : ''?>><?= substr($aKader['fahrer_vorname'], 0, 1) . '.' . $aKader['fahrer_name'];?><br><small><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> <?= substr($v['kaderOld'][$kk]['fahrer_vorname'], 0, 1) . '.' . $v['kaderOld'][$kk]['fahrer_name'];?></small></td>
+							<td style="border-right: 1px solid"><?= $aKader['fahrer_rundfahrt_credits'];?><br><small><?= $v['kaderOld'][$kk]['fahrer_rundfahrt_credits'];?></small></td>
 							<?php
 						}	
 						?>

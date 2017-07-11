@@ -1,6 +1,6 @@
 <div class="container admin">
 	<div class="row well">
-		<h1>Credit verschieben!</h1>
+		<h1>Schonen!</h1>
 	</div>
 	<div class="row">
 		<div class="alert alert-info">	

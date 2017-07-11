@@ -27,8 +27,6 @@ class Forencode extends Admin_my_controller
 		
 		$a = new Resultaterz($iEtappe);
 		
-		
-		
 		$aResultData['etappe'] = $this->model->getOneRow('etappen', 'etappen_id=' . $iEtappe);
 		$aResultData['stage_result'] = $a->getTagesWertung();
 		$aResultData['stage_team'] = $a->getTeam();
@@ -67,6 +65,32 @@ class Forencode extends Admin_my_controller
 		$aData['iEtappe'] = $iEtappe;
 		
 		$this->renderPage('forencode', $aData, array('clipboard.min.js'), array());
+	}
+	
+	public function resultate($iEtappe = 0) {
+		$aData = array();
+		$this->load->library('Resultaterz', 69);
+		$this->load->helper('time_helper');
+		
+		if ($iEtappe == 0) {
+			$iEtappe = $this->config->item('iAktuelleEtappe');
+		}
+		
+		$a = new Resultaterz($iEtappe);
+		$aData['stage_result'] = $a->getTagesWertung();
+		$aData['stage_team'] = $a->getTeam();
+		$aData['overall'] = $a->getGesamtWertung();
+		$aData['overall_points'] = $a->getGesamtPunkte();
+		$aData['overall_berg'] = $a->getGesamtBerg();
+		$aData['overall_team'] = $a->getTeamGesamt();
+		$aData['teilnehmer'] = $this->model->getTeilnehmerForum();
+		$aData['teams'] = $this->model->getTeamsForum();
+				
+		$aResultData['etappe'] = $this->model->getOneRow('etappen', 'etappen_id=' . $iEtappe);
+		
+		$aData['aAlleEtappen'] = $this->model->getRows('etappen', 'etappen_rundfahrt_id=' . $this->config->item('iAktuelleRundfahrt'), array('sort_field' => 'etappen_nr', 'sort_order' => 'ASC'));
+		$aData['iEtappe'] = $iEtappe;
+		$this->renderPage('resultat', $aData, array(), array());
 	}
 	
 	public function ruhmeshalle() {
@@ -111,5 +135,9 @@ class Forencode extends Admin_my_controller
 
 		$aData['sOutput'] = createRuhmeshalle($aCodeData);	
 		$this->renderPage('ruhmeshalle', $aData, array(), array());
+	}
+	
+	public function setOtl() {
+		$this->model->setOtl($this->input->post('user'), $this->input->post('etappe'));
 	}
 }

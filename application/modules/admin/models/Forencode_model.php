@@ -57,4 +57,11 @@ class Forencode_model extends MY_Model
 		
 		return $aEtappen;
 	}
+	
+	public function setOtl($iUser, $iEtappe) {
+		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->where('user_id', $iUser);
+		$this->db->update('teilnahme', array('out'=>1, 'out_etappen_id'=>$iEtappe));
+		echo 'ok';
+	}
 }

@@ -32,6 +32,7 @@ class Shortlist_model extends MY_Model
 		$this->db->where('fr.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
 		$this->db->where('fr.ausgeschieden', 0);
 		$this->db->order_by('fr.fahrer_rundfahrt_credits', 'DESC');
+		$this->db->order_by('fr.fahrer_startnummer', 'DESC');
 		return $this->db->get()->result_array();
 		
 	}

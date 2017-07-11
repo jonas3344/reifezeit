@@ -53,7 +53,7 @@
 		}
 		if ($iBase >= 31 && $aUser['creditmoves'] > 0 && $bEdit == true) {
 		?>
-			<a href="<?= base_url();?>kader/moveCredit/<?= $iEtappe;?>"><button class="btn btn-default">Credit verschieben</button></a>
+			<a href="<?= base_url();?>kader/moveCredit/<?= $iEtappe;?>"><button class="btn btn-default">Schonen</button></a>
 		<?php 
 		}
 		if ($aUser['rolle_id'] == 1 && ($aEtappe['etappen_klassifizierung'] == 2 || $aEtappe['etappen_klassifizierung'] == 4) && $bEdit == true) {

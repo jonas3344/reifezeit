@@ -15,7 +15,8 @@
 	</div>
 	<div class="row well">
 		<button class="btn btn-default" data-clipboard-target="#tw"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span> Tageswertung</button>
-		<button class="btn btn-default" data-clipboard-target="#gw"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span> Gesamtwertung</button>	
+		<button class="btn btn-default" data-clipboard-target="#gw"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span> Gesamtwertung</button>
+		<a href="<?= base_url();?>admin/forencode/resultate/"><button class="btn btn-default"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Resultat ansehen</button></a>
 	</div>
 	<div class="row well">
 		<h2 class="sub-header">Tageswertung</h2>
