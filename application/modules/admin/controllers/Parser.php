@@ -83,6 +83,13 @@ class Parser extends Admin_my_controller
 	
 	public function finishRundfahrtToDb() {
 		$aEtappen = $this->model->getRows('etappen', 'etappen_rundfahrt_id=' . $this->config->item('iAktuelleRundfahrt'), array('sort_field' => 'etappen_nr', 'sort_order' => 'DESC'));
+		
+		foreach($aEtappen as $k=>$v) {
+			
+		}
+		
+		
+		
 		$this->load->library('Resultaterz', $aEtappen[0]['etappen_id']);
 		
 		
