@@ -22,6 +22,7 @@
 		            <li><a href="<?= base_url()?>admin/stammdaten/rollen">Rollen</a></li>
 		            <li><a href="<?= base_url()?>admin/stammdaten/rzUser">RZ User</a></li>
 		            <li><a href="#">RZ Teams</a></li>
+		            <li><a href="<?= base_url()?>admin/historie/parser">Historie-Parser</a></li>
 		          </ul>
 		        </li>
 		        <li class="dropdown">

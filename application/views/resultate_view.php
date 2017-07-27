@@ -31,6 +31,7 @@
 							<th>Team</th>
 							<th>Nation</th>
 							<th>Rückstand</th>
+							<th>Rückstand RZ</th>
 						</thead>
 						<tbody>
 							<?php
@@ -42,6 +43,7 @@
 									<td><?= $r['team_name'];?></td>
 									<td><img src="<?= base_url();?>img/flags/<?=strtolower($r['fahrer_nation'])?>.png" width="20"></td>
 									<td><?= _convertSeconds($r['rueckstandOhneBS'])?></td>
+									<td><?= _convertSeconds($r['rueckstand'])?></td>
 								</tr>
 							<?php
 							}
