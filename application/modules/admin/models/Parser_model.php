@@ -74,7 +74,7 @@ class Parser_model extends MY_Model
 				$aSiegerTeams[] = $this->_getIdFromStartnummer($aWinner['iSecond']);
 				$aSiegerTeams[] = $this->_getIdFromStartnummer($aWinner['iThird']);
 				
-				foreach($k as $p){
+				foreach($v as $p){
 					if (in_array($this->_getFahrerTeamFromId($p), $aSiegerTeams)) {
 						$bc += 1;
 					}
@@ -99,11 +99,6 @@ class Parser_model extends MY_Model
 				echo "<br>";
 			}
 			
-			if ($aTeilnehmer[$k] == 131) {
-				var_dump($v);
-				echo "<br>";
-			}
-
 
 			$this->db->where('etappen_id', $iNaechsteEtappe);
 			$this->db->where('user_id', $aTeilnehmer[$k]);
@@ -177,5 +172,15 @@ class Parser_model extends MY_Model
 		
 		$this->db->where('etappen_id', $iEtappe);
 		$this->db->delete('resultate_punkte');
+	}
+	
+	private function _getIdFromStartnummer($iStartnummer) {
+		$this->db->select('f.fahrer_team_id');
+		$this->db->from('fahrer_rundfahrt fr');
+		$this->db->join('fahrer f', 'f.fahrer_id=fr.fahrer_id');
+		$this->db->where('fr.fahrer_startnummer', $iStartnummer);
+		$this->db->where('fr.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$aResult = $this->db->get()->row_array();
+		return $aResult['fahrer_team_id'];
 	}
 }

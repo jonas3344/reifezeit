@@ -22,6 +22,7 @@ class Resultaterz {
 	protected $aDoping;
 	
 	protected $aTeilnehmer;
+	protected $aFahrerOhneTeam;
 	protected $aTeams;
 	
 	protected $aRzTageswertungen;
@@ -29,6 +30,7 @@ class Resultaterz {
 	protected $aRzPunkte;
 	protected $aRzBerg;
 	protected $aRzTeam;
+
 
 	
 	function __construct($iEtappe) {
@@ -80,6 +82,11 @@ class Resultaterz {
 			}
 			
 		}
+		
+		$this->aFahrerOhneTeam = $this->CI->db->query("	SELECT t.user_id FROM `teilnahme` `t` LEFT JOIN `rz_user_team` `ut` ON `t`.`user_id`=`ut`.`user_id` 
+															WHERE ut.rz_user_team_id IS NULL AND t.rundfahrt_id =" . $this->CI->config->item('iAktuelleRundfahrt'))->result_array();
+															
+		//print_r($this->aFahrerOhneTeam);
 		
 		$this->_calculateTageswertung();
 		$this->_calculateGesamtwertung();
@@ -367,7 +374,17 @@ class Resultaterz {
 		}	
 	}
 	
+	/*
+		
+	Berechnet das Resultat für ein Mannschaftszeitfahren.
+	
+	Es zählt der 3.Fahrer eines Teams, der ins Ziel kommt. Fahrer 4 und 5 erhalten ihre eigene, gefahren Zeit, Fahrer 1 und 2 die Zeit des 3.
+	Teamlose Fahrer erhalten die Zeit des schlechtesten Teams +10s oder ihre eigene Zeit (falls sie langsamer waren).
+		
+	*/
+	
 	private function _calculateMzf($iEtappe) {
+		$iWorstTeam = 0;
 		foreach($this->aTeams as $k=>$v) {
 			$teamresult = array();
 			foreach($v['members'] as $p=>$l) {
@@ -405,6 +422,15 @@ class Resultaterz {
 			}
 			
 			asort($teamresult);
+/*
+			echo $v['rzteam_name'] . ':<br>';
+			print_r($teamresult);
+			echo "<br>";
+*/
+			
+			if ($iWorstTeam < array_values($teamresult)[2]) {
+				$iWorstTeam = array_values($teamresult)[2];
+			}
 			
 			$i=1;
 			foreach($teamresult as $m=>$n) {
@@ -416,6 +442,45 @@ class Resultaterz {
 				$i++;
 			}
 		}
+		
+		foreach($this->aFahrerOhneTeam as $k=>$v) {
+			$fahrer_ids = array();
+			$fahrer_ids[] = $this->aKader[$iEtappe][$v['user_id']]['fahrer1'];
+			$fahrer_ids[] = $this->aKader[$iEtappe][$v['user_id']]['fahrer2'];
+			$fahrer_ids[] = $this->aKader[$iEtappe][$v['user_id']]['fahrer3'];
+			$fahrer_ids[] = $this->aKader[$iEtappe][$v['user_id']]['fahrer4'];
+			$fahrer_ids[] = $this->aKader[$iEtappe][$v['user_id']]['fahrer5'];
+			
+			$rang_array = array();
+			
+			for ($i=0;$i<count($fahrer_ids);$i++) {
+				if (!isset($this->aResultate[$iEtappe][$fahrer_ids[$i]]['rang'])) {
+					$rang_array[$fahrer_ids[$i]] = 500;
+				} else {
+					$rang_array[$fahrer_ids[$i]] = $this->aResultate[$iEtappe][$fahrer_ids[$i]]['rang'];
+				}
+				
+			}
+			
+			
+			asort($rang_array);
+			$rang_array_komplett[$i][$v['user_id']] = $rang_array;
+			
+			array_pop($rang_array);
+			
+			$zeit = 0;
+			$bc = 0;
+			foreach($rang_array as $n=>$m){
+				$zeit+= $this->aResultate[$iEtappe][$n]['rueckstand'];					
+			}
+			if ($zeit > $iWorstTeam) {
+				$this->aRzTageswertungen[$iEtappe][$v['user_id']]['zeit'] = $zeit;
+			} else {
+				$this->aRzTageswertungen[$iEtappe][$v['user_id']]['zeit'] = $iWorstTeam + 10;
+			}
+			
+		}
+		
 	}
 	
 	/*
