@@ -45,7 +45,15 @@ class Rundfahrt_model extends MY_Model
 		$this->db->join('etappen_klassifizierungen ek', 'ek.klassifizierung_id=e.etappen_klassifizierung');
 		$this->db->where('e.etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
 		$this->db->order_by('e.etappen_nr', 'ASC');
-		return $this->db->get('etappen e')->result_array();
+		$aTemp = $this->db->get('etappen e')->result_array();
+		
+		$aEtappen = array();
+		
+		foreach($aTemp as $k=>$v) {
+			$aEtappen[$v['etappen_id']] = $v;
+		}
+		
+		return $aEtappen;
 	}
 	
 	public function getResultate($iEtappe) {
@@ -71,6 +79,24 @@ class Rundfahrt_model extends MY_Model
 		$aResult['aBerg'] = $this->db->get('resultate_berg r')->result_array();
 		
 		return $aResult;
+	}
+	
+	public function getLatestStageResult() {
+		$this->db->select('etappen_id');
+		$this->db->from('resultate');
+		$this->db->order_by('etappen_id', 'DESC');
+		$aTemp = $this->db->get()->row_array();
+		return $aTemp['etappen_id'];
+	}
+	
+	public function getEtappenId($iEtappen_nr) {
+		$this->db->select('etappen_id');
+		$this->db->from('etappen');
+		$this->db->where('etappen_rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->where('etappen_nr', $iEtappen_nr);
+		$aTemp = $this->db->get()->row_array();
+		
+		return $aTemp['etappen_id'];
 	}
 	
 }

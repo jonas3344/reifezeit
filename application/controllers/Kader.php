@@ -84,7 +84,7 @@ class Kader extends Frontend_my_controller
 		
 		$aData['iCredits'] = $iBase;
 		
-		$this->renderPage('kader_tag', $aData, array(), array());
+		$this->renderPage('kader_tag_neu', $aData, array(), array());
 	}
 	
 	public function kaderuebersicht() {

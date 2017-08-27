@@ -36,7 +36,7 @@ class Rundfahrt extends Frontend_my_controller
 		
 		$aData['aEtappen'] = $this->model->getEtappen();
 		
-		$this->renderPage('etappen', $aData, array('ekko-lightbox.js'), array('ekko-lightbox.css'));
+		$this->renderPage('etappen', $aData, array('ekko-lightbox.js'), array('ekko-lightbox.css', 'portlets.css'));
 	}
 	
 	public function resultate($iEtappe = 0) {
@@ -44,7 +44,7 @@ class Rundfahrt extends Frontend_my_controller
 		$this->load->helper('time_helper');
 		
 		if ($iEtappe == 0) {
-			$iEtappe = $this->config->item('iAktuelleEtappe');
+			$iEtappe = $this->model->getLatestStageResult();
 		}
 		
 		$aData['iEtappe'] = $iEtappe;
@@ -52,6 +52,10 @@ class Rundfahrt extends Frontend_my_controller
 		
 		$aData['aResultate'] = $this->model->getResultate($iEtappe);
 		
-		$this->renderPage('resultate', $aData, array(), array());
+		$this->renderPage('resultate', $aData, array(), array('portlets.css'));
+	}
+	
+	public function getEtappenId() {
+		echo $this->model->getEtappenId($this->input->post('etappen_nr'));
 	}
 }

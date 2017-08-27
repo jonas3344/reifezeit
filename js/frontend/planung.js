@@ -19,7 +19,7 @@
 			shortlist = 0;
 		}
 		$.ajax({
-			type: "post",
+			type: "get",
 			url: base_url + 'kader/getFahrerForDropdown/' + sort_order + '/' + shortlist,
 			success: function(s) {
 				data = $.parseJSON(s);

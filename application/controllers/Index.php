@@ -18,6 +18,6 @@ class Index extends Frontend_my_controller
 	public function index() {
 		$aData = array();
 		
-		$this->renderPage('index', $aData, array(), array());
+		$this->renderPage('index', $aData, array(), array('portlets.css'));
 	}
 }

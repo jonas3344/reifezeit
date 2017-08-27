@@ -105,7 +105,14 @@ class Teilnahme_model extends MY_Model
 		echo 'ok';
 	}
 	
-	public function getHistorie() {
+	public function getHistorie($iUser) {
+		
+		$this->db->where('ht.user_id', $iUser);
+		$this->db->join('h_rundfahrten hr', 'ht.rundfahrt_id=hr.id');
+		$this->db->join('rz_team rt', 'ht.team_id=rt.rzteam_id');
+		$aHistory = $this->db->get('h_teilnahme ht')->result_array();
+		return $aHistory;
+/*
 		$aHistory = $this->getRows('rundfahrt', 'rundfahrt_id<' . $this->config->item('iAktuelleRundfahrt'));
 		
 		foreach($aHistory as $k=>$v) {
@@ -118,7 +125,7 @@ class Teilnahme_model extends MY_Model
 			$this->db->where('t.user_id', $this->session->userdata('user_id'));
 			$aHistory[$k]['aTeilnahme'] = $this->db->get('teilnahme t')->row_array();
 		}
-		return $aHistory;
+*/
 	}
 	
 	public function getTeilnahmeData($iId) {

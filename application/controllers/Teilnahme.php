@@ -37,14 +37,17 @@ class Teilnahme extends Frontend_my_controller
 		
 		$aData['aTeilnehmer'] = $this->model->getTeilnehmerForList();
 		
-		$this->renderPage('teilnehmer', $aData, array('bootstrap-table.js', 'bootstrap-table-de-DE.js'), array('bootstrap-table.css'));
+		$this->renderPage('teilnehmer', $aData, array('bootstrap-table.js', 'bootstrap-table-de-DE.js'), array('bootstrap-table.css', 'portlets.css'));
 	}
 	
-	public function historie() {
+	public function historie($iUser = 0) {
 		$aData = array();
 		
+		if ($iUser == 0) {
+			$iUser = $this->session->userdata('user_id');
+		}
 		
-		$aData['aHistory'] = $this->model->getHistorie();
+		$aData['aHistory'] = $this->model->getHistorie($iUser);
 		
 		$this->renderPage('historie', $aData, array(), array());
 	}
