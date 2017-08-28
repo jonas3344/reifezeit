@@ -61,7 +61,18 @@ class Historie extends Frontend_my_controller
 	public function top10() {
 		$aData = array();
 		
+		$aData['aTeilnahmen'] = $this->model->getTeilnahmen();
+		$aData['aEts'] = $this->model->getEtappenSiegeForList();
+		
 		$this->renderPage('top10', $aData, array(), array('portlets.css', 'top10.css'));
+	}
+	
+	public function getDataForGwTable() {
+		echo json_encode($this->model->getDataForGwTable($this->input->post('type')));
+	}
+	
+	public function getDataForTrikotTable() {
+		echo json_encode($this->model->getDataForTrikotTable($this->input->post('type')));
 	}
 	
 }

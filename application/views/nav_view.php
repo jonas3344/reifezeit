@@ -39,7 +39,7 @@
 		        <li class="dropdown">
 		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Historie <span class="caret"></span></a>
 		          <ul class="dropdown-menu">
-			          <li><a href="<?= base_url()?>historie/top10">Top-10</a></li>
+			          <li><a href="<?= base_url()?>historie/top10">Listen</a></li>
 		            <li><a href="<?= base_url()?>historie/timeline">Deine Historie</a></li>
 		          </ul>
 		        </li>
