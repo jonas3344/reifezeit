@@ -139,6 +139,14 @@ class MY_Model extends CI_Model {
 		return $aShortlists;
 	}
 	
+	public function getLatestStageResult() {
+		$this->db->select('etappen_id');
+		$this->db->from('resultate');
+		$this->db->order_by('etappen_id', 'DESC');
+		$aTemp = $this->db->get()->row_array();
+		return $aTemp['etappen_id'];
+	}
+	
 	public function checkValueinDb($sTable, $aValues) {
 		foreach($aValues as $k=>$v) {
 			$this->db->where($k, $v);

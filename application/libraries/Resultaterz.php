@@ -281,7 +281,7 @@ class Resultaterz {
 				foreach($this->aRzTageswertungen[$k] as $p=>$l) {
 					if ($this->aRzTageswertungen[$k][$p]['zeit'] == 0) {
 						
-						$tiebreaker[$k][$p] = $l;					
+						$tiebreaker[$k][$p] = $l;				
 					}
 				}
 			}
@@ -315,8 +315,11 @@ class Resultaterz {
 					}
 					if ($changed == false) {
 						// Gleiche Kader
+						$temp = $this->aRzTageswertungen[$k];
+						$keys = array_keys($v);
 						$temp[$keys[1]]['rang'] = 1;
 						$temp[$keys[0]]['rang'] = 1;
+						$this->aRzTageswertungen[$k] = $temp;
 					}
 				} else {
 					// Wir haben mehr als 2 Zeitgleiche

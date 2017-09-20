@@ -220,3 +220,39 @@
 	background: #8775a7;
 	border-color: #8775a7;
 }
+
+.team_badge {
+	width: 512px;
+	height: 128px;
+	font-size: 38px;
+	margin: 0 auto;
+	border: black solid 1px;
+	padding-top: 35px;
+	margin-bottom: 10px;
+	border-radius: 10px;
+	box-shadow: 5px 5px 5px #888888;
+}
+
+.team_badge_small {
+	width: 256px;
+	height: 128px;
+	font-size: 38px;
+	margin: 0 auto;
+	border: black solid 1px;
+	padding-top: 35px;
+	margin-bottom: 10px;
+	border-radius: 10px;
+	box-shadow: 5px 5px 5px #888888;
+}
+
+.team_fahrer ul{
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+.team_fahrer ul li { display: inline; }
+
+.team_fahrer li + li:before {
+    content: ", ";
+}

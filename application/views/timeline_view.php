@@ -1,7 +1,7 @@
 <div class="container admin">
 
 	<div class="row">
-		        <div class="col-md-6">
+		<div class="col-md-6">
         	<div class="portlet">
 				<div class="portlet-title">
 					<div class="caption">
@@ -18,7 +18,14 @@
 				<div class="portlet-body">
 					<p>
 						<div class="avatar">
-							<img src="<?= base_url();?>img/avatars/default/<?= $iAvatar;?>.png">
+							<img src="<?= base_url();?>img/avatars/<?= $sAvatar;?>" width="128px">
+							<?php
+								if ($iUser == $this->session->userdata('user_id')) {
+									?>
+									<button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#upload_avatar"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
+									<?php
+								}
+							?>
 						</div>
 						<table class="table">
 					<tr>
@@ -71,7 +78,7 @@
 							<?php 
 							foreach($aTeams as $k=>$v) {
 								?>
-								<li><?= $v['rzteam_name'];?></li>
+								<li><a href="<?= base_url();?>historie/teams/<?= $v['rzteam_id'];?>"><?= $v['rzteam_name'];?></a></li>
 								<?php
 							}?>
 						</ul></td>
@@ -159,4 +166,30 @@
 			
         </div>
 	</div>
+</div>
+
+<div class="modal fade" id="upload_avatar" tabindex="-1" role="dialog" aria-labelledby="upload_avatar">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Avatar heraufladen</h4>
+      </div>
+      <div class="modal-body">
+        <form action="<?= base_url()?>historie/uploadAvatar" method="post" enctype="multipart/form-data">
+	        <input type="hidden" name="user" value="<?= $iUser;?>">
+	        <div class="form-group">
+			    <label for="avatar">Avatar</label>
+			    <input type="file" id="avatar" name="avatar">
+			    <p class="help-block">gif, jpg oder png, wird mit einer Breite von 128px dargestellt</p>
+		  </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Schliessen</button>
+        <button type="submit" class="btn btn-primary">Upload</button>
+      </div>
+      </form>
+    </div>
+  </div>
 </div>

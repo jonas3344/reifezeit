@@ -211,7 +211,21 @@ if ( ! function_exists('createRuhmeshalle'))
 				$sStageColor = 'yellow';
 			}
 			$sOutput .= "[mrow color=" . $sStageColor . "]" . $v['aStage']['etappen_nr'];
-			$sOutput .= "[mcol color=#fffcde]" . $aResultData['aTeilnehmer'][$v['aFirst']['user_id']]['rzname'] . " (" . $aResultData['aTeilnehmer'][$v['aFirst']['user_id']]['rzteam_short'] . ")";
+			$sOutput .= "[mcol color=#fffcde]";
+			if ($v['aStage']['etappen_klassifizierung'] != 6) {
+				$bFirst = true;
+				foreach($v['aFirst'] as $kf=>$vf) {
+					if ($bFirst == false) {
+						$sOutput .= ' / ';
+					}
+					$sOutput .= $aResultData['aTeilnehmer'][$vf['user_id']]['rzname'] . " (" . $aResultData['aTeilnehmer'][$vf['user_id']]['rzteam_short'] . ")";
+					$bFirst = false;
+				}
+
+			} else {
+				$sOutput .= $aResultData['aTeilnehmer'][$v['aFirst'][0]['user_id']]['rzteam_short'];
+			}
+						
 			$sOutput .= "[mcol color=#eeee33]" . $aResultData['aTeilnehmer'][$v['aLeader']]['rzname'] . " (" . $aResultData['aTeilnehmer'][$v['aLeader']]['rzteam_short'] . ")";
 			$sOutput .= "[mcol color=#fffcde]" . $aResultData['aTeams'][$v['aTeamStage']]['rzteam_name'];
 			$sOutput .= "[mcol color=#1177FF]" . $aResultData['aTeams'][$v['aTeamOverall']]['rzteam_name'];

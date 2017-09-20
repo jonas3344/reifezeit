@@ -4,7 +4,7 @@
 				<div class="portlet-title">
 					<div class="caption">
 						<i class="glyphicon glyphicon-info-sign"></i>
-						<span class="caption-subject text-uppercase"> Alle Daten von <?= $aUser['name'];?> in Tabellenform</span>
+						<span class="caption-subject text-uppercase"> Alle Daten von <?= $aTeam['rzteam_name'];?> in Tabellenform</span>
 					</div>
 					<ul class="nav nav-tabs">
 						<li class="active">
@@ -16,14 +16,14 @@
 							Etappensiege</a>
 						</li>
 						<li>
-							<a href="#leadertrikots" data-toggle="tab">
-							Leadertrikots</a>
+							<a href="#etappensiege_einzeln" data-toggle="tab">
+							Etappensiege Einzeln</a>
 						</li>
 					</ul>
 					<div class="actions">
-						<a href="<?= base_url();?>historie/timeline/<?= $iUser;?>" class="btn">
+						<a href="<?= base_url();?>historie/teams/<?= $iTeam;?>" class="btn">
 							<i class="glyphicon glyphicon-menu-left"></i>
-							Zurück zur Timeline 
+							Zurück zum Team 
 						</a>
 					</div>
 				</div>
@@ -34,11 +34,8 @@
 								<table class="table table-striped">
 									<thead>
 										<th>Rundfahrt</th>
-										<th>Team</th>
-										<th>Gesamtklassierung</th>
-										<th>Bergwertung</th>
-										<th>Punktewertung</th>
-										<th>Teamklassierung</th>
+										<th>Fahrer</th>
+										<th>Gesamtwertung</th>
 					
 									</thead>
 									<tbody>
@@ -47,10 +44,14 @@
 											?>
 											<tr>
 												<td><a href="<?= base_url();?>historie/rundfahrt/<?= $v['rundfahrt_id'];?>"><?= $v['bezeichnung'] . ' ' . $v['jahr'];?></a></td>
-												<td><a href="<?= base_url();?>historie/teams/<?= $v['team_id'];?>"><?= $v['rzteam_name'];?></a></td>
-												<td><?= $v['rang_gw'];?></td>
-												<td><?= $v['rang_berg'];?></td>
-												<td><?= $v['rang_punkte'];?></td>
+												<td><div class="team_fahrer"><ul><?php
+													foreach($v['aFahrer'] as $kF=>$vF) {
+														?>
+														<li><a href="<?= base_url();?>historie/timeline/<?= $vF['id'];?>"><?= $vF['name'];?></a></li>
+														<?php
+													}
+													
+													?></ul></div></td>
 												<td><?= $v['rang'];?></td>
 											</tr>
 											<?php
@@ -58,6 +59,7 @@
 									?>
 									</tbody>
 								</table>
+
 							</div>
 						</div>
 						<div class="tab-pane" id="etappensiege">
@@ -104,31 +106,45 @@
 							</div>
 
 						</div>
-						<div class="tab-pane" id="leadertrikots">
+						<div class="tab-pane" id="etappensiege_einzeln">
 							<div class="table-responsive history_table">
-								<table class="table table-striped">
+								<table class="table">
 									<thead>
-										<th>Trikot</th>
-										<th>Etappe</th>			
+										<th width="20%">Fahrer</th>	
+										<th>Etappe</th>
+													
 									</thead>
 									<tbody>
 									<?php
-										foreach($aLeader as $k=>$v) {
-											if ($v['type'] == 1) {
-												$sColor = 'warning';
-												$sType = 'Leadertrikot';
-											} else if ($v['type'] == 2) {
-												$sColor = 'success';
-												$sType = 'Punktetrikot';
-											}
-											else if ($v['type'] == 3) {
-												$sColor = 'danger';
-												$sType = 'Bergtrikot';
+										foreach($aEsEinzeln as $k=>$v) {
+											$sColor = '';
+											switch($v['klassifizierung_id']) {
+												case 1:
+													$sColor = ' class = success';
+													break;
+												case 2:
+													break;
+												case 3:
+													$sColor = ' class = warning'; 
+													break;
+												case 4:
+													$sColor = ' class = danger';
+													break;
+												case 5:
+													$sColor = ' class = warning';
+													break;
+												case 6:
+													$sColor = ' class = warning';
+													break;
+												case 7:
+													$sColor = ' class = primary';
+													break;
 											}
 											?>
-											<tr class="<?= $sColor;?>">
-												<td><?= $sType;?></td>
-												<td><?= $v['etappen_nr'] . '.Etappe ' . $v['bezeichnung'] . ' ' . $v['jahr'];?></td>
+											<tr<?= $sColor?>>
+												<td><a href="<?= base_url();?>historie/timeline/<?= $v['id'];?>"><?= $v['name'];?></a></td>
+												<td><?= $v['etappen_nr'] . '.Etappe ' . $v['bezeichnung'] . ' ' . $v['jahr'] . ' - ' . $v['klassifizierung_name'];?></td>
+												
 											</tr>
 											<?php
 										}	
@@ -136,7 +152,9 @@
 									</tbody>
 								</table>
 							</div>
+
 						</div>
+
 					</div>
 				</div>
 		</div>

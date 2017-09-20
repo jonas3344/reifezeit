@@ -113,7 +113,7 @@
 							<div class="panel-heading">
 								<div class="row">
 			                        <div class="col col-xs-6">
-			                            <h3 class="panel-title">Anzahl Teilnahmen</h3>
+			                            <h3 class="panel-title">Anzahl Etappensiege</h3>
 			                        </div>
 			                    </div>
 							</div>

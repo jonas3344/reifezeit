@@ -1,4 +1,4 @@
-<div class="container admin">
+<div class="container admin" style="margin-bottom: 300px;">
 	<div class="row well">
 		<h1>Kaderübersicht!</h1>
 	</div>

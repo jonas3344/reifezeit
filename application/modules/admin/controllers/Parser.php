@@ -68,7 +68,7 @@ class Parser extends Admin_my_controller
 	public function deleteStage($iEtappe = 0) {
 		$aData = array();
 		
-		$aData['iEtappe'] = ($iEtappe == 0) ? $this->config->item('iAktuelleEtappe') : $iEtappe;
+		$aData['iEtappe'] = ($iEtappe == 0) ? $this->model->getLatestStageResult() : $iEtappe;
 		
 		$aData['aEtappen'] = $this->model->getRows('etappen', 'etappen_rundfahrt_id=' . $this->config->item('iAktuelleRundfahrt'), array('sort_field'=>'etappen_nr', 'sort_order'=>'ASC'));
 		

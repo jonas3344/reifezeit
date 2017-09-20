@@ -22,7 +22,7 @@ class Forencode extends Admin_my_controller
 		$this->load->helper('time_helper');
 		
 		if ($iEtappe == 0) {
-			$iEtappe = $this->config->item('iAktuelleEtappe');
+			$iEtappe = $this->model->getLatestStageResult();
 		}
 		
 		$a = new Resultaterz($iEtappe);
@@ -73,7 +73,7 @@ class Forencode extends Admin_my_controller
 		$this->load->helper('time_helper');
 		
 		if ($iEtappe == 0) {
-			$iEtappe = $this->config->item('iAktuelleEtappe');
+			$iEtappe = $this->model->getLatestStageResult();
 		}
 		
 		$a = new Resultaterz($iEtappe);
@@ -115,7 +115,14 @@ class Forencode extends Admin_my_controller
 			$overall_team = $a->getTeamGesamt();
 			
 			$aCodeData['aEtappen'][$v['etappen_nr']]['aStage'] = $v;
-			$aCodeData['aEtappen'][$v['etappen_nr']]['aFirst'] = array_values($stage_result)[0];
+			foreach($stage_result as $kr=>$vr) {
+				if ($vr['rang'] == 1) {
+					$aCodeData['aEtappen'][$v['etappen_nr']]['aFirst'][] = $vr;
+				} else if ($vr['rang'] > 1) {
+					break;
+				}
+			}
+			//$aCodeData['aEtappen'][$v['etappen_nr']]['aFirst'] = array_values($stage_result)[0];
 			$aCodeData['aEtappen'][$v['etappen_nr']]['aLeader'] = array_keys($overall)[0];
 			$aCodeData['aEtappen'][$v['etappen_nr']]['aTeamStage'] = array_keys($stage_team)[0];
 			$aCodeData['aEtappen'][$v['etappen_nr']]['aTeamOverall'] =array_keys($overall_team)[0];
