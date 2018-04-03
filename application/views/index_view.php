@@ -52,7 +52,7 @@
 			</div>
 			<div class="portlet-body">
 				<p>
-					<h4>© <a href="http://www.cyclingmanager.de/profile.php?mode=viewprofile&u=50" target="_blank">jonas</a> 2017</h4>
+					<h4>© <a href="http://www.cyclingmanager.de/profile.php?mode=viewprofile&u=50" target="_blank">jonas</a> 2017-<?= date('Y');?></h4>
 					Made with/on:
 					<ul class="teamlist">
 						<li><a href="http://www.apple.com" target="_blank">iMac</a></li>

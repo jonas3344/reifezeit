@@ -86,14 +86,91 @@ class Parser extends Admin_my_controller
 		
 		foreach($aEtappen as $k=>$v) {
 			
-		}
+		}	
 		
-		
-		
-		$this->load->library('Resultaterz', $aEtappen[0]['etappen_id']);
-		
+		$this->load->library('Resultaterz', $aEtappen[0]['etappen_id']);	
 		
 		$this->model->finishRundfahrt($this->resultaterz->getGesamtWertung(), $this->resultaterz->getGesamtPunkte(), $this->resultaterz->getGesamtBerg());
+	}
+	
+	public function pcsParser() {
+		$this->load->helper('html_dom_helper');
+		$this->load->helper('file');
+		
+/*
+		$curl = curl_init(); 
+		curl_setopt($curl, CURLOPT_URL, 'https://www.procyclingstats.com/race/la-roue-tourangelle/2018/result');  
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);  
+		curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 10);  
+		$data = curl_exec($curl);  
+		curl_close($curl);
+*/
+		
+		$data = read_file('temp.txt');
+		
+		$cCharAt = stripos($data, '<div class="resultCont id180834 show">');
+		$data = substr($data, $cCharAt);
+		$cCharEnd = stripos($data, '<div class="div300r"');
+		$data = substr($data, 0, $cCharEnd);
+		
+		//var_dump($data);
+		
+		$html = str_get_html($data);
+		
+		$aTables = array();
+		$rows = ['rang', 'namen', 'team', 'ptsuci', 'ptspcs', 'rueckstand'];
+		$i=0;
+		$p=0;
+		
+		foreach($html->find('.basic') as $element) {
+			foreach($element->find('tr') as $row) {
+				foreach($row->find('td') as $td) {
+					$aTables[$p][$rows[$i]] = trim($td->text());
+					$i++;
+				}
+				$i=0;
+				$p++;
+			}	
+		}
+		
+		$aResult = array();
+		
+		foreach($aTables as $k=>$v) {
+			$aResult[$k]['rang'] = strip_tags($v['rang']);
+			$aResult[$k]['namen'] = substr($v['namen'], 0, strpos($v['namen'], '  '));
+			$aResult[$k]['vornamen'] = trim(substr($v['namen'], strpos($v['namen'], '  ')));
+			
+			// Try to find faher in db
+			$namen = strip_tags($aResult[$k]['namen']);
+			$vornamen = strip_tags($aResult[$k]['vornamen']);
+			
+			$this->db->select('fahrer_id');
+			$this->db->from('fahrer');
+			$this->db->where('fahrer_name LIKE', $namen);
+			$this->db->where('fahrer_vorname LIKE', $vornamen);
+			$fahrer = $this->db->get('')->result_array();
+			$aResult[$k]['fahrer_id'] = $fahrer[0]['fahrer_id'];
+			
+			
+			unset($aTables[$k]['ptsuci']);
+			unset($aTables[$k]['ptspcs']);
+			if ($v['rang'] == 1) {
+				$rueckstand = 0;
+			} else if (strip_tags($v['rang']) != 'DNF' && strip_tags($v['rang']) != 'DNS') {
+				$rueckstand = strip_tags(trim(substr($v['rueckstand'], strpos($v['rueckstand'], '  '))));
+				//echo ord($rueckstand[0]);
+				$temp = chr(44) . chr(44) . ' ';
+				if ($rueckstand == $temp) {
+					$rueckstand = 0;
+				}
+			}
+			$aResult[$k]['team'] = $v['team'];
+			$aResult[$k]['rueckstand'] = $rueckstand;
+		}
+		
+		echo "<pre>";
+		print_r($aResult);
+		echo "</pre>";
 	}
 	
 	/*

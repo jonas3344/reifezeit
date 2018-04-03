@@ -29,7 +29,7 @@ class Teilnahme extends Frontend_my_controller
 			}
 		}
 		
-		$this->renderPage('teilnahme', $aData, array(), array());
+		$this->renderPage('teilnahme', $aData, array(), array('portlets.css'));
 	}
 	
 	public function teilnehmer() {

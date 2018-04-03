@@ -83,4 +83,7 @@ table.vertical-align > tbody > tr > td {
 .history_table {  
     height: 600px !important;
     overflow: scroll;
-}​
+}
+.smaller_table {
+	font-size: 1.1rem;
+}

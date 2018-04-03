@@ -30,7 +30,7 @@ class Shortlist extends Frontend_my_controller
 		foreach($aData['aSharedShortlists'] as $k=>$v) {
 			$aData['aSharedShortlists'][$k]['aFahrer'] = $this->model->getFahrerForShortlist($v['id']);
 		}
-		$this->renderPage('shortlist', $aData, array(), array());
+		$this->renderPage('shortlist', $aData, array(), array('portlets.css'));
 	}
 	
 	public function forencode($iShortlist) {
@@ -42,7 +42,7 @@ class Shortlist extends Frontend_my_controller
 		
 		$aData['sOutput'] = forumShortlist($aData['aShortlist'], $aData['aFahrer'], $aData['aUser']);
 		
-		$this->renderPage('shortlist_forencode', $aData, array('clipboard.min.js'), array());
+		$this->renderPage('shortlist_forencode', $aData, array('clipboard.min.js'), array('portlets.css'));
 	}
 	
 	public function createNewShortlist() {

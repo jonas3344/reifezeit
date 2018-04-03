@@ -43,7 +43,7 @@
 				<div class="tab-content">
 					<div class="tab-pane active" id="resultat">
 						<div class="table-responsive history_table">
-							<table class="table table-striped">
+							<table class="table table-striped smaller_table">
 								<thead>
 									<th width="5%">Rang</th>
 									<th width="30%">Fahrer</th>
@@ -75,7 +75,7 @@
 
 					<div class="tab-pane" id="punkte">
 						<div class="table-responsive history_table">
-							<table class="table table-striped">
+							<table class="table table-striped smaller_table">
 								<thead>
 									<th width="5%">Rang</th>
 									<th>Fahrer</th>
@@ -105,7 +105,7 @@
 					</div>
 					<div class="tab-pane" id="berg">
 						<div class="table-responsive history_table">
-							<table class="table table-striped">
+							<table class="table table-striped smaller_table">
 								<thead>
 									<th width="5%">Rang</th>
 									<th>Fahrer</th>

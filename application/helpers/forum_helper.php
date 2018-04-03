@@ -6,9 +6,9 @@ if ( ! function_exists('createResultKaderpost'))
 		$sOutputDay = '';
 		$sOutputGesamt = '';
 		
-		$sOutputDay .= "[b][size=18]" . $aResultData['etappe']['etappen_nr'] . ". Etappe[/size][/b]<br><br>";
+		$sOutputDay .= "[b][size=180]" . $aResultData['etappe']['etappen_nr'] . ". Etappe[/size][/b][br][br]";
 		$sOutputDay .= "[b]T A G E S E I N Z E L W E R T U N G[/b]";
-		$sOutputDay .= "[table fontsize=9][mrow color=silver]	Platz	[mcol]	Tageseinzelwertung	[mcol]	Sattlerei-Name	[mcol]	Team	[mcol]	Status	[mcol]	Zeit	[mcol]	BCs";
+		$sOutputDay .= "[table fontsize=9][mrow color=silver][mcol]Platz[/mcol][mcol]Tageseinzelwertung[/mcol][mcol]Sattlerei-Name[/mcol][mcol]Team[/mcol][mcol]Status[/mcol][mcol]Zeit[/mcol][mcol]BCs[/mcol][/mrow]";
 		$i=0;
 		
 		foreach($aResultData['stage_result'] as $k=>$v) {
@@ -29,23 +29,23 @@ if ( ! function_exists('createResultKaderpost'))
 			} else {
 				$color_row = (($i%2) == 0) ? "#eeeeee" : "#ffffff";
 			}
-			$sOutputDay .= "[mrow color=" . $color_row . "] " . $rang . " ";
-			$sOutputDay .= "[mcol] " . $user['rzname'] . " [mcol] " . $user['name'];
+			$sOutputDay .= "[mrow color=" . $color_row . "][mcol] " . $rang . " ";
+			$sOutputDay .= "[/mcol][mcol] " . $user['rzname'] . " [/mcol][mcol] " . $user['name'];
 			if ($user['rzteam_short'] != 'none') {
-				$sOutputDay .= "[mcol color=" . $user['color_code_zelle'] . "][color=" . $user['color_code_schrift'] . "]" . $user['rzteam_short'] . "[/color]";
+				$sOutputDay .= "[/mcol][mcol color=" . $user['color_code_zelle'] . "][color=" . $user['color_code_schrift'] . "]" . $user['rzteam_short'] . "[/color]";
 			} else {
-				$sOutputDay .= "[mcol]";
+				$sOutputDay .= "[/mcol][mcol]";
 			}
 			
-			$sOutputDay .= "[mcol color=" . $user['color_code_rolle'] . "]" . $user['rolle_bezeichnung'];
-			$sOutputDay .= "[mcol]" . _convertSeconds($v['zeit']) . "[mcol]" . $v['bc'];
+			$sOutputDay .= "[/mcol][mcol color=" . $user['color_code_rolle'] . "]" . $user['rolle_bezeichnung'];
+			$sOutputDay .= "[/mcol][mcol]" . _convertSeconds($v['zeit']) . "[/mcol][mcol]" . $v['bc'] . '[/mcol][/mrow]';
 			
 			$i++;
 		}
 		
-		$sOutputDay .= "[/table]<br><br><br>";
+		$sOutputDay .= "[/table][br][br][br]";
 		$sOutputDay .= "[b]T A G E S T E A M W E R T U N G[/b]";
-		$sOutputDay .= "[table fontsize=9][mrow color=silver]	Platz	[mcol]	Tagesteamwertung	[mcol]	Zeit";
+		$sOutputDay .= "[table fontsize=9][mrow color=silver][mcol]Platz[/mcol][mcol]Tagesteamwertung[/mcol][mcol]Zeit[/mcol][/mrow]";
 		
 		$i = 0;
 		
@@ -65,16 +65,16 @@ if ( ! function_exists('createResultKaderpost'))
 					$rang = "-";
 				}		
 			}
-			$sOutputDay .= "[mrow color=" . $color_row . "] " . $rang . " ";
-			$sOutputDay .= "[mcol color=" . $team['color_code_zelle'] . "][color=" . $team['color_code_schrift'] . "]" . $team['rzteam_name'] . "[/color]";
-			$sOutputDay .= "[mcol]" . _convertSeconds($v['zeit']);
+			$sOutputDay .= "[mrow color=" . $color_row . "][mcol] " . $rang . " ";
+			$sOutputDay .= "[/mcol][mcol color=" . $team['color_code_zelle'] . "][color=" . $team['color_code_schrift'] . "]" . $team['rzteam_name'] . "[/color]";
+			$sOutputDay .= "[/mcol][mcol]" . _convertSeconds($v['zeit']) . '[/mcol][/mrow]';
 			$i++;
 		}
 		
 		$sOutputDay .= "[/table]";
 		
 		$sOutputGesamt .= "[b]G E S A M T E I N Z E L W E R T U N G[/b]";
-		$sOutputGesamt .= "[table fontsize=9][mrow color=#eeee33]	Platz	[mcol]	Gesamteinzelwertung	[mcol]	Sattlerei-Name	[mcol]	Team	[mcol]	Status	[mcol]	Zeit";
+		$sOutputGesamt .= "[table fontsize=9][mrow color=#eeee33][mcol]Platz[/mcol][mcol]Gesamteinzelwertung[/mcol][mcol]Sattlerei-Name[/mcol][mcol]Team[/mcol][mcol]Status[/mcol][mcol]Zeit[/mcol][/mrow]";
 		
 		$i = 0;
 		foreach($aResultData['overall'] as $k=> $v) {
@@ -88,22 +88,22 @@ if ( ! function_exists('createResultKaderpost'))
 			}
 		
 			$color_row = (($i%2) == 0) ? "#eeeeee" : "#ffffff";
-			$sOutputGesamt .= "[mrow color=" . $color_row . "] " . $rang . " ";
-			$sOutputGesamt .= "[mcol] " . $user['rzname'] . " [mcol] " . $user['name'];
+			$sOutputGesamt .= "[mrow color=" . $color_row . "] [mcol]" . $rang . " ";
+			$sOutputGesamt .= "[/mcol][mcol] " . $user['rzname'] . " [/mcol][mcol] " . $user['name'];
 			if ($user['rzteam_short'] != 'none') {
-				$sOutputGesamt .= "[mcol color=" . $user['color_code_zelle'] . "][color=" . $user['color_code_schrift'] . "]" . $user['rzteam_short'] . "[/color]";
+				$sOutputGesamt .= "[/mcol][mcol color=" . $user['color_code_zelle'] . "][color=" . $user['color_code_schrift'] . "]" . $user['rzteam_short'] . "[/color]";
 			} else {
-				$sOutputGesamt .= "[mcol]";
+				$sOutputGesamt .= "[/mcol][mcol]";
 			}
-			$sOutputGesamt .= "[mcol color=" . $user['color_code_rolle'] . "]" . $user['rolle_bezeichnung'];
-			$sOutputGesamt .= "[mcol]" . _convertSeconds($v['zeit']);
+			$sOutputGesamt .= "[/mcol][mcol color=" . $user['color_code_rolle'] . "]" . $user['rolle_bezeichnung'];
+			$sOutputGesamt .= "[/mcol][mcol]" . _convertSeconds($v['zeit']) . '[/mcol][/mrow]';
 			$i++;
 		}
 		
-		$sOutputGesamt .= "[/table]<br><br>";
+		$sOutputGesamt .= "[/table][br][br]";
 		
 		$sOutputGesamt .= "[b]G E S A M T T E A M W E R T U N G[/b]";
-		$sOutputGesamt .= "[table fontsize=9][mrow color=#8888ff]	Platz	[mcol]	Gesamtteamwertung	[mcol]	Zeit";
+		$sOutputGesamt .= "[table fontsize=9][mrow color=#8888ff][mcol]Platz[/mcol][mcol]Gesamtteamwertung[/mcol][mcol]Zeit[/mcol][/mrow]";
 
 		$i = 0;
 		foreach($aResultData['overall_team'] as $k=>$v) {
@@ -116,17 +116,17 @@ if ( ! function_exists('createResultKaderpost'))
 					$rang = "-";
 				}		
 			}
-			$sOutputGesamt .= "[mrow color=" . $color_row . "] " . $rang . " ";
-			$sOutputGesamt .= "[mcol color=" . $team['color_code_zelle'] . "][color=" . $team['color_code_schrift'] . "]" . $team['rzteam_name'] . "[/color]";
-			$sOutputGesamt .= "[mcol]" . _convertSeconds($v['zeit']);
+			$sOutputGesamt .= "[mrow color=" . $color_row . "][mcol]" . $rang . " ";
+			$sOutputGesamt .= "[/mcol][mcol color=" . $team['color_code_zelle'] . "][color=" . $team['color_code_schrift'] . "]" . $team['rzteam_name'] . "[/color]";
+			$sOutputGesamt .= "[/mcol][mcol]" . _convertSeconds($v['zeit']) . '[/mcol][/mrow]';
 			$i++;
 		
 		}
 		
-		$sOutputGesamt .= "[/table]<br><br>";
+		$sOutputGesamt .= "[/table][br][br]";
 		
 		$sOutputGesamt .= "[b]G E S A M T P U N K T E W E R T U N G[/b]";
-		$sOutputGesamt .= "[table fontsize=9][mrow color=#00cc00]	Platz	[mcol]	Gesamtpunktewertung	[mcol]	Sattlerei-Name	[mcol]	Team	[mcol]	Status	[mcol]	Punkte";
+		$sOutputGesamt .= "[table fontsize=9][mrow color=#00cc00][mcol]Platz[/mcol][mcol]Gesamtpunktewertung[/mcol][mcol]Sattlerei-Name[/mcol][mcol]Team[/mcol][mcol]Status[/mcol][mcol]Punkte[/mcol][/mrow]";
 		$i = 0;
 		foreach($aResultData['overall_points'] as $k=>$v) {
 			if ($v['punkte'] > 0) {
@@ -140,24 +140,24 @@ if ( ! function_exists('createResultKaderpost'))
 					}
 					
 				}
-				$sOutputGesamt .= "[mrow color=" . $color_row . "] " . $rang . " ";
-				$sOutputGesamt .= "[mcol] " . $user['rzname'] . " [mcol] " . $user['name'];
+				$sOutputGesamt .= "[mrow color=" . $color_row . "][mcol]" . $rang . " ";
+				$sOutputGesamt .= "[/mcol][mcol] " . $user['rzname'] . " [mcol] " . $user['name'];
 				if ($user['rzteam_short'] != 'none') {
-					$sOutputGesamt .= "[mcol color=" . $user['color_code_zelle'] . "][color=" . $user['color_code_schrift'] . "]" . $user['rzteam_short'] . "[/color]";
+					$sOutputGesamt .= "[/mcol][mcol color=" . $user['color_code_zelle'] . "][color=" . $user['color_code_schrift'] . "]" . $user['rzteam_short'] . "[/color]";
 				} else {
-					$sOutputGesamt .= "[mcol]";
+					$sOutputGesamt .= "[/mcol][mcol]";
 				}
-				$sOutputGesamt .= "[mcol color=" . $user['color_code_rolle'] . "]" . $user['rolle_bezeichnung'];
-				$sOutputGesamt .= "[mcol]" . $v['punkte'];
+				$sOutputGesamt .= "[/mcol][mcol color=" . $user['color_code_rolle'] . "]" . $user['rolle_bezeichnung'];
+				$sOutputGesamt .= "[/mcol][mcol]" . $v['punkte'] . '[/mcol][/mrow]';
 				$i++;
 			}
 		}
 		
-		$sOutputGesamt .= "[/table]<br><br>";
+		$sOutputGesamt .= "[/table][br][br]";
 		
 		if (array_values($aResultData['overall_berg'])[0]['berg'] > 0) {
 			$sOutputGesamt .= "[b]G E S A M T B E R G W E R T U N G[/b]";
-			$sOutputGesamt .= "[table fontsize=9][mrow color=#ff3333]	Platz	[mcol]	Gesamtbergwertung	[mcol]	Sattlerei-Name	[mcol]	Team	[mcol]	Status	[mcol]	Punkte";
+			$sOutputGesamt .= "[table fontsize=9][mrow color=#ff3333][mcol]Platz[/mcol][mcol]Gesamtbergwertung[/mcol][mcol]Sattlerei-Name[/mcol][mcol]Team[/mcol][mcol]Status[/mcol][mcol]Punkte[/mcol][/mrow]";
 			$i = 0;
 			foreach($aResultData['overall_berg'] as $k=>$v) {
 				if ($v['berg'] > 0) {
@@ -171,15 +171,15 @@ if ( ! function_exists('createResultKaderpost'))
 						}
 						
 					}
-					$sOutputGesamt .= "[mrow color=" . $color_row . "] " . $rang . " ";
-					$sOutputGesamt .= "[mcol] " . $user['rzname'] . " [mcol] " . $user['name'];
+					$sOutputGesamt .= "[mrow color=" . $color_row . "][mcol]" . $rang . " ";
+					$sOutputGesamt .= "[/mcol][mcol] " . $user['rzname'] . " [mcol] " . $user['name'];
 					if ($user['rzteam_short'] != 'none') {
-						$sOutputGesamt .= "[mcol color=" . $user['color_code_zelle'] . "][color=" . $user['color_code_schrift'] . "]" . $user['rzteam_short'] . "[/color]";
+						$sOutputGesamt .= "[/mcol][mcol color=" . $user['color_code_zelle'] . "][color=" . $user['color_code_schrift'] . "]" . $user['rzteam_short'] . "[/color]";
 					} else {
-						$sOutputGesamt .= "[mcol]";
+						$sOutputGesamt .= "[/mcol][mcol]";
 					}
-					$sOutputGesamt .= "[mcol color=" . $user['color_code_rolle'] . "]" . $user['rolle_bezeichnung'];
-					$sOutputGesamt .= "[mcol]" . $v['berg'];
+					$sOutputGesamt .= "[/mcol][mcol color=" . $user['color_code_rolle'] . "]" . $user['rolle_bezeichnung'];
+					$sOutputGesamt .= "[/mcol][mcol]" . $v['berg'] . '[/mcol][/mrow]';
 					$i++;
 				}
 			}
@@ -197,7 +197,7 @@ if ( ! function_exists('createResultKaderpost'))
 if ( ! function_exists('createRuhmeshalle')) 
 {
 	function createRuhmeshalle($aResultData) {
-		$sOutput = "[table fontsize=9][mrow color=#1C1C1C][color=white]Etappe[/color][mcol color=#eedabc]Etappensieg[mcol color=#ffffcc]Gesamtwertung[mcol color=#eedabc]Team Etappe[mcol color=#5384dc]Team Gesamt[mcol color=#ccffcc]Punkte-Trikot[mcol color=#ffcccc]Berg-Trikot\n";
+		$sOutput = "[table fontsize=9][mrow color=#1C1C1C][mcol][color=white]Etappe[/color][/mcol][mcol color=#eedabc]Etappensieg[/mcol][mcol color=#ffffcc]Gesamtwertung[/mcol][mcol color=#eedabc]Team Etappe[/mcol][mcol color=#5384dc]Team Gesamt[/mcol][mcol color=#ccffcc]Punkte-Trikot[/mcol][mcol color=#ffcccc]Berg-Trikot[/mcol][/mrow]";
 		
 		foreach($aResultData['aEtappen'] as $k=>$v) {
 			$sStageColor = '';
@@ -210,8 +210,8 @@ if ( ! function_exists('createRuhmeshalle'))
 			} else {
 				$sStageColor = 'yellow';
 			}
-			$sOutput .= "[mrow color=" . $sStageColor . "]" . $v['aStage']['etappen_nr'];
-			$sOutput .= "[mcol color=#fffcde]";
+			$sOutput .= "[mrow color=" . $sStageColor . "][mcol]" . $v['aStage']['etappen_nr'];
+			$sOutput .= "[/mcol][mcol color=#fffcde]";
 			if ($v['aStage']['etappen_klassifizierung'] != 6) {
 				$bFirst = true;
 				foreach($v['aFirst'] as $kf=>$vf) {
@@ -226,20 +226,20 @@ if ( ! function_exists('createRuhmeshalle'))
 				$sOutput .= $aResultData['aTeilnehmer'][$v['aFirst'][0]['user_id']]['rzteam_short'];
 			}
 						
-			$sOutput .= "[mcol color=#eeee33]" . $aResultData['aTeilnehmer'][$v['aLeader']]['rzname'] . " (" . $aResultData['aTeilnehmer'][$v['aLeader']]['rzteam_short'] . ")";
-			$sOutput .= "[mcol color=#fffcde]" . $aResultData['aTeams'][$v['aTeamStage']]['rzteam_name'];
-			$sOutput .= "[mcol color=#1177FF]" . $aResultData['aTeams'][$v['aTeamOverall']]['rzteam_name'];
+			$sOutput .= "[/mcol][mcol color=#eeee33]" . $aResultData['aTeilnehmer'][$v['aLeader']]['rzname'] . " (" . $aResultData['aTeilnehmer'][$v['aLeader']]['rzteam_short'] . ")";
+			$sOutput .= "[/mcol][mcol color=#fffcde]" . $aResultData['aTeams'][$v['aTeamStage']]['rzteam_name'];
+			$sOutput .= "[/mcol][mcol color=#1177FF]" . $aResultData['aTeams'][$v['aTeamOverall']]['rzteam_name'];
 			if ($v['aPoints'] == '-') {
-				$sOutput .= "[mcol color=#00cc00]" . '-';
+				$sOutput .= "[/mcol][mcol color=#00cc00]" . '-';
 			} else {
-				$sOutput .= "[mcol color=#00cc00]" . $aResultData['aTeilnehmer'][$v['aPoints']]['rzname'] . " (" . $aResultData['aTeilnehmer'][$v['aPoints']]['rzteam_short'] . ")";
+				$sOutput .= "[/mcol][mcol color=#00cc00]" . $aResultData['aTeilnehmer'][$v['aPoints']]['rzname'] . " (" . $aResultData['aTeilnehmer'][$v['aPoints']]['rzteam_short'] . ")";
 			}
 			if ($v['aBerg'] == '-') {
-				$sOutput .= "[mcol color=#ff3333]" . '-';
+				$sOutput .= "[/mcol][mcol color=#ff3333]" . '-';
 			} else {
-				$sOutput .= "[mcol color=#ff3333]" . $aResultData['aTeilnehmer'][$v['aBerg']]['rzname'] . " (" . $aResultData['aTeilnehmer'][$v['aBerg']]['rzteam_short'] . ")";
+				$sOutput .= "[/mcol][mcol color=#ff3333]" . $aResultData['aTeilnehmer'][$v['aBerg']]['rzname'] . " (" . $aResultData['aTeilnehmer'][$v['aBerg']]['rzteam_short'] . ")";
 			}
-			$sOutput .= "\n";
+			$sOutput .= "[/mcol][/mrow]";
 		}
 		$sOutput .= "[/table]";
 		return $sOutput;
@@ -252,8 +252,8 @@ if ( ! function_exists('createForumKaderpost'))
 	function createForumKaderpost($aKader, $aCa, $aWechsel) {
 		$sOutput = '';	
 		
-		$sOutput .= "[b][size=18]KADERÜBERSICHT " . $aKader['etappe']['etappen_nr'] . ".Etappe[/size][/b]<br><br>";
-		$sOutput .= "[table fontsize=9][mcol]Name[mcol]Team[mcol]Zeit[mcol]Fahrer 1[mcol][mcol]Fahrer 2[mcol][mcol]Fahrer 3[mcol][mcol]Fahrer 4[mcol][mcol]Fahrer 5[mcol][mcol]<br>";
+		$sOutput .= "[b][size=180]KADERÜBERSICHT " . $aKader['etappe']['etappen_nr'] . ".Etappe[/size][/b][br][br]";
+		$sOutput .= "[table fontsize=9][mrow][mcol]Name[/mcol][mcol]Team[/mcol][mcol]Zeit[/mcol][mcol]Fahrer 1[/mcol][mcol][/mcol][mcol]Fahrer 2[/mcol][mcol][/mcol][mcol]Fahrer 3[/mcol][mcol][/mcol][mcol]Fahrer 4[/mcol][mcol][/mcol][mcol]Fahrer 5[/mcol][mcol][/mcol][mcol][/mcol][/mrow]";
 		
 		foreach($aKader['teilnehmer'] as $aTeilnehmer) {
 			if ($aTeilnehmer['rolle_id'] == 1) {
@@ -274,50 +274,50 @@ if ( ! function_exists('createForumKaderpost'))
 			    $s_color_player = "#ffff99";
 			}
 			
-			$sOutput .= "[mrow color=" . $s_color_player . "]" . $aTeilnehmer['rzname'];
+			$sOutput .= "[mrow color=" . $s_color_player . "][mcol]" . $aTeilnehmer['rzname'];
 			if (isset($aTeilnehmer['team'])) {
-				$sOutput .= "[mcol color=" . $aTeilnehmer['team']['color_code_zelle'] . "][color=" . $aTeilnehmer['team']['color_code_schrift'] . "]" . $aTeilnehmer['team']['rzteam_short'] . "[/color]";
+				$sOutput .= "[/mcol][mcol color=" . $aTeilnehmer['team']['color_code_zelle'] . "][color=" . $aTeilnehmer['team']['color_code_schrift'] . "]" . $aTeilnehmer['team']['rzteam_short'] . "[/color]";
 			} else {
-				$sOutput .= "[mcol]";
+				$sOutput .= "[/mcol][mcol]";
 			}
 			
-			$sOutput .= "[mcol]" . _convertSeconds($aTeilnehmer['gw']);
+			$sOutput .= "[/mcol][mcol]" . _convertSeconds($aTeilnehmer['gw']);
 			$sum = 0;
 			foreach($aTeilnehmer['kader'] as $k) {
 				$color = ($k['change'] == 1) ? "#ff9999" : "#ffffff";
 				$fahrer_name = ($k['fahrer_name'] == "Yates" || $k['fahrer_name'] == "Nibali") ? substr($k['fahrer_vorname'], 0, 1) . "." . $k['fahrer_name'] : $k['fahrer_name'];
-				$sOutput .= "[mcol color=" . $color . "]" . $fahrer_name . "[mcol color=#ffffff]" . $k['fahrer_rundfahrt_credits'];
+				$sOutput .= "[/mcol][mcol color=" . $color . "]" . $fahrer_name . "[/mcol][mcol color=#ffffff]" . $k['fahrer_rundfahrt_credits'];
 				$sum += $k['fahrer_rundfahrt_credits'];
 			}
-			$sOutput .= "[mcol color=#ffffff][b]" . $sum . "[/b]<br>";
+			$sOutput .= "[/mcol][mcol color=#ffffff][b]" . $sum . "[/b][/mcol][/mrow]";
 		}
-		$sOutput .= "[/table]<br><br><br>";
+		$sOutput .= "[/table][br][br][br]";
 		
-		$sOutput .= "[b][size=18]Creditabgaben[/size][/b]<br><br>";
+		$sOutput .= "[b][size=180]Creditabgaben[/size][/b][br][br]";
 		
 		
 		if (count($aCa) == 0) {
-			$sOutput .= "Heute keine Creditabgaben!<br>";
+			$sOutput .= "Heute keine Creditabgaben![br]";
 		} else {
 			foreach($aCa as $abgabe) {
-				$sOutput .= $abgabe['user_abgabe']['rzname'] . " unterstützt " . $abgabe['user_empfang']['rzname'] . " heute mit einem Bonuscredit!<br>";
+				$sOutput .= $abgabe['user_abgabe']['rzname'] . " unterstützt " . $abgabe['user_empfang']['rzname'] . " heute mit einem Bonuscredit![br]";
 			}
 		}
 		
-		$sOutput .= "<br>";
+		$sOutput .= "[br]";
 		
-		$sOutput .= "[b][size=18]Einwechslungen[/size][/b]<br><br>";
+		$sOutput .= "[b][size=180]Einwechslungen[/size][/b][br][br]";
 		
 		
 		foreach($aWechsel['ein'] as $a) {
-			$sOutput .= $a['count'] . " x " . $a['fahrer_infos']['fahrer_name'] . " " . $a['fahrer_infos']['fahrer_vorname'] . " (" . $a['fahrer_infos']['team_short'] . ")<br>";	
+			$sOutput .= $a['count'] . " x " . $a['fahrer_infos']['fahrer_name'] . " " . $a['fahrer_infos']['fahrer_vorname'] . " (" . $a['fahrer_infos']['team_short'] . ")[br]";	
 		}
 			
-		$sOutput .= "<br>[b][size=18]Auswechslungen[/size][/b]<br><br>";
+		$sOutput .= "[br][b][size=180]Auswechslungen[/size][/b][br][br]";
 		
 		foreach($aWechsel['aus'] as $a) {
 			if ($a['fahrer_id'] > 0) {
-				$sOutput .= $a['count'] . " x " . $a['fahrer_infos']['fahrer_name'] . " " . $a['fahrer_infos']['fahrer_vorname'] . " (" . $a['fahrer_infos']['team_short'] . ")<br>";	
+				$sOutput .= $a['count'] . " x " . $a['fahrer_infos']['fahrer_name'] . " " . $a['fahrer_infos']['fahrer_vorname'] . " (" . $a['fahrer_infos']['team_short'] . ")[br]";	
 			}
 			
 		}  
@@ -329,11 +329,11 @@ if ( ! function_exists('createForumKaderpost'))
 if ( ! function_exists('forumShortlist'))
 {
 	function forumShortlist($aShortlist, $aFahrer, $aUser) {
-		$sOutput = "[b][size=18]Shortlist " . $aShortlist['name'] . "[/size][/b]<br>";
-		$sOutput .= '[b][size=14]Von ' . $aUser['name'] . '[/size][/b]<br><br>';
-		$sOutput .= '[table fontsize=9][mcol]Startnummer[mcol]Fahrer[mcol]Team[mcol]Nation[mcol]Credits<br>';
+		$sOutput = "[b][size=180]Shortlist " . $aShortlist['name'] . "[/size][/b][br]";
+		$sOutput .= '[b][size=140]Von ' . $aUser['name'] . '[/size][/b][br][br]';
+		$sOutput .= '[table fontsize=9][mrow][mcol]Startnummer[/mcol][mcol]Fahrer[/mcol][mcol]Team[/mcol][mcol]Nation[/mcol][mcol]Credits[/mcol][/mrow]';
 		foreach($aFahrer as $k=>$v) {
-			$sOutput .= '[mrow]' . $v['fahrer_startnummer'] . '[mcol]' . $v['fahrer_vorname'] . ' ' . $v['fahrer_name'] . '[mcol]' . $v['team_short'] . '[mcol]' . $v['fahrer_nation'] . '[mcol]' . $v['fahrer_rundfahrt_credits'];
+			$sOutput .= '[mrow][mcol]' . $v['fahrer_startnummer'] . '[/mcol][mcol]' . $v['fahrer_vorname'] . ' ' . $v['fahrer_name'] . '[/mcol][mcol]' . $v['team_short'] . '[/mcol][mcol]' . $v['fahrer_nation'] . '[/mcol][mcol]' . $v['fahrer_rundfahrt_credits'] . '[/mcol][/mrow]';
 		}
 		$sOutput .= '[/table]';
 		return $sOutput;

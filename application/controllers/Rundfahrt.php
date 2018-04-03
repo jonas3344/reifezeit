@@ -20,14 +20,14 @@ class Rundfahrt extends Frontend_my_controller
 		$aData = array();
 		$aData['aShortlists'] = $this->model->getShortlists();
 		$aData['bView'] = ($this->config->item('iFreigabeTransfermarkt') == 1) ? true : false;
-
+		$aData['iSort'] = $iSort;
 		
 		if ($iSort == 1) {
 			$aData['aData'] = $this->model->getFahrerByTeams();
-			$this->renderPage('transfermarkt', $aData, array(), array());
+			$this->renderPage('transfermarkt', $aData, array(), array('portlets.css'));
 		} else if (($iSort == 2) || ($iSort == 3)) {
 			$aData['aData'] = $this->model->getFahrerBySort($iSort);
-			$this->renderPage('transfermarkt_sort', $aData, array('frontend/transfermarkt.js'), array());
+			$this->renderPage('transfermarkt_sort', $aData, array('frontend/transfermarkt.js'), array('portlets.css'));
 		}	
 	}
 	

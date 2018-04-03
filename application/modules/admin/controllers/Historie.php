@@ -68,7 +68,7 @@ class Historie extends Admin_my_controller
 			}
 		}
 		
-		$this->load->library('Resultaterz', 69);
+		$this->load->library('Resultaterz', 112);
 		
 		$aResultData = array();
 		
@@ -146,6 +146,8 @@ class Historie extends Admin_my_controller
 		unset($aSavedData['h_etappen']);
 		
 		print_r($aEtappenIds);
+		
+		print_r($aSavedData);
 		
 		foreach($aSavedData as $k=>$v) {
 			foreach($v as $kV=>$aValues) {
