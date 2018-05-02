@@ -9,7 +9,7 @@
 			foreach($aFahrer as $k=>$aF) {
 				?>				
 				<tr>
-					<td width="10%"><a href="#"><button type="button" class="btn btn-default btn-sm add_fahrer" id="<?= $aF['fahrer_id'];?>"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></a></td>
+					<td width="10%"><a><button type="button" class="btn btn-default btn-sm add_fahrer" id="<?= $aF['fahrer_id'];?>"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></a></td>
 					<td><?= $aF['fahrer_vorname'] . ' ' . $aF['fahrer_name'];?></td>
 				</tr>
 				<?php

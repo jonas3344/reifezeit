@@ -51,6 +51,15 @@ class Parserrz {
 			} else if ($iType == 3) {
 				$this->_parseAsoMountain($sResult);
 			}
+		} else if ($this->iParser == 3) {
+			if ($iType == 1) {
+				$this->_parsePcsTime($sResult);
+				$this->_calculateTime();
+			} else if ($iType == 2) {
+				$this->_parsePcsPoints($sResult);
+			} else if ($iType == 3) {
+				$this->_parsePcsMountain($sResult);
+			}
 		}
 		
 		$this->_saveToDb($iType);
@@ -408,6 +417,55 @@ class Parserrz {
 
 		$this->aResultMountain = $aFinal;
 		
+	}
+	
+	private function _parsePcsTime($result) {
+		if ($this->aEtappe['etappen_nr'] == 1) {
+			foreach($result['gk'] as $k=>$v) {
+				if ($v['rueckstand'] == 0) {
+					$rueckstand = 0;
+				} else {
+					$temptime = explode(':', $v['rueckstand']);
+					$rueckstand = $this->_parseTime($temptime);
+				}
+				$aData = array('fahrer_id' => $v['fahrer_id'], 'rueckstand' => $rueckstand);
+				$this->db->insert('temp_gk', $aData);
+			}
+		} else {
+			$resultDataLastStage = $this->CI->model->getTable('temp_gk');
+			
+			$this->db->empty_table('temp_gk');
+			
+			foreach($result['gk'] as $k=>$v) {
+				if ($v['rueckstand'] == 0) {
+					$rueckstand = 0;
+				} else {
+					$temptime = explode(':', $v['rueckstand']);
+					$rueckstand = $this->_parseTime($temptime);
+				}
+				$aData = array('fahrer_id' => $v['fahrer_id'], 'rueckstand' => $rueckstand);
+				$this->db->insert('temp_gk', $aData);
+			}
+		}
+		
+		$this->aResult = $result['tag'];
+	}
+	
+	private function _parsePcsMountain($sResult) {
+		
+	}
+	
+	private function _parsePcsPoints($sResult) {
+		
+	}
+	
+	private function _parseTime($temptime) {
+		if (count($temptime) == 2) {
+			$rueckstand = ($temptime[0] * 60) + $temptime[1];
+		} else if (count($temptime) == 3) {
+			$rueckstand = ($temptime[0] * 3600) + ($temptime[1] * 60) + $temptime[2];
+		}
+		return $rueckstand;
 	}
 }
 	

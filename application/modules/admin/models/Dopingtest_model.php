@@ -56,11 +56,17 @@ class Dopingtest_model extends MY_Model
 				}
 				$aData['teilnehmer'][$k]['kader'][] = $aTemp;
 			}
-			$aTemp = $this->_getKaderYesterday($aData['etappe']['etappen_nr'], $v['id']);
-			$i=0;
-			foreach($aTemp as $kk=>$vk) {
-				$aData['teilnehmer'][$k]['kaderOld'][$i] = $this->_getFahrerDetails($vk);
-				$i++;
+			if ($aData['etappe']['etappen_nr'] > 1) {
+				$aTemp = $this->_getKaderYesterday($aData['etappe']['etappen_nr'], $v['id']);
+				$i=0;
+				foreach($aTemp as $kk=>$vk) {
+					$aData['teilnehmer'][$k]['kaderOld'][$i] = $this->_getFahrerDetails($vk);
+					$i++;
+				}
+			} else {
+				for ($i=0; $i<5;$i++) {
+					$aData['teilnehmer'][$k]['kaderOld'][$i] = array();
+				}
 			}
 			
 /*

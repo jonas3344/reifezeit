@@ -20,7 +20,7 @@ function detailFormatter(index, row) {
 			});
 	    }
     });
-    html.push('<table>');
+    html.push('<table class="table">');
     html.push('<tr><td width="20%">Verbleibende Creditannahmen:</td><td>' + data.creditempfang + '</td></tr>');
     html.push('<tr><td>Verbleibende Creditabgaben:</td><td>' + data.creditabgabe + '</td></tr>');
     if (data.rolle_id == 3) {

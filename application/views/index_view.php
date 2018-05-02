@@ -31,9 +31,9 @@
 					</ul>
 					Im Forum findest du:
 					<ul class="teamlist">
-						<li><a href="http://www.cyclingmanager.de/viewtopic.php?t=21622" target="_blank">Das Regelwerk</a></li>
-						<li><a href="http://www.cyclingmanager.de/viewtopic.php?t=21623" target="_blank">Den Thread zur Rundfahrt mit allen Resultaten</a></li>
-						<li><a href="http://www.cyclingmanager.de/viewtopic.php?t=11740" target="_blank">Die Ruhmeshalle</a></li>
+						<li><a href="http://www.cyclingmanager.de/viewtopic.php?f=57&t=21765" target="_blank">Das Regelwerk</a></li>
+						<li><a href="http://www.cyclingmanager.de/viewtopic.php?f=57&t=21760" target="_blank">Den Thread zur Rundfahrt mit allen Resultaten</a></li>
+						<li><a href="hhttp://www.cyclingmanager.de/viewtopic.php?f=57&t=11740" target="_blank">Die Ruhmeshalle</a></li>
 					</ul>
 
 			</div>

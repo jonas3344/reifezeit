@@ -19,5 +19,12 @@
 
 		})
 	});
+	$(".showFahrerModal").on("click", function() {
+		var fahrer = $(this).attr('id').split('_');
+		url = 'https://www.procyclingstats.com/rider/' + fahrer[0] + '-' + fahrer[1];
+ 		$("#fahrerframe").attr('src', url);
+ 		$("#modalTitle").text(fahrer[0] + ' ' + fahrer[1])
+ 		$("#fahrermodal").modal();
+	});
 })(jQuery);
 	

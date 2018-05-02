@@ -37,7 +37,17 @@ class Teilnahme extends Frontend_my_controller
 		
 		$aData['aTeilnehmer'] = $this->model->getTeilnehmerForList();
 		
+		$aData['lastYear'] = $this->model->getPastWinner($this->config->item('sAktuelleRundfahrt'));
+		
 		$this->renderPage('teilnehmer', $aData, array('bootstrap-table.js', 'bootstrap-table-de-DE.js'), array('bootstrap-table.css', 'portlets.css'));
+	}
+	
+	public function teams() {
+		$aData = array();
+		
+		$aData['data'] = $this->model->getFullTeams();
+		
+		$this->renderPage('teilnahme_teams', $aData, array('bootstrap-table.js', 'bootstrap-table-de-DE.js'), array('bootstrap-table.css', 'portlets.css'));
 	}
 	
 	public function historie($iUser = 0) {

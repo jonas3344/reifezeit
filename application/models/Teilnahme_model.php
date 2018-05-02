@@ -57,6 +57,7 @@ class Teilnahme_model extends MY_Model
 		
 		$bIsNeo = true;
 		$this->db->where('user_id', $this->session->userdata('user_id'));
+		$this->db->order_by('rundfahrt_id', 'DESC');
 		$aTeilnahme = $this->db->get('teilnahme')->result_array();
 		if (count($aTeilnahme) >= 1) {
 			if ($aTeilnahme[0]['out'] == 0) {
@@ -146,5 +147,90 @@ class Teilnahme_model extends MY_Model
 		$aReturn['fex'] = $iFex;
 		
 		return $aReturn;
+	}
+	
+	public function getPastWinner($aktuelleRundfahrtText) {
+		$year = substr($aktuelleRundfahrtText, -4);
+		$rundfahrt = substr($aktuelleRundfahrtText, 0, -5);
+		$aData = array();
+		
+		$lastyear = $year - 1;
+		
+		$this->db->select('id');
+		$this->db->from('h_rundfahrten');
+		$this->db->where('bezeichnung', $rundfahrt);
+		$this->db->where('jahr', $lastyear);
+		$rundfahrtLetzesJahr = $this->db->get()->row_array();
+				
+		// Get Sieger
+		$this->db->select('u.name, u.rzname, u.avatar, u.id');
+		$this->db->from('rz_user u');
+		$this->db->join('h_teilnahme t', 't.user_id=u.id');
+		$this->db->where('t.rang_gw', 1);
+		$this->db->where('t.rundfahrt_id', $rundfahrtLetzesJahr['id']);
+		$aData['sieger'] = $this->db->get()->row_array();
+		
+		$this->db->select('u.name, u.rzname, u.avatar, u.id');
+		$this->db->from('rz_user u');
+		$this->db->join('h_teilnahme t', 't.user_id=u.id');
+		$this->db->where('t.rang_punkte', 1);
+		$this->db->where('t.rundfahrt_id', $rundfahrtLetzesJahr['id']);
+		$aData['punktesieger'] = $this->db->get()->row_array();
+		
+		$this->db->select('u.name, u.rzname, u.avatar, u.id');
+		$this->db->from('rz_user u');
+		$this->db->join('h_teilnahme t', 't.user_id=u.id');
+		$this->db->where('t.rang_berg', 1);
+		$this->db->where('t.rundfahrt_id', $rundfahrtLetzesJahr['id']);
+		$aData['bergsieger'] = $this->db->get()->row_array();
+		
+		return $aData;
+	}
+	
+	public function getFullTeams() {
+		$this->db->select('t.rzteam_name, t.rzteam_short, t.rzteam_id, t.color_code_schrift AS schrift, t.color_code_zelle AS zelle, u.rzname, u.id, r.rolle_bezeichnung');
+		$this->db->from('rz_user u');
+		$this->db->join('teilnahme th', 'th.user_id=u.id');
+		$this->db->join('rz_user_team ut', 'ut.user_id=u.id');
+		$this->db->join('rz_team t', 't.rzteam_id=ut.rz_team_id');
+		$this->db->join('rollen r', 'r.rolle_id=th.rolle_id');
+		$this->db->where('th.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->where('ut.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->order_by('t.rzteam_id', 'ASC');
+		$this->db->order_by('r.rolle_id', 'ASC');
+		$this->db->order_by('u.id', 'ASC');
+		$result = $this->db->get()->result_array();
+		
+		$data = array();
+		$fahrerids = array();
+		
+		foreach($result as $k=>$v) {
+			$data['fahrer'][$v['rzteam_short']][] = $v;
+			$fahrerids[] = $v['id'];
+			$data['teams'][$v['rzteam_short']] = array('name' => $v['rzteam_name'], 'schrift' => $v['schrift'], 'zelle' => $v['zelle']);
+		}
+		
+		// Get teamlose
+		$this->db->select('u.rzname, u.id, r.rolle_bezeichnung');
+		$this->db->from('rz_user u');
+		$this->db->join('teilnahme th', 'th.user_id=u.id');
+		$this->db->join('rollen r', 'r.rolle_id=th.rolle_id');
+		$this->db->where('th.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$this->db->order_by('r.rolle_id', 'ASC');
+		$this->db->order_by('u.id', 'ASC');
+		$result = $this->db->get()->result_array();
+		
+		if (count($result) > 0) {
+			$data['teams']['teamlos'] = array('name' => 'Teamlos', 'schrift' => 'white', 'zelle' => 'black');
+		}
+		
+		foreach($result as $k=>$v) {
+			if (!in_array($v['id'], $fahrerids)) {
+				$data['fahrer']['teamlos'][] = $v;
+			}
+			
+		}
+		
+		return $data;
 	}
 }

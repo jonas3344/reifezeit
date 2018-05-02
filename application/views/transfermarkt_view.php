@@ -50,7 +50,7 @@
 								?>
 								<tr<?= $sColor;?>>
 									<td><?= $aFahrer['fahrer_startnummer'];?></td>
-									<td><?= $aFahrer['fahrer_vorname'] . ' ' . $aFahrer['fahrer_name'];?></td>
+									<td><a class="showFahrerModal" id="<?= strtolower(str_replace(' ', '-', $aFahrer['fahrer_vorname'])) . '_' . strtolower(str_replace(' ', '-', $aFahrer['fahrer_name']));?>"><?= $aFahrer['fahrer_vorname'] . ' ' . $aFahrer['fahrer_name'];?></a></td>
 									<td><img src="<?= base_url() . 'img/flags/' . strtolower($aFahrer['fahrer_nation']) . '.png';?>" width="20"></td>
 									<td><?= $aFahrer['fahrer_rundfahrt_credits'];?></td>
 									<td>
@@ -96,4 +96,12 @@
 			</div>
 		</div>
 	</div>
+</div>
+
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="fahrermodal" >
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" style="min-height: 500px; height: 80%; padding: 5px;">
+      <iframe src="" id="fahrerframe" style="position: relative; display:block; width: 100%; height: 80vh"></iframe>
+    </div>
+  </div>
 </div>

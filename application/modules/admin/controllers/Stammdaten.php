@@ -108,6 +108,35 @@ class Stammdaten extends Admin_my_controller
 		redirect(base_url() . 'admin/stammdaten/etappen');
 	}
 	
+	public function forencode_etappen() {
+		$aData = array();
+		
+		$etappen = $this->model->getEtappen($this->iAktuelleRundfahrt);
+		
+		$output = '[table fontsize=10]';
+		
+		foreach($etappen as $k=>$v) {
+			$output .= '[mrow color=lightgrey][mcol]';
+			$datumEinzeln = explode('.', $v['etappen_datum']);
+			$output .= $this->_getWeekday(date('N', strtotime($datumEinzeln[2] . '-' . $datumEinzeln[1] . '-' . $datumEinzeln[0])));
+			$output .= ' '  . $v['etappen_datum'];
+			$output .= '[/mcol]';
+			$output .= '[mcol]' . $v['etappen_eingabeschluss'] . '[/mcol]';
+			$output .= '[mcol]' . $v['etappen_nr'] . '[/mcol]';
+			$output .= '[mcol]' . $v['etappen_start_ziel'] . '[/mcol]';
+			$color = $this->_getColor($v['etappen_klassifizierung']);
+			$output .= '[mcol color=' . $color . ']' . $v['klassifizierung_name'] . '[/mcol]';
+			$output .= '[mcol][url=https://www.reifezeit.ch/img/' . $v['etappen_profil'] . ']Profil[/url][/mcol]';
+			$outupt .= '[/mrow]' . PHP_EOL;
+		}
+		
+		$output .= '[/table]';
+		
+		$aData['output'] = $output;
+		
+		$this->renderPage('forencode_etappe', $aData, array(), array());
+	}
+	
 	public function edit_etappe($iId) {
 		$aData = array();
 		
@@ -326,5 +355,59 @@ class Stammdaten extends Admin_my_controller
 			$aNewArray[$v[$sId]] = $v;
 		}
 		return $aNewArray;
+	}
+	
+	private function _getWeekday($day) {
+		switch($day) {
+			case 7:
+				$return = 'So';
+				break;
+			case 1:
+				$return = 'Mo';
+				break;
+			case 2:
+				$return = 'Di';
+				break;
+			case 3:
+				$return = 'Mi';
+				break;
+			case 4:
+				$return = 'Do';
+				break;
+			case 5:
+				$return = 'Fr';
+				break;
+			case 6:
+				$return = 'Sa';
+				break;
+		}
+		return $return;
+	}
+	
+	private function _getColor($etappentyp) {
+		switch ($etappentyp) {
+			case 1:
+				$color = 'lime';
+				break;
+			case 2:
+				$color = 'grey';
+				break;
+			case 3:
+				$color = 'yellow';
+				break;
+			case 4:
+				$color = 'red';
+				break;
+			case 5:
+				$color = 'yellow';
+				break;
+			case 6:
+				$color = 'yellow';
+				break;
+			case 7:
+				$color = 'blue';
+				break;
+		}
+		return $color;
 	}
 }

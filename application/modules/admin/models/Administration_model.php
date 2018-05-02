@@ -182,4 +182,40 @@ class Administration_model extends MY_Model
 			$this->db->update('fahrer_rundfahrt', $v);
 		}
 	}
+	
+	public function getKapitaene($iRundfahrt) {
+		$this->db->select('id, name, rzname');
+		$this->db->from('rz_user');
+		$this->db->order_by('name ASC');
+		$alleUser = $this->db->get()->result_array();
+		
+		$this->db->select('user_id');
+		$this->db->from('rundfahrt_kapitaen');
+		$this->db->where('rundfahrt_id', $iRundfahrt);
+		$kapitaene = $this->db->get()->result_array();
+		
+		$kapitaenearray = array();
+		
+		foreach($alleUser as $k=>$v) {
+			foreach($kapitaene as $kK=>$vK) {
+				if ($v['id'] == $vK['user_id']) {
+					$kapitaenearray[] = $v;
+					unset($alleUser[$k]);
+				}
+				
+			}
+			
+		}
+		
+		return array('user' => $alleUser, 'kapitaene' => $kapitaenearray);
+	}
+	
+	public function savekapitaen($user) {
+		$this->db->insert('rundfahrt_kapitaen', array('rundfahrt_id' => $this->config->item('iAktuelleRundfahrt'), 'user_id' => $user));
+		
+		$this->db->select('name');
+		$this->db->from('rz_user');
+		$this->db->where('id', $user);
+		return $this->db->get()->row_array();
+	}
 }

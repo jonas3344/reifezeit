@@ -8,6 +8,16 @@
 				</div>
 			</div>
 			<div class="portlet-body">
+				<div class="row">
+					<div class="col-md-4 col-md-offset-4">
+						<div class="panel panel-default">
+						  <div class="panel-heading text-center"><strong>Titelverteidiger</strong></div>
+						  <div class="panel-body text-center">
+						    <a href="<?= base_url(); ?>historie/timeline/<?= $lastYear['sieger']['id'];?>"><?= $lastYear['sieger']['rzname'];?></a>
+						  </div>
+						</div>
+					</div>
+				</div>
 				<table 	data-toggle="table"
 				data-pagination="true" 
 				data-detail-view="true"
@@ -26,26 +36,33 @@
 				<tbody>
 					<?php foreach ($aTeilnehmer as $k=>$v) {
 						if ($v['rolle_id'] == 1) {
-				            $s_color = "warning";
+				            $s_color = "kapitaen";
+				            $colorSchrift = 'color:black;';
 			            } else if ($v['rolle_id'] == 2) {
-				            $s_color = "success";
+				            $s_color = "rundfahrer";
+				            $colorSchrift = 'color:black;';
 			            } else if ($v['rolle_id'] == 3) {
-				            $s_color = "info";
+				            $s_color = "etappenjaeger";
+				            $colorSchrift = 'color:black;';
 			            } else if ($v['rolle_id'] == 4) {
-				            $s_color = "active";
+				            $s_color = "helfer";
+				            $colorSchrift = 'color:black;';
 			            } else if ($v['rolle_id'] == 5) {
-				            $s_color = "danger";
+				            $s_color = "neo";
+				            $colorSchrift = 'color:black;';
 			            } else if ($v['rolle_id'] == 6) {
 				            $s_color = "bergfex";
+				            $colorSchrift = 'color:black;';
 			            } else if ($v['rolle_id'] == 7) {
 				            $s_color = "sprinter";
 			            } else if ($v['rolle_id'] == 8) {
 				            $s_color = "zeitfahrer";
+				            $colorSchrift = 'color:black;';
 			            }
 	              ?>
 					<tr class="<?= $s_color;?>">
 						<td><?= $v['id'];?></td>
-						<td><a href="<?= base_url();?>historie/timeline/<?=$v['id'];?>"><?= $v['name'];?></a></td>
+						<td><a href="<?= base_url();?>historie/timeline/<?=$v['id'];?>"  style="<?= $colorSchrift;?>"><?= $v['name'];?></a></td>
 						<td><?= $v['rzname'];?></td>
 						<td><?= $v['rolle_bezeichnung'];?></td>
 						<td><?= $v['team']['rzteam_name'];?></td>

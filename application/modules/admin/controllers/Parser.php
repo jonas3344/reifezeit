@@ -25,6 +25,16 @@ class Parser extends Admin_my_controller
 		$this->renderPage('parser', $aData, array(), array());
 	}
 	
+	public function parserPcs($iEtappe = 0) {
+		$aData = array();
+		
+		$aData['iEtappe'] = ($iEtappe == 0) ? $this->config->item('iAktuelleEtappe') : $iEtappe;
+		
+		$aData['aEtappen'] = $this->model->getRows('etappen', 'etappen_rundfahrt_id=' . $this->config->item('iAktuelleRundfahrt'), array('sort_field'=>'etappen_nr', 'sort_order'=>'ASC'));
+		
+		$this->renderPage('parserPcs', $aData, array(), array());
+	}
+	
 	public function parserResult($iEtappe) {
 		$aData = array();
 		$this->load->library('parserrz', array('iParser' => $this->input->post('parser'), 'iEtappe' => $iEtappe));
@@ -94,12 +104,18 @@ class Parser extends Admin_my_controller
 	}
 	
 	public function pcsParser() {
+		$url = $this->input->post('url');
+		
+		$aAusreisser = array('iAusreisser' => $this->input->post('ausreisser'), 'iFirstHauptfeld' => $this->input->post('firstHauptfeld'));
+		
+		$this->load->library('parserrz', array('iParser' => 3, 'iEtappe' => $iEtappe));
+		
 		$this->load->helper('html_dom_helper');
 		$this->load->helper('file');
 		
 /*
 		$curl = curl_init(); 
-		curl_setopt($curl, CURLOPT_URL, 'https://www.procyclingstats.com/race/la-roue-tourangelle/2018/result');  
+		curl_setopt($curl, CURLOPT_URL, $url);  
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);  
 		curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 10);  
 		$data = curl_exec($curl);  
@@ -108,69 +124,114 @@ class Parser extends Admin_my_controller
 		
 		$data = read_file('temp.txt');
 		
-		$cCharAt = stripos($data, '<div class="resultCont id180834 show">');
+		$cCharAt = stripos($data, '<div class="resultCont');
 		$data = substr($data, $cCharAt);
 		$cCharEnd = stripos($data, '<div class="div300r"');
 		$data = substr($data, 0, $cCharEnd);
+		
+		
+		//write_file('temp2.txt', $data);
 		
 		//var_dump($data);
 		
 		$html = str_get_html($data);
 		
 		$aTables = array();
-		$rows = ['rang', 'namen', 'team', 'ptsuci', 'ptspcs', 'rueckstand'];
+		$rowsTime = ['rang', 'namen', 'team', 'ptsuci', 'ptspcs', 'rueckstand'];
+		$rowsGk = ['rang', 'prv', 'updown', 'namen', 'team', 'ptsuci', 'rueckstand'];
+		$rowsPts = ['rang', 'prv', 'updown', 'namen', 'team', 'points'];
+		$rowsMtn = ['rang', 'prv', 'updown', 'namen', 'team', 'berg'];
+		$c = 0;
 		$i=0;
 		$p=0;
-		
-		foreach($html->find('.basic') as $element) {
-			foreach($element->find('tr') as $row) {
-				foreach($row->find('td') as $td) {
-					$aTables[$p][$rows[$i]] = trim($td->text());
-					$i++;
-				}
-				$i=0;
-				$p++;
-			}	
+		foreach($html->find('.resultCont') as $resultCont) {
+			foreach($resultCont->find('.basic') as $element) {
+				foreach($element->find('tr') as $row) {
+					foreach($row->find('td') as $td) {
+						if ($c == 0) {
+							$aTables['tag'][$p][$rowsTime[$i]] = trim($td->text());
+						} else if ($c==1) {
+							$aTables['gk'][$p][$rowsGk[$i]] = trim($td->text());
+						}else if ($c==2) {
+							$aTables['punkte'][$p][$rowsPts[$i]] = trim($td->text());
+						} else if ($c == 4) {
+							$aTables['berg'][$p][$rowsMtn[$i]] = trim($td->text());
+						}
+						
+						//echo $c . '-' . $p . '<br>';
+						$i++;
+					}
+					$i=0;
+					$p++;
+				}	
+			}
+			$p=0;
+			$c++;
 		}
 		
 		$aResult = array();
-		
-		foreach($aTables as $k=>$v) {
-			$aResult[$k]['rang'] = strip_tags($v['rang']);
-			$aResult[$k]['namen'] = substr($v['namen'], 0, strpos($v['namen'], '  '));
-			$aResult[$k]['vornamen'] = trim(substr($v['namen'], strpos($v['namen'], '  ')));
-			
-			// Try to find faher in db
-			$namen = strip_tags($aResult[$k]['namen']);
-			$vornamen = strip_tags($aResult[$k]['vornamen']);
-			
-			$this->db->select('fahrer_id');
-			$this->db->from('fahrer');
-			$this->db->where('fahrer_name LIKE', $namen);
-			$this->db->where('fahrer_vorname LIKE', $vornamen);
-			$fahrer = $this->db->get('')->result_array();
-			$aResult[$k]['fahrer_id'] = $fahrer[0]['fahrer_id'];
-			
-			
-			unset($aTables[$k]['ptsuci']);
-			unset($aTables[$k]['ptspcs']);
-			if ($v['rang'] == 1) {
-				$rueckstand = 0;
-			} else if (strip_tags($v['rang']) != 'DNF' && strip_tags($v['rang']) != 'DNS') {
-				$rueckstand = strip_tags(trim(substr($v['rueckstand'], strpos($v['rueckstand'], '  '))));
-				//echo ord($rueckstand[0]);
-				$temp = chr(44) . chr(44) . ' ';
-				if ($rueckstand == $temp) {
-					$rueckstand = 0;
+		$i=0;
+		foreach($aTables as $kC => $vC) {
+			foreach($vC as $k=>$v) {
+				$aResult[$kC][$k]['rang'] = strip_tags($v['rang']);
+				$aResult[$kC][$k]['namen'] = substr($v['namen'], 0, strpos($v['namen'], '  '));
+				$aResult[$kC][$k]['vornamen'] = trim(substr($v['namen'], strpos($v['namen'], '  ')));
+				
+				// Try to find faher in db
+				$namen = strip_tags($aResult[$kC][$k]['namen']);
+				$vornamen = trim(strip_tags($aResult[$kC][$k]['vornamen']));
+				
+				$this->db->select('fahrer_id');
+				$this->db->from('fahrer');
+				$this->db->where('fahrer_name LIKE', $namen);
+				$this->db->where('fahrer_vorname LIKE', $vornamen);
+				$fahrer = $this->db->get('')->row_array();
+				$aResult[$kC][$k]['fahrer_id'] = $fahrer['fahrer_id'];
+				if (count($fahrer) == 0) {
+					echo 'Fahrer not found: ' . $namen . ' ' . $vornamen . '<br>';
+					echo $this->db->last_query() . '<br>';
 				}
+				
+				
+				unset($aTables[$kC][$k]['ptsuci']);
+				unset($aTables[$kC][$k]['ptspcs']);
+				if ($kC == 'tag') {
+					if ($v['rang'] == 1) {
+						$rueckstand = 0;
+					} else if (strip_tags($v['rang']) != 'DNF' && strip_tags($v['rang']) != 'DNS') {
+						$rueckstand = strip_tags(trim(substr($v['rueckstand'], strpos($v['rueckstand'], '  '))));
+						$temp = chr(44) . chr(44) . ' ';
+						if ($rueckstand == $temp) {
+							$rueckstand = 0;
+						}
+					}
+					$aResult[$kC][$k]['rueckstand'] = $rueckstand;
+				} else if ($kC == 'gk') {
+					if ($v['rang'] == 1) {
+						$rueckstand = 0;
+					} else if (strip_tags($v['rang']) != 'DNF' && strip_tags($v['rang']) != 'DNS') {
+						$rueckstand = strip_tags(trim(substr($v['rueckstand'], strpos($v['rueckstand'], '  '))));
+						$temp = chr(44) . chr(44) . ' ';
+						if ($rueckstand == $temp) {
+							$rueckstand = 0;
+						}
+					}
+					$aResult[$kC][$k]['rueckstand'] = $rueckstand;	
+				} else if ($kC == 'punkte') {
+					$aResult[$kC][$k]['punkte'] = $v['points'];
+				} else if ($kC == 'berg') {
+					$aResult[$kC][$k]['berg'] = $v['berg'];
+				}
+
+				$aResult[$kC][$k]['team'] = $v['team'];	
 			}
-			$aResult[$k]['team'] = $v['team'];
-			$aResult[$k]['rueckstand'] = $rueckstand;
+			$i++;
 		}
 		
 		echo "<pre>";
 		print_r($aResult);
 		echo "</pre>";
+
 	}
 	
 	/*

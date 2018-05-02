@@ -17,6 +17,7 @@
 		          <ul class="dropdown-menu">
 		            <li><a href="<?= base_url()?>teilnahme/anmelden">Anmelden</a></li>
 		             <li><a href="<?= base_url()?>teilnahme/teilnehmer">Teilnehmer</a></li>
+		             <li><a href="<?= base_url()?>teilnahme/teams">Teams</a></li>
 		          </ul>
 		        </li>
 		        <li class="dropdown">

@@ -23,6 +23,25 @@ class Administration extends Admin_my_controller
 		$this->renderPage('teilnehmer', $aData, array('bootstrap-table.js', 'bootstrap-table-de-DE.js'), array('bootstrap-table.css'));
 	}
 	
+	public function kapitaene() {
+		
+		$aData = $this->model->getKapitaene($this->iAktuelleRundfahrt);
+		
+/*
+		echo '<pre>';
+		print_r($aData);
+		echo '</pre>';
+*/
+		
+		$this->renderPage('kapitaene', $aData, array(), array());
+	}
+	
+	public function setkapitaen() {
+		$kapitaen = $this->input->post('user');
+		
+		echo json_encode($this->model->savekapitaen($kapitaen));
+	}
+	
 	public function transfermarkt() {
 		$aData = array();
 		
