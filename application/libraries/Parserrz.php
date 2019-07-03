@@ -80,9 +80,20 @@ class Parserrz {
 				if ($r['rang'] == 1) {
 					$this->aResult[$key]['rueckstandS'] = 0;
 					$this->aResult[$key]['rueckstandOhneBS'] = 0;
+				} else if ($r['rang'] == 'DNF') {
+					unset($this->aResult[$key]);
+				} else if ($r['rang'] == 'DNS') {
+					unset($this->aResult[$key]);	
 				} else {			
 					$i_minutes_temp = substr($r['rueckstand'], 0, strpos($r['rueckstand'], ':'));
 					$i_seconds_temp = substr($r['rueckstand'], strpos($r['rueckstand'], ':')+1);
+					
+					if (empty($i_minutes_temp)) {
+						$i_minutes_temp = 0;
+					}
+					if (empty($i_seconds_temp)) {
+						$i_seconds_temp = 0;
+					}
 					
 					if ($bZeitfahren == false) {
 						if ($r['rang'] == 1) {
@@ -127,19 +138,27 @@ class Parserrz {
 			$zahl1 = ($bBergetappe==true) ? 180 : 60;
 					
 			foreach($this->aResult as $key => $r){
-				$i_minutes_temp = substr($r['rueckstand'], 0, strpos($r['rueckstand'], ':'));
-				$i_seconds_temp = substr($r['rueckstand'], strpos($r['rueckstand'], ':')+1);
-				$i_ruckstand_temp = ($i_minutes_temp*60) + $i_seconds_temp;
+				
 				
 				if ($r['rang'] == 1) {
 					$zeitS = 0;
 					$this->aResult[$key]['rueckstandOhneBS'] = 0;
+				} else if ($r['rang'] == 'DNF') {
+					unset($this->aResult[$key]);
+				} else if ($r['rang'] == 'DNS') {
+					unset($this->aResult[$key]);	
 				} else if ($r['rang'] < $this->aAusreisser['iFirstHauptfeld']) {
 					// Vor Hauptfeld
-				
+					$i_minutes_temp = substr($r['rueckstand'], 0, strpos($r['rueckstand'], ':'));
+					$i_seconds_temp = substr($r['rueckstand'], strpos($r['rueckstand'], ':')+1);
+					$i_ruckstand_temp = ($i_minutes_temp*60) + $i_seconds_temp;
+					
 					$zeitS = round(($i_ruckstand_temp / $iRueckstandHauptfeld) * $zahl1, 0);
 					
 				} else if ($r['rang'] >= $this->aAusreisser['iFirstHauptfeld']) {
+					$i_minutes_temp = substr($r['rueckstand'], 0, strpos($r['rueckstand'], ':'));
+					$i_seconds_temp = substr($r['rueckstand'], strpos($r['rueckstand'], ':')+1);
+					$i_ruckstand_temp = ($i_minutes_temp*60) + $i_seconds_temp;
 					if ($iRueckstandHauptfeld > $zahl1) {
 						$zeitS = $zahl1 + ($i_ruckstand_temp - $iRueckstandHauptfeld);
 					} else {
@@ -187,13 +206,16 @@ class Parserrz {
 				$aData['fahrer_id'] = $v['fahrer_id'];
 				$aData['etappen_id'] = $this->aEtappe['etappen_id'];
 				$aData['punkte'] = $v['punkte'];
+				echo '<pre>';
+				print_r($aData);
+				echo '</pre>';
 				$this->CI->model->saveRecord('resultate_punkte', $aData, -1);
 			}
 		} else if ($iType == 3) {
 			foreach($this->aResultMountain as $k=>$v) {
 				$aData['fahrer_id'] = $v['fahrer_id'];
 				$aData['etappen_id'] = $this->aEtappe['etappen_id'];
-				$aData['bergpunkte'] = $v['bergpunkte'];
+				$aData['bergpunkte'] = $v['berg'];
 				$this->CI->model->saveRecord('resultate_berg', $aData, -1);
 			}
 
@@ -421,42 +443,129 @@ class Parserrz {
 	
 	private function _parsePcsTime($result) {
 		if ($this->aEtappe['etappen_nr'] == 1) {
+			//$this->CI->db->empty_table('temp_gk');
 			foreach($result['gk'] as $k=>$v) {
-				if ($v['rueckstand'] == 0) {
+				if ($v['rueckstand'] === 0) {
 					$rueckstand = 0;
 				} else {
 					$temptime = explode(':', $v['rueckstand']);
 					$rueckstand = $this->_parseTime($temptime);
 				}
-				$aData = array('fahrer_id' => $v['fahrer_id'], 'rueckstand' => $rueckstand);
-				$this->db->insert('temp_gk', $aData);
+				$aData = array('fahrer_id' => $v['fahrer_id'], 'rueckstand' => $rueckstand, 'etappe' => $this->aEtappe['etappen_id']);
+				$this->CI->db->insert('temp_gk', $aData);
 			}
 		} else {
 			$resultDataLastStage = $this->CI->model->getTable('temp_gk');
 			
-			$this->db->empty_table('temp_gk');
+			//$this->CI->db->empty_table('temp_gk');
 			
 			foreach($result['gk'] as $k=>$v) {
-				if ($v['rueckstand'] == 0) {
+				if ($v['rueckstand'] === 0) {
 					$rueckstand = 0;
 				} else {
 					$temptime = explode(':', $v['rueckstand']);
 					$rueckstand = $this->_parseTime($temptime);
 				}
-				$aData = array('fahrer_id' => $v['fahrer_id'], 'rueckstand' => $rueckstand);
-				$this->db->insert('temp_gk', $aData);
+				$aData = array('fahrer_id' => $v['fahrer_id'], 'rueckstand' => $rueckstand, 'etappe' => $this->aEtappe['etappen_id']);
+				$this->CI->db->insert('temp_gk', $aData);
 			}
 		}
 		
 		$this->aResult = $result['tag'];
 	}
 	
-	private function _parsePcsMountain($sResult) {
-		
+	private function _parsePcsMountain($result) {
+		if ($this->aEtappe['etappen_nr'] == 1) {
+			foreach($result as $k=>$v) {
+				$data = array('fahrer_id' => $v['fahrer_id'], 'berg'=>$v['berg'], 'etappe' => $this->aEtappe['etappen_id']);
+				$this->CI->db->insert('temp_berg', $data);
+			}
+			$this->aResultMountain = $result;
+		} else {
+			$dataYesterday = $this->CI->model->getTempDataYesterday($this->aEtappe['etappen_id'], 'berg');
+			
+			$bergToday = array();
+			
+			if (count($dataYesterday) > 0) {
+				foreach($result as $k=>$v) {
+					$found = false;
+					foreach($dataYesterday as $kY=>$vY) {
+						if ($v['fahrer_id'] == $vY['fahrer_id']) {
+							$temp['fahrer_id'] = $v['fahrer_id'];
+							$temp['berg'] = $v['berg'] - $vY['berg'];
+							$found = true;
+							if ($temp['berg'] > 0) {
+								$bergToday[] = $temp;
+							}
+						}
+					}
+					if ($found == false) {
+						$bergToday[] = array('fahrer_id' => $v['fahrer_id'], 'berg' => $v['berg']);
+					}
+				}
+			} else {
+				$bergToday = $result;
+			}
+			
+			$this->aResultMountain = $bergToday;
+			//$this->CI->db->empty_table('temp_berg');
+			foreach($result as $k=>$v) {
+				$data = array('fahrer_id' => $v['fahrer_id'], 'berg'=>$v['berg'], 'etappe' => $this->aEtappe['etappen_id']);
+				$this->CI->db->insert('temp_berg', $data);
+			}
+
+		}
 	}
 	
-	private function _parsePcsPoints($sResult) {
+	private function _parsePcsPoints($result) {
+/*
+		echo '<pre>';
+		var_dump($result);
+		echo '</pre>';
+*/
+		if ($this->aEtappe['etappen_nr'] == 1) {
+			foreach($result as $k=>$v) {
+				$data = array('fahrer_id' => $v['fahrer_id'], 'punkte'=>$v['punkte'], 'etappe' => $this->aEtappe['etappen_id']);
+				$this->CI->db->insert('temp_punkte', $data);
+			}
+			$this->aResultPoints = $result;
+		} else {
+			$dataYesterday = $this->CI->model->getTempDataYesterday($this->aEtappe['etappen_id'], 'punkte');
+/*
+			echo '<pre>';
+			var_dump($dataYesterday);
+			echo '</pre>';
+*/
+			$pointsToday = array();
 		
+			foreach($result as $k=>$v) {
+				$found = false;
+				foreach($dataYesterday as $kY=>$vY) {
+					if ($v['fahrer_id'] == $vY['fahrer_id']) {
+						$temp['fahrer_id'] = $v['fahrer_id'];
+						$temp['punkte'] = $v['punkte'] - $vY['punkte'];
+						$found = true;
+						if ($temp['punkte'] > 0) {
+							echo $v['fahrer_id'] .  ' got points ' . $temp['punkte'] . '<br>';
+							$pointsToday[] = $temp;
+						}
+					}
+				}
+				if ($found == false) {
+					$pointsToday[] = array('fahrer_id' => $v['fahrer_id'], 'punkte' => $v['punkte']);
+				}
+			}
+			echo '<pre>';
+			print_r($pointsToday);
+			echo '</pre>';
+			$this->aResultPoints = $pointsToday;
+			//$this->CI->db->empty_table('temp_punkte');
+			foreach($result as $k=>$v) {
+				$data = array('fahrer_id' => $v['fahrer_id'], 'punkte'=>$v['punkte'], 'etappe' => $this->aEtappe['etappen_id']);
+				$this->CI->db->insert('temp_punkte', $data);
+			}
+
+		}
 	}
 	
 	private function _parseTime($temptime) {

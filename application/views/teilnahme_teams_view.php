@@ -22,11 +22,14 @@
 							  <div class="panel-body text-center">
 							      <ul class="list-group">
 								    <?php
-									foreach($data['fahrer'][$k] as $kF=>$vF) {
+									    if (isset($data['fahrer'][$k])) {
+										    foreach($data['fahrer'][$k] as $kF=>$vF) {
 										?>
 										 <li class="list-group-item"><div class="row"><div class="col-md-4 text-left"><?= $vF['rolle_bezeichnung'];?></div><div class="col-md-8 text-left"><a href="<?= base_url();?>historie/timeline/<?= $vF['id'];?>"><?= $vF['rzname'];?></a></div></div></li>
 										<?php
 									}   
+									    }
+									
 									?>   
 								  </ul>
 							  </div>

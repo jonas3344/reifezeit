@@ -103,7 +103,7 @@ class Parser extends Admin_my_controller
 		$this->model->finishRundfahrt($this->resultaterz->getGesamtWertung(), $this->resultaterz->getGesamtPunkte(), $this->resultaterz->getGesamtBerg());
 	}
 	
-	public function pcsParser() {
+	public function pcsParser($iEtappe) {
 		$url = $this->input->post('url');
 		
 		$aAusreisser = array('iAusreisser' => $this->input->post('ausreisser'), 'iFirstHauptfeld' => $this->input->post('firstHauptfeld'));
@@ -113,61 +113,109 @@ class Parser extends Admin_my_controller
 		$this->load->helper('html_dom_helper');
 		$this->load->helper('file');
 		
-/*
 		$curl = curl_init(); 
 		curl_setopt($curl, CURLOPT_URL, $url);  
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);  
 		curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 10);  
 		$data = curl_exec($curl);  
 		curl_close($curl);
-*/
 		
-		$data = read_file('temp.txt');
+		//$data = read_file('temp.txt');
 		
 		$cCharAt = stripos($data, '<div class="resultCont');
 		$data = substr($data, $cCharAt);
-		$cCharEnd = stripos($data, '<div class="div300r"');
+		$cCharEnd = stripos($data, '<div class="res-right"');
 		$data = substr($data, 0, $cCharEnd);
-		
-		
+
 		//write_file('temp2.txt', $data);
 		
 		//var_dump($data);
 		
 		$html = str_get_html($data);
 		
+		$etappentyp = $this->model->getEtappenTyp($this->config->item('iAktuelleEtappe'));
+		
+		if ($etappentyp['etappen_klassifizierung'] == 3 || $etappentyp['etappen_klassifizierung'] == 5) {
+			$rowsTime = ['rang', 'gc-pos', 'gc-rueck', 'startnummer', 'namen', 'age', 'team', 'ptsuci', 'ptspcs', 'avg', 'rueckstand'];
+		} else {
+			$rowsTime = ['rang', 'gc-pos', 'gc-rueck', 'startnummer', 'namen', 'age', 'team', 'ptsuci', 'ptspcs', 'rueckstand'];
+		}
+		
 		$aTables = array();
-		$rowsTime = ['rang', 'namen', 'team', 'ptsuci', 'ptspcs', 'rueckstand'];
-		$rowsGk = ['rang', 'prv', 'updown', 'namen', 'team', 'ptsuci', 'rueckstand'];
-		$rowsPts = ['rang', 'prv', 'updown', 'namen', 'team', 'points'];
-		$rowsMtn = ['rang', 'prv', 'updown', 'namen', 'team', 'berg'];
+		
+/*
+		var_dump($this->model->getEtappenNr($this->config->item('iAktuelleEtappe')));
+		echo $this->db->last_query();
+*/
+		$etappen_nr = $this->model->getEtappenNr($this->config->item('iAktuelleEtappe'));
+		if ($etappen_nr['etappen_nr'] == 1) {
+			$rowsMtn = ['rang', 'startnummer', 'namen', 'age', 'team', 'berg'];
+			$rowsPts = ['rang', 'startnummer', 'namen', 'age', 'team', 'points'];
+			$rowsGk = ['rang', 'startnummer', 'namen', 'age', 'team', 'ptsuci', 'rueckstand'];
+		} else {
+			$rowsGk = ['rang', 'prv', 'updown', 'startnummer', 'namen', 'age', 'team', 'ptsuci', 'rueckstand'];
+			$rowsPts = ['rang', 'prv', 'updown', 'startnummer', 'namen', 'age', 'team', 'points'];
+			$rowsMtn = ['rang', 'prv', 'updown', 'startnummer', 'namen', 'age', 'team', 'berg'];
+		}
+/*
+		//$rowsTime = ['rang', 'startnummer', 'namen', 'age', 'team', 'ptsuci', 'ptspcs', 'gc-pos', 'gc-rueck', 'rueckstand'];
+		// Für TT.
+		//$rowsTime = ['rang', 'startnummer', 'namen', 'age', 'team', 'ptsuci', 'ptspcs', 'avg', 'gc-pos', 'gc-rueck', 'rueckstand'];
+		//$rowsTime = ['rang', 'startnummer', 'namen', 'age', 'team', 'ptsuci', 'ptspcs', 'avg', 'gc-pos', 'gc-rueck', 'rueckstand'];
+		$rowsGk = ['rang', 'prv', 'updown', 'startnummer', 'namen', 'age', 'team', 'ptsuci', 'gc-pos', 'gc-rueck', 'rueckstand', 'timewonlost'];
+		//$rowsGk = ['rang', 'startnummer', 'namen', 'age', 'team', 'ptsuci', 'gc-pos', 'gc-time', 'rueckstand', 'timewonlost'];
+		$rowsPts = ['rang', 'prv', 'updown', 'startnummer', 'namen', 'age', 'team', 'points'];
+		//$rowsPts = ['rang', 'startnummer', 'namen', 'age', 'team', 'points'];
+		$rowsMtn = ['rang', 'prv', 'updown', 'startnummer', 'namen', 'age', 'team', 'berg'];
+*/
+		//$rowsMtn = ['rang', 'startnummer', 'namen', 'age', 'team', 'berg'];
 		$c = 0;
 		$i=0;
 		$p=0;
 		foreach($html->find('.resultCont') as $resultCont) {
-			foreach($resultCont->find('.basic') as $element) {
-				foreach($element->find('tr') as $row) {
-					foreach($row->find('td') as $td) {
-						if ($c == 0) {
-							$aTables['tag'][$p][$rowsTime[$i]] = trim($td->text());
-						} else if ($c==1) {
-							$aTables['gk'][$p][$rowsGk[$i]] = trim($td->text());
-						}else if ($c==2) {
-							$aTables['punkte'][$p][$rowsPts[$i]] = trim($td->text());
-						} else if ($c == 4) {
-							$aTables['berg'][$p][$rowsMtn[$i]] = trim($td->text());
+			$resultContMarkup = $resultCont->makeup();
+			$pos1 = strpos($resultContMarkup, 'data-id');
+			$pos2 = strpos($resultContMarkup, '"', $pos1);
+			$pos3 = strpos($resultContMarkup, '"', $pos2+1);
+			$dataId = substr($resultContMarkup, $pos2+1, ($pos3-$pos2-1));
+			if (is_numeric($dataId)) {
+				foreach($resultCont->find('.basic') as $element) {
+					foreach($element->find('tr') as $row) {
+						foreach($row->find('td') as $td) {
+							//var_dump($td->text());
+							if ($c == 0) {
+								//echo $td->text() . '-';
+								$aTables['tag'][$p][$rowsTime[$i]] = trim($td->text());
+							} else if ($c==1) {
+								//echo $td->text() . '-';
+								$aTables['gk'][$p][$rowsGk[$i]] = trim($td->text());
+							}else if ($c==2) {
+								//echo $td->text() . '-';
+								$aTables['punkte'][$p][$rowsPts[$i]] = trim($td->text());
+							} else if ($c == 4) {
+								$aTables['berg'][$p][$rowsMtn[$i]] = trim($td->text());
+							}
+							
+	// 						echo $c . '-' . $p . '<br>';
+							$i++;
 						}
-						
-						//echo $c . '-' . $p . '<br>';
-						$i++;
-					}
-					$i=0;
-					$p++;
-				}	
+	// 					echo '<br>';
+						$i=0;
+						$p++;
+					}	
+				}
+				$p=0;
+				$c++;
 			}
-			$p=0;
-			$c++;
+
+
 		}
+		
+/*
+		echo '<pre>';
+		print_r($aTables);
+		echo '</pre>';
+*/
 		
 		$aResult = array();
 		$i=0;
@@ -181,15 +229,31 @@ class Parser extends Admin_my_controller
 				$namen = strip_tags($aResult[$kC][$k]['namen']);
 				$vornamen = trim(strip_tags($aResult[$kC][$k]['vornamen']));
 				
-				$this->db->select('fahrer_id');
-				$this->db->from('fahrer');
-				$this->db->where('fahrer_name LIKE', $namen);
-				$this->db->where('fahrer_vorname LIKE', $vornamen);
+				$this->db->select('f.fahrer_id');
+				$this->db->from('fahrer f');
+				$this->db->join('fahrer_rundfahrt fr', 'fr.fahrer_id=f.fahrer_id');
+				$this->db->where('fr.fahrer_startnummer', $v['startnummer']);
+				$this->db->where('fr.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
 				$fahrer = $this->db->get('')->row_array();
 				$aResult[$kC][$k]['fahrer_id'] = $fahrer['fahrer_id'];
 				if (count($fahrer) == 0) {
-					echo 'Fahrer not found: ' . $namen . ' ' . $vornamen . '<br>';
-					echo $this->db->last_query() . '<br>';
+/*
+					if ($namen == 'Majka') {
+						$aResult[$kC][$k]['fahrer_id'] = 553;
+					} else if ($namen == 'Cort') {
+						$aResult[$kC][$k]['fahrer_id'] = 892;
+					} else if ($namen == 'Rojas') {
+						$aResult[$kC][$k]['fahrer_id'] = 923;
+					} else {
+*/
+						echo 'Fahrer not found: ';
+						echo '<pre>';
+						var_dump($v);
+						echo '</pre>';
+						echo '<br>';
+						echo $this->db->last_query() . '<br>';
+// 					}
+					
 				}
 				
 				
@@ -199,7 +263,7 @@ class Parser extends Admin_my_controller
 					if ($v['rang'] == 1) {
 						$rueckstand = 0;
 					} else if (strip_tags($v['rang']) != 'DNF' && strip_tags($v['rang']) != 'DNS') {
-						$rueckstand = strip_tags(trim(substr($v['rueckstand'], strpos($v['rueckstand'], '  '))));
+						$rueckstand = strip_tags(trim(substr($v['rueckstand'], strpos($v['rueckstand'], ' '))));
 						$temp = chr(44) . chr(44) . ' ';
 						if ($rueckstand == $temp) {
 							$rueckstand = 0;
@@ -210,7 +274,7 @@ class Parser extends Admin_my_controller
 					if ($v['rang'] == 1) {
 						$rueckstand = 0;
 					} else if (strip_tags($v['rang']) != 'DNF' && strip_tags($v['rang']) != 'DNS') {
-						$rueckstand = strip_tags(trim(substr($v['rueckstand'], strpos($v['rueckstand'], '  '))));
+						$rueckstand = strip_tags(trim(substr($v['rueckstand'], strpos($v['rueckstand'], ' '))));
 						$temp = chr(44) . chr(44) . ' ';
 						if ($rueckstand == $temp) {
 							$rueckstand = 0;
@@ -227,11 +291,62 @@ class Parser extends Admin_my_controller
 			}
 			$i++;
 		}
-		
+/*
 		echo "<pre>";
 		print_r($aResult);
 		echo "</pre>";
+*/
+		
+		$result = array('tag' => $aResult['tag'], 'gk' => $aResult['gk']);
 
+
+		$aData['sOutputTime'] = $this->parserrz->parseResult($result, 1, $aAusreisser);
+		$aData['sOutputPunkte'] = $this->parserrz->parseResult($aResult['punkte'], 2, $aAusreisser);
+
+		$aData['sOutputBerg'] = $this->parserrz->parseResult($aResult['berg'], 3, $aAusreisser);
+	}
+	
+	public function parseTest() {
+		$this->db->select('fahrer_id, rueckstand');
+		$this->db->from('temp_gk');
+		$this->db->where('etappe', 136);
+		$dataToday = $this->db->get()->result_array();
+		
+		$this->db->select('fahrer_id, rueckstand');
+		$this->db->from('temp_gk');
+		$this->db->where('etappe', 135);
+		$dataYesterday = $this->db->get()->result_array();
+		
+		foreach($dataToday as $k=>$v) {
+			foreach($dataYesterday as $kY=>$vY) {
+				if ($v['fahrer_id'] == $vY['fahrer_id']) {
+					$dataToday[$k]['rueckstand_gestern'] = $vY['rueckstand'];
+					$dataToday[$k]['resultat'] = $v['rueckstand'] - $vY['rueckstand'];
+				}
+			} 
+		}
+		
+		usort($dataToday, function($a, $b) {
+			//echo $a['punkte'] . ' und ' . $b['punkte'] . ' ergibt ' . ($a['punkte'] - $b['punkte']) . '<br>';
+		    return $a['resultat'] > $b['resultat'] ? 1 : -1;
+		});
+		
+		$siegerzeit = $dataToday[0]['resultat'];
+		
+		foreach($dataToday as $k=>$v) {
+			$dataToday[$k]['resultat'] = $dataToday[$k]['resultat'] + ($siegerzeit*-1);
+		}
+		
+		echo '<pre>';
+		print_r($dataToday);
+		echo '</pre>';
+		
+		$i=1;
+		foreach($dataToday as $k=>$v) {
+			$data = array('etappen_id' => 136, 'fahrer_id' => $v['fahrer_id'], 'rueckstand' => $v['resultat'], 'rueckstandOhneBS' => $v['resultat'], 'rang'=>$i);
+			$this->db->insert('resultate', $data);
+			$i++;
+		}
 	}
 	
 	/*

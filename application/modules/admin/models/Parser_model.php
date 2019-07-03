@@ -127,6 +127,22 @@ class Parser_model extends MY_Model
 		
 	}
 	
+	public function getEtappenTyp($iEtappe) {
+		$this->db->select('etappen_klassifizierung');
+		$this->db->from('etappen');
+		$this->db->where('etappen_id', $iEtappe);
+		
+		return $this->db->get()->row_array();
+	}
+	
+	public function getEtappenNr($iEtappe) {
+		$this->db->select('etappen_nr');
+		$this->db->from('etappen');
+		$this->db->where('etappen_id', $iEtappe);
+		
+		return $this->db->get()->row_array();
+	}
+	
 	private function _kaderIntoArray($aKader) {
 		$aReturn[] = $aKader['fahrer1'];
 		$aReturn[] = $aKader['fahrer2'];
@@ -172,6 +188,26 @@ class Parser_model extends MY_Model
 		
 		$this->db->where('etappen_id', $iEtappe);
 		$this->db->delete('resultate_punkte');
+		
+		$this->db->where('etappe', $iEtappe);
+		$this->db->delete('temp_berg');
+		
+		$this->db->where('etappe', $iEtappe);
+		$this->db->delete('temp_punkte');
+		
+	}
+	
+	public function getTempDataYesterday($iEtappe, $type) {
+		if ($type == 'punkte') {
+			$this->db->select('fahrer_id, punkte');
+			$this->db->where('etappe', ($iEtappe-1));
+			$return = $this->db->get('temp_punkte')->result_array();
+		} else if ($type == 'berg') {
+			$this->db->select('fahrer_id, berg');
+			$this->db->where('etappe', ($iEtappe-1));
+			$return = $this->db->get('temp_berg')->result_array();
+		} 
+		return $return;
 	}
 	
 	private function _getIdFromStartnummer($iStartnummer) {

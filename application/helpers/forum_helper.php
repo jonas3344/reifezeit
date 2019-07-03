@@ -239,7 +239,7 @@ if ( ! function_exists('createRuhmeshalle'))
 			} else {
 				$sOutput .= "[/mcol][mcol color=#ff3333]" . $aResultData['aTeilnehmer'][$v['aBerg']]['rzname'] . " (" . $aResultData['aTeilnehmer'][$v['aBerg']]['rzteam_short'] . ")";
 			}
-			$sOutput .= "[/mcol][/mrow]";
+			$sOutput .= "[/mcol][/mrow]&#13;&#10;&#13;&#10;";
 		}
 		$sOutput .= "[/table]";
 		return $sOutput;
@@ -285,7 +285,7 @@ if ( ! function_exists('createForumKaderpost'))
 			$sum = 0;
 			foreach($aTeilnehmer['kader'] as $k) {
 				$color = ($k['change'] == 1) ? "#ff9999" : "#ffffff";
-				$fahrer_name = ($k['fahrer_name'] == "Yates" || $k['fahrer_name'] == "Nibali") ? substr($k['fahrer_vorname'], 0, 1) . "." . $k['fahrer_name'] : $k['fahrer_name'];
+				$fahrer_name = substr($k['fahrer_vorname'], 0, 1) . "." . $k['fahrer_name'];
 				$sOutput .= "[/mcol][mcol color=" . $color . "]" . $fahrer_name . "[/mcol][mcol color=#ffffff]" . $k['fahrer_rundfahrt_credits'];
 				$sum += $k['fahrer_rundfahrt_credits'];
 			}

@@ -201,6 +201,16 @@ class Kader_model extends MY_Model
 			
 		$aTemp = $this->_getFahrerId($aKader);
 		
+		$pos = substr($sPosition, -1);
+		
+		$dataWechsel = array('fahrer_out' => $aTemp[($pos-1)],
+							'fahrer_in' => $iFahrer,
+							'user' => $this->session->userdata('user_id'),
+							'etappe' => $iEtappe,
+							'time' => date('Y-m-d H:i:s'));
+							
+		$this->db->insert('wechsel', $dataWechsel);
+		
 		if (in_array($iFahrer, $aTemp)) {
 			return 'Du hast diesen Fahrer bereits im Kader!';
 		}

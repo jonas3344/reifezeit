@@ -104,6 +104,7 @@ class Historie extends Frontend_my_controller
 	public function teams_list() {
 		$aData = array();
 		
+		$aData['teams'] = $this->model->getTeamTeilnahmen();
 		
 		$this->renderPage('teams_list', $aData, array(), array('portlets.css', 'teams.css'));
 		
@@ -152,6 +153,10 @@ class Historie extends Frontend_my_controller
 	
 	public function getDataForGwTable() {
 		echo json_encode($this->model->getDataForGwTable($this->input->post('type')));
+	}
+	
+	public function getDataForGwTableTeams() {
+		echo json_encode($this->model->getDataForGwTableTeams($this->input->post('type')));
 	}
 	
 	public function getDataForTrikotTable() {

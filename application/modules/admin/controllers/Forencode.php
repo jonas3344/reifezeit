@@ -139,6 +139,11 @@ class Forencode extends Admin_my_controller
 				$aCodeData['aEtappen'][$v['etappen_nr']]['aBerg'] = "-";
 			}
 		}
+/*
+		echo '<pre>';
+		print_r($aCodeData);
+		echo '</pre>';
+*/
 
 		$aData['sOutput'] = createRuhmeshalle($aCodeData);	
 		$this->renderPage('ruhmeshalle', $aData, array(), array());

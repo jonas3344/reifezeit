@@ -276,6 +276,47 @@ class Historie_model extends MY_Model
 		return $aTeilnahmen;
 	}
 	
+	public function getTeamTeilnahmen() {
+		$this->db->select('team_id, COUNT(team_id) AS anzahl');
+		$this->db->from('h_team_teilnahme');
+		$this->db->group_by('team_id');
+		$this->db->order_by('anzahl', 'DESC');
+		$teilnahmen = $this->db->get()->result_array();
+		
+		$tempTeilnahmen = array();
+		foreach($teilnahmen as $k=>$v) {
+			$tempTeilnahmen[$v['team_id']] = $v['anzahl'];
+		}
+		
+		$this->db->select('rzteam_id, rzteam_short, rzteam_name, color_code_schrift, color_code_zelle');
+		$this->db->from('rz_team');
+		$teams = $this->db->get()->result_array();
+		
+		foreach($teams as $k=>$v) {
+			$teams[$k]['anzahl'] = $tempTeilnahmen[$v['rzteam_id']];
+		}
+		
+		usort($teams, function($a, $b) {
+		    return $a['anzahl'] > $b['anzahl'] ? -1 : 1;
+		});
+		
+		$iRang = 1;
+		$iPrev = $teams[0]['anzahl'];
+		$teams[0]['rang'] = 1;
+		
+		for($i=1;$i<count($teams);$i++) {
+			$iRang++;
+			if ($teams[$i]['anzahl'] == $iPrev) {
+				$teams[$i]['rang'] = '-';
+			} else if ($teams[$i]['anzahl'] < $iPrev) {
+				$teams[$i]['rang'] = $iRang;
+				$iPrev = $teams[$i]['anzahl'];
+			}
+		}
+		
+		return $teams;
+	}
+	
 	public function getEtappenSiegeForList() {
 		$this->db->select('u.name, u.id, COUNT(ets.id) AS anzahl');
 		$this->db->from('h_etsieger ets');
@@ -338,6 +379,51 @@ class Historie_model extends MY_Model
 		}
 		
 		return $aTeilnahmen;
+	}
+	
+	public function getDataForGwTableTeams($type) {
+		if ($type == 'rang_team_gw') {
+			$this->db->select('team_id, COUNT(team_id) AS anzahl');
+			$this->db->from('h_team_teilnahme');
+			$this->db->group_by('team_id');
+			$this->db->where('rang', 1);
+			$temp = $this->db->get()->result_array();
+			
+			$teams_siege = array();
+			foreach($temp as $k=>$v) {
+				$teams_siege[$v['team_id']] = $v['anzahl'];
+			}
+			
+			$this->db->select('rzteam_id, rzteam_short, rzteam_name, color_code_schrift, color_code_zelle');
+			$this->db->from('rz_team');
+			$teams = $this->db->get()->result_array();
+			
+			foreach($teams as $k=>$v) {
+				$teams[$k]['anzahl'] = $teams_siege[$v['rzteam_id']];
+			}
+			
+			usort($teams, function($a, $b) {
+		   		return $a['anzahl'] > $b['anzahl'] ? -1 : 1;
+			});
+			
+			$iRang = 1;
+			$iPrev = $teams[0]['anzahl'];
+			$teams[0]['rang'] = 1;
+			
+			for($i=1;$i<count($teams);$i++) {
+				$iRang++;
+				if ($teams[$i]['anzahl'] == $iPrev) {
+					$teams[$i]['rang'] = '-';
+				} else if ($teams[$i]['anzahl'] < $iPrev) {
+					$teams[$i]['rang'] = $iRang;
+					$iPrev = $teams[$i]['anzahl'];
+				}
+			}
+			
+			$return = $teams;
+		}
+		
+		return $return;
 	}
 	
 	public function getDataForTrikotTable($type) {

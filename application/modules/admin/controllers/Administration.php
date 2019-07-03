@@ -42,6 +42,16 @@ class Administration extends Admin_my_controller
 		echo json_encode($this->model->savekapitaen($kapitaen));
 	}
 	
+	public function favoriten() {
+		$aData = array();
+		
+		$aData['favoritenGk'] = $this->model->getFavoritenGk();
+		$aData['favoritenPunkte'] = $this->model->getFavoritenPunkte();
+		$aData['favoritenBerg'] = $this->model->getFavoritenBerg();
+		
+		$this->renderPage('favoriten', $aData, array(''), array(''));
+	}
+	
 	public function transfermarkt() {
 		$aData = array();
 		

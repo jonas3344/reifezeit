@@ -128,6 +128,7 @@ class MY_Model extends CI_Model {
 					$this->db->select('s.id, s.name, s.share_to_team, u.name as username, u.rzname as rzname');
 					$this->db->where('s.user_id', $v['user_id']);
 					$this->db->where('s.share_to_team', 1);
+					$this->db->where('s.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
 					$this->db->join('rz_user u', 's.user_id=u.id');
 					$aTemp = $this->db->get('shortlists s')->result_array();
 					foreach($aTemp as $kT=>$vT) {

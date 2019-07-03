@@ -60,9 +60,7 @@ class Teilnahme_model extends MY_Model
 		$this->db->order_by('rundfahrt_id', 'DESC');
 		$aTeilnahme = $this->db->get('teilnahme')->result_array();
 		if (count($aTeilnahme) >= 1) {
-			if ($aTeilnahme[0]['out'] == 0) {
-				$bIsNeo = false;
-			}
+			$bIsNeo = false;
 		}
 		
 		if ($bIsNeo == true) {

@@ -45,3 +45,7 @@
 	overflow:scroll; 
 	max-height:300px
 }
+
+.red {
+	background-color: red;
+}

@@ -1,6 +1,6 @@
 ;(function($) {
 	$('#etappen').on('change', function() {
-		window.location.href = base_url + 'parser/index/' + this.value;
+		window.location.href = base_url + 'parser/parserPcs/' + this.value;
 	})
 	$('#ausreisserJa, #ausreisserNein').on('change', function() {
 		if (this.value == 1) {

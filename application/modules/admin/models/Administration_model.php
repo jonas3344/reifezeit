@@ -218,4 +218,272 @@ class Administration_model extends MY_Model
 		$this->db->where('id', $user);
 		return $this->db->get()->row_array();
 	}
+	
+	public function getFavoritenGk() {
+		$rundfahrt = substr($this->config->item('sAktuelleRundfahrt'), 0, -5);
+		$jahr = substr($this->config->item('sAktuelleRundfahrt'), -4);
+		
+		$this->db->select('id');
+		$this->db->from('h_rundfahrten');
+		$this->db->where('complete', 1);
+		$this->db->order_by('id', 'DESC');
+		$this->db->limit(9);
+		$checkRundfahrten = $this->db->get()->result_array();
+		
+		$points = array(1=>array(1=>10, 2=>8, 3=>6, 4=>4, 5=>3, 6=>2, 7=>1), 
+						2=>array(1=>10, 2=>8, 3=>6, 4=>4, 5=>3, 6=>2, 7=>1), 
+						3=>array(1=>15, 2=>12, 3=>11, 4=>9, 5=>8, 6=>6, 7=>4, 8=>3, 9=>2, 10=>1), 
+						4=>array(1=>7, 2=>5, 3=>3, 4=>2, 5=>1), 
+						5=>array(1=>7, 2=>5, 3=>3, 4=>2, 5=>1), 
+						6=>array(1=>10, 2=>8, 3=>6, 4=>4, 5=>3, 6=>2, 7=>1), 
+						7=>array(1=>7, 2=>5, 3=>3, 4=>2, 5=>1), 
+						8=>array(1=>5, 2=>3, 3=>1), 
+						9=>array(1=>5, 2=>3, 3=>1));
+						
+		$factor = array(1=>1, 2=>0.9, 3=>0, 4=>0, 5=>0.3, 6=>0.75, 7=>0, 8=>0.6);
+		
+		$aResults = array();
+		$i=1;
+		foreach($checkRundfahrten as $k=>$v) {
+			$this->db->select('user_id, rang_gw');
+			$this->db->from('h_teilnahme');
+			$this->db->where('rundfahrt_id', $v['id']);
+			$aResults[$i] = $this->db->get()->result_array();
+			$i++;
+		}
+		
+		$allePunkte = array();
+		$i=1;
+		foreach($aResults as $k=>$v) {
+			foreach($v as $kR=>$vV) {
+				$allePunkte[$vV['user_id']]['punkte'] += $points[$i][$vV['rang_gw']];
+			}
+			$i++;
+		}
+		
+		asort($allePunkte);
+		
+		$orderByPoints = array();
+		foreach($allePunkte as $k=>$v) {
+			$aUser = $this->_getUserData($k);
+			if (count($aUser) > 0) {
+				
+				$punkte = $v['punkte'] * $factor[$aUser['rolle_id']];
+// 				echo $punkte . ' = ' . $v['punkte'] . ' * ' . $factor[$aUser['rolle_id']] . '<br>';
+				$aUser['punkte'] = $punkte;
+				$orderByPoints[] = $aUser;
+			}
+			
+		}
+		
+		usort($orderByPoints, function($a, $b) {
+			//echo $a['punkte'] . ' und ' . $b['punkte'] . ' ergibt ' . ($a['punkte'] - $b['punkte']) . '<br>';
+		    return $a['punkte'] > $b['punkte'] ? 1 : -1;
+		});
+		
+		foreach($orderByPoints as $k=>$v) {
+			if ($v['punkte'] == 0) {
+				unset($orderByPoints[$k]);
+			}
+		}
+		$orderByPoints = array_reverse($orderByPoints, true);
+				
+		
+		return $orderByPoints;
+	}
+	
+	public function getFavoritenPunkte() {
+		$rundfahrt = substr($this->config->item('sAktuelleRundfahrt'), 0, -5);
+		$jahr = substr($this->config->item('sAktuelleRundfahrt'), -4);
+		
+		$this->db->select('id');
+		$this->db->from('h_rundfahrten');
+		$this->db->where('complete', 1);
+		$this->db->order_by('id', 'DESC');
+		$this->db->limit(9);
+		$checkRundfahrten = $this->db->get()->result_array();
+		
+		$points = array(1=>array(1=>7, 2=>5, 3=>3, 4=>2, 5=>1), 
+						2=>array(1=>7, 2=>5, 3=>3, 4=>2, 5=>1), 
+						3=>array(1=>10, 2=>8, 3=>6, 4=>4, 5=>3, 6=>2, 7=>1), 
+						4=>array(1=>7, 2=>5, 3=>3, 4=>2, 5=>1), 
+						5=>array(1=>5, 2=>3, 3=>2, 4=>1), 
+						6=>array(1=>5, 2=>3, 3=>2, 4=>1), 
+						7=>array(1=>5, 2=>3, 3=>2, 4=>1), 
+						8=>array(1=>3, 2=>2, 3=>1), 
+						9=>array(1=>3, 2=>2, 3=>1));
+		// 1 = Kapitän, 2 = Rundfahrer, 3 = Etappenjäger, 4 = Helfer, 5 = Neo, 6 = Bergfex, 7 = Sprinter, 8 = ZF		
+		$factor = array(1=>0.7, 2=>0.7, 3=>0.9, 4=>0.9, 5=>0, 6=>0, 7=>1, 8=>0.8);
+		
+		$aResults = array();
+		$i=1;
+		foreach($checkRundfahrten as $k=>$v) {
+			$this->db->select('user_id, rang_punkte');
+			$this->db->from('h_teilnahme');
+			$this->db->where('rundfahrt_id', $v['id']);
+			$aResults[$i] = $this->db->get()->result_array();
+			$i++;
+		}
+		
+		$allePunkte = array();
+		$i=1;
+		foreach($aResults as $k=>$v) {
+			foreach($v as $kR=>$vV) {
+				$allePunkte[$vV['user_id']]['punkte'] += $points[$i][$vV['rang_punkte']];
+			}
+			$i++;
+		}
+		
+		$etappensieger = $this->_getEtSieger(1);
+		
+		foreach($etappensieger as $k=>$v) {
+			$allePunkte[$v]['punkte'] = $allePunkte[$v]['punkte'] + 1;
+		}
+		
+		
+		asort($allePunkte);
+		
+		$orderByPoints = array();
+		foreach($allePunkte as $k=>$v) {
+			$aUser = $this->_getUserData($k);
+			if (count($aUser) > 0) {
+				
+				$punkte = $v['punkte'] * $factor[$aUser['rolle_id']];
+// 				echo $punkte . ' = ' . $v['punkte'] . ' * ' . $factor[$aUser['rolle_id']] . '<br>';
+				$aUser['punkte'] = $punkte;
+				$orderByPoints[] = $aUser;
+			}
+			
+		}
+		
+		usort($orderByPoints, function($a, $b) {
+		    return $a['punkte'] > $b['punkte'] ? 1 : -1;
+		});
+		foreach($orderByPoints as $k=>$v) {
+			if ($v['punkte'] == 0) {
+				unset($orderByPoints[$k]);
+			}
+		}
+		$orderByPoints = array_reverse($orderByPoints, true);
+				
+		
+		return $orderByPoints;	
+	}
+	
+	public function getFavoritenBerg() {
+		$rundfahrt = substr($this->config->item('sAktuelleRundfahrt'), 0, -5);
+		$jahr = substr($this->config->item('sAktuelleRundfahrt'), -4);
+		
+		$this->db->select('id');
+		$this->db->from('h_rundfahrten');
+		$this->db->where('complete', 1);
+		$this->db->order_by('id', 'DESC');
+		$this->db->limit(9);
+		$checkRundfahrten = $this->db->get()->result_array();
+		
+		$points = array(1=>array(1=>7, 2=>5, 3=>3, 4=>2, 5=>1), 
+						2=>array(1=>7, 2=>5, 3=>3, 4=>2, 5=>1), 
+						3=>array(1=>10, 2=>8, 3=>6, 4=>4, 5=>3, 6=>2, 7=>1), 
+						4=>array(1=>7, 2=>5, 3=>3, 4=>2, 5=>1), 
+						5=>array(1=>5, 2=>3, 3=>2, 4=>1), 
+						6=>array(1=>5, 2=>3, 3=>2, 4=>1), 
+						7=>array(1=>5, 2=>3, 3=>2, 4=>1), 
+						8=>array(1=>3, 2=>2, 3=>1), 
+						9=>array(1=>3, 2=>2, 3=>1));
+		// 1 = Kapitän, 2 = Rundfahrer, 3 = Etappenjäger, 4 = Helfer, 5 = Neo, 6 = Bergfex, 7 = Sprinter, 8 = ZF		
+		$factor = array(1=>0.8, 2=>0.9, 3=>0, 4=>0.9, 5=>0, 6=>1, 7=>0, 8=>0.8);
+		
+		$aResults = array();
+		$i=1;
+		foreach($checkRundfahrten as $k=>$v) {
+			$this->db->select('user_id, rang_berg');
+			$this->db->from('h_teilnahme');
+			$this->db->where('rundfahrt_id', $v['id']);
+			$aResults[$i] = $this->db->get()->result_array();
+			$i++;
+		}
+		
+		$allePunkte = array();
+		$i=1;
+		foreach($aResults as $k=>$v) {
+			foreach($v as $kR=>$vV) {
+				$allePunkte[$vV['user_id']]['punkte'] += $points[$i][$vV['rang_berg']];
+			}
+			$i++;
+		}
+		
+		$etappensieger = $this->_getEtSieger(4);
+		
+		foreach($etappensieger as $k=>$v) {
+			$allePunkte[$v]['punkte'] = $allePunkte[$v]['punkte'] + 1;
+		}
+		
+		asort($allePunkte);
+		
+		$orderByPoints = array();
+		foreach($allePunkte as $k=>$v) {
+			$aUser = $this->_getUserData($k);
+			if (count($aUser) > 0) {
+				
+				$punkte = $v['punkte'] * $factor[$aUser['rolle_id']];
+// 				echo $punkte . ' = ' . $v['punkte'] . ' * ' . $factor[$aUser['rolle_id']] . '<br>';
+				$aUser['punkte'] = $punkte;
+				$orderByPoints[] = $aUser;
+			}
+			
+		}
+		
+		usort($orderByPoints, function($a, $b) {
+		    return $a['punkte'] > $b['punkte'] ? 1 : -1;
+		});
+		
+		foreach($orderByPoints as $k=>$v) {
+			if ($v['punkte'] == 0) {
+				unset($orderByPoints[$k]);
+			}
+		}
+		$orderByPoints = array_reverse($orderByPoints, true);
+		
+		return $orderByPoints;
+	}
+	
+	private function _getEtSieger($type) {
+		$this->db->select('id');
+		$this->db->from('h_rundfahrten');
+		$this->db->where('complete', 1);
+		$this->db->order_by('id', 'DESC');
+		$this->db->limit(6);
+		$checkRundfahrten = $this->db->get()->result_array();
+		
+		$alldata = array();
+		foreach($checkRundfahrten as $k=>$v) {
+			$this->db->select('es.user_id');
+			$this->db->from('h_etsieger es');
+			$this->db->join('h_etappen h', 'h.id=es.etappen_id');
+			$this->db->where('h.rundfahrt_id', $v['id']);
+			$this->db->where('h.etappenart', $type);
+			$alldata[] = $this->db->get()->result_array();
+		}
+		
+		$allwins = Array();
+		foreach($alldata as $k=>$v) {
+			foreach($v as $kV=>$vV) {
+				$allwins[] = $vV['user_id'];
+			}
+		}
+		return $allwins;
+		
+	}
+	
+	
+	private function _getUserData($user_id) {
+		$this->db->select('u.rzname, u.id, t.rolle_id, r.rolle_bezeichnung');
+		$this->db->from('rz_user u');
+		$this->db->join('teilnahme t', 't.user_id=u.id');
+		$this->db->join('rollen r', 't.rolle_id=r.rolle_id');
+		$this->db->where('u.id', $user_id);
+		$this->db->where('t.rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
+		$result = $this->db->get();
+		return $result->row_array();
+	}
 }

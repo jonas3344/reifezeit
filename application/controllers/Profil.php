@@ -21,7 +21,7 @@ class Profil extends Frontend_my_controller
 		
 		$aData['aUser'] = $this->model->getOneRow('rz_user', 'id=' . $this->session->userdata('user_id'));
 		
-		$this->renderPage('profil', $aData, array('bootstrap-editable.js'), array('bootstrap-editable.css'));
+		$this->renderPage('profil', $aData, array('bootstrap-editable.js'), array('bootstrap-editable.css', 'portlets.css'));
 	}
 	
 	public function setUserData($sType) {

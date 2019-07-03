@@ -43,7 +43,7 @@
 					foreach($aDopingtest['teilnehmer'] as $k=>$v) {
 					?>
 					<tr>
-						<td <?= ($v['iChanges'] > 1) ? 'class="danger"' : '';?>><?= $v['name'] . '<br>' . '<small>' . $v['rzname'] . '</small>';?></td>
+						<td <?= ($v['iChanges'] > 1) ? 'class="red"' : '';?>><?= $v['name'] . '<br>' . '<small>' . $v['rzname'] . '</small>';?></td>
 						<?php
 						foreach($v['kader'] as $kk=>$aKader) {
 							?>
@@ -55,7 +55,7 @@
 						<td style="border-right: 1px solid"><?= $v['gewonnene_bonuscredits'];?></td>
 						<td style="border-right: 1px solid"><?= $v['einsatz_creditpool'];?></td>
 						<td style="border-right: 1px solid"><?= $v['ca'];?></td>
-						<td <?= ($v['doped'] == true) ? 'class="danger"' : '';?>><?= $v['iUsedCredits'] . '(' . $v['iCreditBase'] . ')';?></td>
+						<td <?= ($v['doped'] == true) ? 'class="red"' : '';?>><?= $v['iUsedCredits'] . '(' . $v['iCreditBase'] . ')';?></td>
 						<td width="8%">
 							<div class="dropdown">
 							  <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
