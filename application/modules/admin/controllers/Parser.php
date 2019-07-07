@@ -237,22 +237,12 @@ class Parser extends Admin_my_controller
 				$fahrer = $this->db->get('')->row_array();
 				$aResult[$kC][$k]['fahrer_id'] = $fahrer['fahrer_id'];
 				if (count($fahrer) == 0) {
-/*
-					if ($namen == 'Majka') {
-						$aResult[$kC][$k]['fahrer_id'] = 553;
-					} else if ($namen == 'Cort') {
-						$aResult[$kC][$k]['fahrer_id'] = 892;
-					} else if ($namen == 'Rojas') {
-						$aResult[$kC][$k]['fahrer_id'] = 923;
-					} else {
-*/
-						echo 'Fahrer not found: ';
-						echo '<pre>';
-						var_dump($v);
-						echo '</pre>';
-						echo '<br>';
-						echo $this->db->last_query() . '<br>';
-// 					}
+					echo 'Fahrer not found: ';
+					echo '<pre>';
+					var_dump($v);
+					echo '</pre>';
+					echo '<br>';
+					echo $this->db->last_query() . '<br>';
 					
 				}
 				
@@ -309,12 +299,12 @@ class Parser extends Admin_my_controller
 	public function parseTest() {
 		$this->db->select('fahrer_id, rueckstand');
 		$this->db->from('temp_gk');
-		$this->db->where('etappe', 136);
+		$this->db->where('etappe', 198);
 		$dataToday = $this->db->get()->result_array();
 		
 		$this->db->select('fahrer_id, rueckstand');
 		$this->db->from('temp_gk');
-		$this->db->where('etappe', 135);
+		$this->db->where('etappe', 197);
 		$dataYesterday = $this->db->get()->result_array();
 		
 		foreach($dataToday as $k=>$v) {
@@ -343,7 +333,7 @@ class Parser extends Admin_my_controller
 		
 		$i=1;
 		foreach($dataToday as $k=>$v) {
-			$data = array('etappen_id' => 136, 'fahrer_id' => $v['fahrer_id'], 'rueckstand' => $v['resultat'], 'rueckstandOhneBS' => $v['resultat'], 'rang'=>$i);
+			$data = array('etappen_id' => 198, 'fahrer_id' => $v['fahrer_id'], 'rueckstand' => $v['resultat'], 'rueckstandOhneBS' => $v['resultat'], 'rang'=>$i);
 			$this->db->insert('resultate', $data);
 			$i++;
 		}

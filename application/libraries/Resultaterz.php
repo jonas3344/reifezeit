@@ -69,6 +69,12 @@ class Resultaterz {
 		$this->CI->db->where('t.rundfahrt_id', $this->CI->config->item('iAktuelleRundfahrt'));
 		$this->aTeilnehmer = $this->_orderByUserId($this->CI->db->get('teilnahme t')->result_array());
 		
+/*
+		echo '<pre>';
+		print_r($this->aTeilnehmer);
+		echo '</pre>';	
+*/	
+		
 		// RZ-Teams holen
 		$aTemp = $this->CI->db->get('rz_team')->result_array();
 		
@@ -83,10 +89,14 @@ class Resultaterz {
 			
 		}
 		
-		$this->aFahrerOhneTeam = $this->CI->db->query("	SELECT t.user_id FROM `teilnahme` `t` LEFT JOIN `rz_user_team` `ut` ON `t`.`user_id`=`ut`.`user_id` 
-															WHERE ut.rz_user_team_id IS NULL AND t.rundfahrt_id =" . $this->CI->config->item('iAktuelleRundfahrt'))->result_array();
+		$sql = 'SELECT t.user_id FROM `teilnahme` `t` LEFT JOIN `rz_user_team` `ut` ON `t`.`user_id`=`ut`.`user_id` 
+															WHERE ut.rz_user_team_id IS NULL AND t.rundfahrt_id ="' . $this->CI->config->item('iAktuelleRundfahrt');
 															
-		//print_r($this->aFahrerOhneTeam);
+															
+		
+		$this->aFahrerOhneTeam = $this->CI->db->query("SELECT t.user_id FROM `teilnahme` `t` 
+														LEFT JOIN `rz_user_team` `ut` ON `t`.`user_id`=`ut`.`user_id` AND `t`.`rundfahrt_id` = `ut`.`rundfahrt_id`
+															WHERE ut.rz_user_team_id IS NULL AND t.rundfahrt_id =" . $this->CI->config->item('iAktuelleRundfahrt'))->result_array();
 		
 		$this->_calculateTageswertung();
 		$this->_calculateGesamtwertung();

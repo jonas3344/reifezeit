@@ -85,6 +85,12 @@ class Forencode extends Admin_my_controller
 		$aData['overall_team'] = $a->getTeamGesamt();
 		$aData['teilnehmer'] = $this->model->getTeilnehmerForum();
 		$aData['teams'] = $this->model->getTeamsForum();
+		
+/*
+		echo '<pre>';
+		print_r($aData['stage_result']);
+		echo '</pre>';		
+*/
 				
 		$aResultData['etappe'] = $this->model->getOneRow('etappen', 'etappen_id=' . $iEtappe);
 		
