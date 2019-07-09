@@ -54,7 +54,7 @@ class Parserrz {
 		} else if ($this->iParser == 3) {
 			if ($iType == 1) {
 				$this->_parsePcsTime($sResult);
-				//$this->_calculateTime();
+				$this->_calculateTime();
 			} else if ($iType == 2) {
 				$this->_parsePcsPoints($sResult);
 			} else if ($iType == 3) {
