@@ -31,7 +31,7 @@
 						</tr>
 						<tr>
 							<td width="20%"><strong>Deine E-Mail-Adresse:</strong></td>
-							<td><a href="#" id="rz_name" class="rz_name" data-type="text" data-pk="<?= $this->session->userdata('user_id');?>" data-url="<?= base_url();?>profil/setUserData/email" data-title="Set RZ-Name"><?= $aUser['email'];?></a></td>
+							<td><a href="#" id="email" class="rz_name" data-type="text" data-pk="<?= $this->session->userdata('user_id');?>" data-url="<?= base_url();?>profil/setUserData/email" data-title="Set E-Mail"><?= $aUser['email'];?></a></td>
 						</tr>
 					</table>
 					<hr>

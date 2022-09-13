@@ -124,7 +124,7 @@ class Historie extends Admin_my_controller
 			
 			
 			
-			if ($v['etappen_nr'] == 21) {
+			if ($v['etappen_nr'] == 18) {
 				foreach($aSavedData['h_team_teilnahme'] as $l=>$p) {
 					if (!array_key_exists($l, $aResultData['overall_team'])) {
 						$aSavedData['h_team_teilnahme'][$l]['rang'] = "DNF";
@@ -151,7 +151,6 @@ class Historie extends Admin_my_controller
 		
 		foreach($aSavedData as $k=>$v) {
 			foreach($v as $kV=>$aValues) {
-				
 				$this->model->saveRecord($k, $aValues, -1);
 			}
 			

@@ -24,7 +24,14 @@
 	</div>
 	<div class="row">
 		<div class="alert alert-info lead">
-			<?= $aEtappe['etappen_nr'];?>.Etappe: <?= $aEtappe['klassifizierung_name'] . ' - ' . $aEtappe['etappen_start_ziel'] . '(' . $aEtappe['etappen_distanz'] . ' km)';?> <a rel="popover" class="btn btn-default" data-img="<?= base_url();?>img/<?= $aEtappe['etappen_profil'];?>"><span class="glyphicon glyphicon-picture" aria-hidden="true"></span></a><br><br>
+            <?php
+            if (substr($aEtappe['etappen_profil'], 0, 4) === 'http') {
+                $etappenprofil = $aEtappe['etappen_profil'];
+            } else {
+                $etappenprofil = base_url() . 'img/' . $aEtappe['etappen_profil'];
+            }
+            ?>
+			<?= $aEtappe['etappen_nr'];?>.Etappe: <?= $aEtappe['klassifizierung_name'] . ' - ' . $aEtappe['etappen_start_ziel'] . '(' . $aEtappe['etappen_distanz'] . ' km)';?> <a rel="popover" class="btn btn-default" data-img="<?= $etappenprofil;?>"><span class="glyphicon glyphicon-picture" aria-hidden="true"></span></a><br><br>
 			<strong>Eingabeschluss: <?= $aEtappe['etappen_datum'] . ' - ' . $aEtappe['etappen_eingabeschluss'];?></strong><br><br>
 			Du hast heute <strong><?= $iCredits;?> Credits</strong> zur Verfügung!
 		</div>
@@ -144,7 +151,20 @@
 		<?php
 	}
 		
-	if ($aKader['creditmoves'] < 0) {
+	if ($aKader['creditmoves'] == -1) {
+		?>
+			<div class="row">
+				<div class="alert alert-danger">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					Du hast einen Machtwechsel vorgenommen. Du kannst heute einen Credit weniger verwenden.
+				</div>
+			</div>
+			<?php
+		
+	}	
+	if ($aKader['creditmoves'] == -2) {
 		?>
 			<div class="row">
 				<div class="alert alert-danger">
@@ -155,8 +175,7 @@
 				</div>
 			</div>
 			<?php
-		
-	}	
+		}
 		if ($aKader['creditmoves'] > 0) {
 		?>
 			<div class="row">

@@ -20,6 +20,7 @@
 			<thead>
 				<th>Etappe</th>
 				<th>User</th>
+				<th></th>
 			</thead>
 			<tbody>
 		<?php
@@ -28,6 +29,7 @@
 				<tr>
 					<td><?= $v['etappen_nr'];?></td>
 					<td><?= $v['rzname'] . ' (' .  $v['name'] . ')';?></td>
+					<td><a href="<?= base_url();?>admin/dopingtest/deleteDoper/<?= $v['dopingfall_id'];?>/<?= $iEtappe;?>" class="btn btn-default">Löschen</a>
 				</tr>			
 			<?php	
 			}

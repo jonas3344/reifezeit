@@ -471,6 +471,7 @@ class Historie_model extends MY_Model
 		$this->db->order_by('t.rang_gw');
 		$aUser = $this->db->get()->result_array();
 		
+		
 		foreach($aUser as $k=>$v) {
 			if ($v['avatar'] == "") {
 				$iTemp = $v['user_id']%4;

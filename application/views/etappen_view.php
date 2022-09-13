@@ -30,6 +30,11 @@
 									} else if ($aE['etappen_klassifizierung'] == 3 || $aE['etappen_klassifizierung'] == 5 || $aE['etappen_klassifizierung'] == 6) {
 										$sColor = ' class = warning'; 
 									}
+									if (substr($aE['etappen_profil'], 0, 4) === 'http') {
+									    $etappenprofil = $aE['etappen_profil'];
+                                    } else {
+									    $etappenprofil = base_url() . 'img/' . $aE['etappen_profil'];
+                                    }
 									?>
 									<tr<?= $sColor;?>>
 										<td><?= $aE['etappen_nr'];?></td>
@@ -38,7 +43,7 @@
 										<td><?= $aE['etappen_start_ziel'];?></td>
 										<td><?= $aE['etappen_distanz'];?></td>
 										<td><?= $aE['etappen_eingabeschluss'];?></td>
-										<td><a href="<?= base_url();?>img/<?= $aE['etappen_profil'];?>" data-toggle="lightbox"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
+										<td><a href="<?= $etappenprofil;?>" data-toggle="lightbox"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
 									</tr>
 									<?php
 								}	

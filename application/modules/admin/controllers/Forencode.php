@@ -58,7 +58,6 @@ class Forencode extends Admin_my_controller
 			
 		}
 		
-		
 		$aData = createResultKaderpost($aResultData, $aExFuehrung);
 		
 		$aData['aAlleEtappen'] = $this->model->getRows('etappen', 'etappen_rundfahrt_id=' . $this->config->item('iAktuelleRundfahrt'), array('sort_field' => 'etappen_nr', 'sort_order' => 'ASC'));
@@ -86,11 +85,11 @@ class Forencode extends Admin_my_controller
 		$aData['teilnehmer'] = $this->model->getTeilnehmerForum();
 		$aData['teams'] = $this->model->getTeamsForum();
 		
-/*
-		echo '<pre>';
+
+/*		echo '<pre>';
 		print_r($aData['stage_result']);
-		echo '</pre>';		
-*/
+		echo '</pre>';		*/
+
 				
 		$aResultData['etappe'] = $this->model->getOneRow('etappen', 'etappen_id=' . $iEtappe);
 		

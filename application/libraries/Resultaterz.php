@@ -67,6 +67,7 @@ class Resultaterz {
 		// Teilnehmer holen
 
 		$this->CI->db->where('t.rundfahrt_id', $this->CI->config->item('iAktuelleRundfahrt'));
+		//$this->CI->db->where('t.out_etappen_id', 0);
 		$this->aTeilnehmer = $this->_orderByUserId($this->CI->db->get('teilnahme t')->result_array());
 		
 /*
@@ -203,14 +204,17 @@ class Resultaterz {
 					}
 					
 					asort($rang_array);
+					
 					$rang_array_komplett[$iNrEtappe][$t['user_id']] = $rang_array;
 					
 					if (($this->aEtappen[$iNrEtappe]['etappen_klassifizierung'] != 3) && ($this->aEtappen[$iNrEtappe]['etappen_klassifizierung'] != 5)) {
 						array_pop($rang_array);
 					}
+					
 						
 					$zeit = 0;
 					$bc = 0;
+					
 					foreach($rang_array as $k=>$v){
 						if ($v == 1) {
 							$bc += 3;
@@ -234,6 +238,7 @@ class Resultaterz {
 						}
 						
 					}
+					
 					$temp[$iNrEtappe][$t['user_id']]['bc'] = $bc;
 					if ($t['out'] == 1) {
 						if ($t['out_etappen_id'] >= $this->aEtappen[$iNrEtappe]['etappen_id']) {
@@ -245,19 +250,38 @@ class Resultaterz {
 				}
 			}
 		}
-		
+
 		// Sort und Berechnen
 		foreach($this->aRzTageswertungen as $k=>$v) {
 			asort($this->aRzTageswertungen[$k]);
-			
-			$siegerzeit = array_values($this->aRzTageswertungen[$k])[0]['zeit'];
+
+
+            $doperOnThisStage = [];
+            if (count($this->aDoping) > 0) {
+                foreach($this->aDoping as $dk=>$d) {
+                    if ($d['etappen_id'] == $this->aEtappen[$k]['etappen_id']) {
+                        $doperOnThisStage[] = $d['user_id'];
+                    }
+                }
+            }
+            $i = 0;
+            $noDoping = false;
+            while ($noDoping === false) {
+                $siegerID = array_keys($this->aRzTageswertungen[$k])[$i];
+                if (in_array($siegerID, $doperOnThisStage) === false) {
+                    $noDoping = true;
+                    $siegerzeit = array_values($this->aRzTageswertungen[$k])[$i]['zeit'];
+                }
+                $i++;
+            }
+
 			$zeit_letzter = array_values($this->aRzTageswertungen[$k])[count($this->aRzTageswertungen[$k])-1]['zeit'];
 			if (count($this->aDoping) > 0) {
 				foreach($this->aDoping as $dk=>$d) {
 					if ($d['etappen_id'] == $this->aEtappen[$k]['etappen_id']) {
 						if (isset($this->aRzTageswertungen[$k][$d['user_id']])) {
 							$this->aRzTageswertungen[$k][$d['user_id']]['zeit'] = $zeit_letzter + 120;
-							$temp[$k][$dk]['bc'] = 0;
+							$temp[$k][$d['user_id']]['bc'] = 0;
 						}
 					}
 				}
@@ -505,6 +529,7 @@ class Resultaterz {
 	*/
 	
 	private function _calculatePunkte() {
+		echo '<br><br><br>';
 		foreach($this->aTeilnehmer as $t) {
 			$punkte = 0;
 			foreach ($this->aEtappen as $iNrEtappe=>$aEtappe) {
@@ -532,16 +557,17 @@ class Resultaterz {
 						$bOut = true;
 					}
 				}
-				
+
 				foreach($fahrer_ids as $k=>$v) {
 					if ($doped == false) {
-						if (isset($this->aResultatePunkte[$iNrEtappe][$v]['punkte'])) {
+						if (isset($this->aResultatePunkte[$iNrEtappe][$v]['punkte'])) {							
 							$punkte = $punkte + $this->aResultatePunkte[$iNrEtappe][$v]['punkte'];
 						}
 					} 
 				}
+				
 			}
-			if ($bOut == false) {
+			if ($t['out'] != 1) {
 				$this->aRzPunkte[$t['user_id']]['punkte'] = $punkte;
 			}
 		}
@@ -612,12 +638,12 @@ class Resultaterz {
 					}
 				}
 			}
-			if ($bOut == false) {
+			if ($t['out'] != 1) {
 				$this->aRzBerg[$t['user_id']]['berg'] = $bergpunkte;
 			}
 			
 		}
-		
+
 		// Sortieren	
 		for($i=0;$i<count($this->aRzBerg);$i++) {
 			for($p=$i;$p<count($this->aRzBerg);$p++) {

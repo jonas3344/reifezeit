@@ -134,6 +134,11 @@ class Dopingtest_model extends MY_Model
 		return $this->db->get('dopingfall d')->result_array();
 	}
 	
+	public function deleteDoper($id) {
+		$this->db->where('dopingfall_id', $id);
+		$this->db->delete('dopingfall');
+	}
+	
 	public function dsqUser($iUser, $iEtappe) {
 		$this->model->saveRecord('dopingfall', array('user_id'=>$iUser, 'etappen_id'=>$iEtappe, 'rundfahrt_id'=>$this->config->item('iAktuelleRundfahrt')), -1);
 		

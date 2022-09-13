@@ -140,6 +140,10 @@ class Kader_model extends MY_Model
 		$this->db->where('user_id', $this->session->userdata('user_id'));
 		$aDoping = $this->db->get('dopingfall')->row_array();
 		
+		if ($aDoping === null) {
+			$aDoping = [];
+		}
+		
 		if (count($aDoping) > 0 && $iEtappenNr > $this->_getEtappenNr($aDoping['etappen_id'])) {
 			return 1;
 		} else {

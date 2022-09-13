@@ -37,7 +37,7 @@
 		</div>
 		 <div class="form-group collapse" id='firstHauptfeldDiv'>
 			 <hr>
-		    <label for="firstHauptfeld">Erster Hauptfeld</label>
+		    <label for="firstHauptfeld">Erster Hauptfeld (Rang)</label>
 		    <input type="text" class="form-control" name="firstHauptfeld">
 		  </div>
 		<hr>

@@ -38,7 +38,6 @@
 		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Auswertung <span class="caret"></span></a>
 		          <ul class="dropdown-menu">
 		            <li><a href="<?= base_url()?>admin/dopingtest">Dopingtest</a></li>
-		            <li><a href="<?= base_url()?>admin/parser">Resultate parsen</a></li>
 		            <li><a href="<?= base_url()?>admin/parser/parserPcs">pcs-Parser</a></li>
 		            <li><a href="<?= base_url()?>admin/parser/finishStage">Etappe abschliessen</a></li>
 		            <li><a href="<?= base_url()?>admin/parser/deleteStage">Resultate löschen</a></li>

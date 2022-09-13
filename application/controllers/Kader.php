@@ -218,6 +218,17 @@ class Kader extends Frontend_my_controller
 	}
 	
 	public function saveKader() {
+/*        $iTime = _create_timestamp($aData['aEtappe']['etappen_datum'], $aData['aEtappe']['etappen_eingabeschluss']);
+        if (time() > $iTime) {
+            $aData['bEdit'] = false;
+        } else {
+            if ($aData['aUser']['out'] == 0) {
+                $aData['bEdit'] = true;
+            } else {
+                $aData['bEdit'] = false;
+            }
+
+        }*/
 		echo $this->model->saveKader($this->input->post('etappe'), $this->input->post('position'), $this->input->post('fahrer_id'));
 	}
 	

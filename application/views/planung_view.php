@@ -128,9 +128,14 @@
 								
 								<?php
 									}
+                                if (substr($vk['aEtappe']['etappen_profil'], 0, 4) === 'http') {
+                                    $etappenprofil = $vk['aEtappe']['etappen_profil'];
+                                } else {
+                                    $etappenprofil = base_url() . 'img/' . $vk['aEtappe']['etappen_profil'];
+                                }
 								?>	
 							</td>
-							<td<?= $sColor;?> width="4%"><a rel="popover" data-img="<?= base_url();?>img/<?= $vk['aEtappe']['etappen_profil'];?>"><?= $vk['aEtappe']['etappen_nr'];?></a></td>
+							<td<?= $sColor;?> width="4%"><a rel="popover" data-img="<?= $etappenprofil ;?>"><?= $vk['aEtappe']['etappen_nr'];?></a></td>
 							<?php
 							$iSum = 0;
 							$i=1;

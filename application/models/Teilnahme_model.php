@@ -51,7 +51,7 @@ class Teilnahme_model extends MY_Model
 		$this->db->where('user_id', $this->session->userdata('user_id'));
 		$this->db->where('rundfahrt_id', $this->config->item('iAktuelleRundfahrt'));
 		$aKapitaen = $this->db->get('rundfahrt_kapitaen')->row_array();
-		if (count($aKapitaen) == 0) {
+		if (is_null($aKapitaen)) {
 			unset($aRollen[0]);
 		}
 		

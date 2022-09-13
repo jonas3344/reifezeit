@@ -15,11 +15,11 @@ class Shortlist_model extends MY_Model
 		$this->db->where('shortlist_id', $iShortlist);
 		$this->db->where('fahrer_id', $iFahrer);
 		$aFahrer = $this->db->get('shortlists_fahrer')->row_array();
-		if (count($aFahrer) == 0) {
-			return false;
-		} else {
-			return true;
-		}
+		if ($aFahrer === null) {
+					return false;
+				} else {
+					return true;
+				}
 	}
 	
 	public function getFahrerForShortlist($iShortlist) {

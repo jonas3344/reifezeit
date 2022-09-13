@@ -68,7 +68,7 @@ class Dopingtest extends Admin_my_controller
 		$aData['sOutput'] = createForumKaderpost($aKader, $aCa, $aWechsel);
 		
 		
-		$this->renderPage('forumtabelle', $aData, array(), array());
+		$this->renderPage('forumtabelle', $aData, array('clipboard.min.js'), array());
 	}
 	
 	public function doper($iEtappe) {
@@ -80,6 +80,12 @@ class Dopingtest extends Admin_my_controller
 		$aData['iEtappe'] = $iEtappe;
 				
 		$this->renderPage('doper', $aData, array(), array());
+	}
+	
+	public function deleteDoper($id, $iEtappe) {
+		$this->model->deleteDoper($id);
+		redirect(base_url() . 'admin/dopingtest/doper/' . $iEtappe);
+		
 	}
 	
 	public function setKaderLastStage() {
@@ -113,8 +119,8 @@ class Dopingtest extends Admin_my_controller
 		$this->db->where('user_id', $iDoper);
 		
 		$aCheck = $this->db->get('dopingfall')->row_array();
-		
-		if (count($aCheck) > 0) {
+
+		if (is_countable($aCheck) && count($aCheck) > 0) {
 			$this->model->dsqUser($this->input->post('doperid'), $this->input->post('etappenid'));
 			echo 'out';
 		} else {

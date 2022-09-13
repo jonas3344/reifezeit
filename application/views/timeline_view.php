@@ -62,15 +62,15 @@
 					</tr>
 					<tr>
 						<td>Anzahl Tage im Leadertrikot:</td>
-						<td><?= count($aLeader[1]);?></td>					
+						<td><?= is_array($aLeader[1]) ? count($aLeader[1]) : 0;?></td>					
 					</tr>
 					<tr>
 						<td>Anzahl Tage im Punktetrikot:</td>
-						<td><?= count($aLeader[2]);?></td>					
+						<td><?= is_array($aLeader[2]) ? count($aLeader[2]) : 0;?></td>					
 					</tr>
 					<tr>
 						<td>Anzahl Tage im Bergtrikot:</td>
-						<td><?= count($aLeader[3]);?></td>					
+						<td><?= is_array($aLeader[3]) ? count($aLeader[3]) : 0;?></td>					
 					</tr>
 					<tr>
 						<td>Bisherige Teams:</td>

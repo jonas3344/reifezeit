@@ -62,6 +62,12 @@ class Parserrz {
 			}
 		}
 		
+		echo '<pre>';
+		print_r($aResult);
+		print_r($aResultPoints);
+		print_r($aResultMountain);
+		echo '</pre>';
+		
 		$this->_saveToDb($iType);
 	}
 	
@@ -84,7 +90,9 @@ class Parserrz {
 					unset($this->aResult[$key]);
 				} else if ($r['rang'] == 'DNS') {
 					unset($this->aResult[$key]);	
-				} else {			
+				} else if ($r['rang'] == 'OTL') {
+                    unset($this->aResult[$key]);
+                }else {
 					$i_minutes_temp = substr($r['rueckstand'], 0, strpos($r['rueckstand'], ':'));
 					$i_seconds_temp = substr($r['rueckstand'], strpos($r['rueckstand'], ':')+1);
 					
@@ -96,6 +104,7 @@ class Parserrz {
 					}
 					
 					if ($bZeitfahren == false) {
+						$i_seconds_temp = ($i_seconds_temp == " ") ? 0 : $i_seconds_temp;
 						if ($r['rang'] == 1) {
 							$zeitS = ($i_minutes_temp*60) + $i_seconds_temp;
 						} else if ($r['rang'] == 2) {
@@ -147,7 +156,9 @@ class Parserrz {
 					unset($this->aResult[$key]);
 				} else if ($r['rang'] == 'DNS') {
 					unset($this->aResult[$key]);	
-				} else if ($r['rang'] < $this->aAusreisser['iFirstHauptfeld']) {
+				} else if ($r['rang'] == 'OTL') {
+                    unset($this->aResult[$key]);
+                }else if ($r['rang'] < $this->aAusreisser['iFirstHauptfeld']) {
 					// Vor Hauptfeld
 					$i_minutes_temp = substr($r['rueckstand'], 0, strpos($r['rueckstand'], ':'));
 					$i_seconds_temp = substr($r['rueckstand'], strpos($r['rueckstand'], ':')+1);
@@ -442,6 +453,7 @@ class Parserrz {
 	}
 	
 	private function _parsePcsTime($result) {
+        echo 'bruuh';
 		if ($this->aEtappe['etappen_nr'] == 1) {
 			//$this->CI->db->empty_table('temp_gk');
 			foreach($result['gk'] as $k=>$v) {
@@ -518,11 +530,7 @@ class Parserrz {
 	}
 	
 	private function _parsePcsPoints($result) {
-/*
-		echo '<pre>';
-		var_dump($result);
-		echo '</pre>';
-*/
+
 		if ($this->aEtappe['etappen_nr'] == 1) {
 			foreach($result as $k=>$v) {
 				$data = array('fahrer_id' => $v['fahrer_id'], 'punkte'=>$v['punkte'], 'etappe' => $this->aEtappe['etappen_id']);
